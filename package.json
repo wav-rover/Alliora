@@ -1,0 +1,47 @@
+{
+    "name": "alliora",
+    "private": true,
+    "type": "module",
+    "scripts": {
+        "dev": "vite",
+        "build": "vite build"
+    },
+    "devDependencies": {
+        "@headlessui/react": "^2.0.0",
+        "@inertiajs/react": "^1.0.0",
+        "@tailwindcss/forms": "^0.5.3",
+        "@vitejs/plugin-react": "^4.2.0",
+        "autoprefixer": "^10.4.12",
+        "axios": "^1.7.7",
+        "laravel-vite-plugin": "^1.0",
+        "postcss": "^8.4.31",
+        "react": "^18.2.0",
+        "react-dom": "^18.2.0",
+        "tailwindcss": "^3.2.1",
+        "vite": "^5.0"
+    },
+    "dependencies": {
+        "@radix-ui/react-alert-dialog": "^1.1.1",
+        "@radix-ui/react-context-menu": "^2.2.2",
+        "@radix-ui/react-dialog": "^1.1.1",
+        "@radix-ui/react-label": "^2.1.0",
+        "@radix-ui/react-popover": "^1.1.1",
+        "@radix-ui/react-scroll-area": "^1.1.0",
+        "@radix-ui/react-slot": "^1.1.0",
+        "@radix-ui/react-tabs": "^1.1.0",
+        "@radix-ui/react-tooltip": "^1.1.3",
+        "@tabler/icons-react": "^3.19.0",
+        "class-variance-authority": "^0.7.0",
+        "clsx": "^2.1.1",
+        "cmdk": "^1.0.0",
+        "framer-motion": "^11.9.0",
+        "laravel-echo": "^1.16.1",
+        "lucide-react": "^0.446.0",
+        "mini-svg-data-uri": "^1.4.4",
+        "react-element-to-jsx-string": "^15.0.0",
+        "react-router-dom": "^6.26.2",
+        "socket.io-client": "^4.8.0",
+        "tailwind-merge": "^2.5.2",
+        "tailwindcss-animate": "^1.0.7"
+    }
+}
