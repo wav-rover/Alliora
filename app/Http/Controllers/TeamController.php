@@ -41,20 +41,22 @@ class TeamController extends Controller
         return response()->json($team->users);
     }
 
-    public function joinTeam(Request $request)
-    {
-        try {
-            $teamId = $request->input('team_id');
-            $userId = Auth::id();
+public function joinTeam(Request $request, $team_code)
+{
+    // Recherche l'équipe par team_code
+    $team = Team::where('team_code', $team_code)->firstOrFail();
+    $user = Auth::user();
 
-            $team = Team::findOrFail($teamId);
-            $team->users()->attach($userId);
-
-            return response()->json(['message' => 'Successfully joined the team'], 200);
-        } catch (\Exception $e) {
-            return response()->json(['error' => 'Failed to join the team', 'details' => $e->getMessage()], 500);
-        }
+    // Vérifie si l'utilisateur est déjà membre de l'équipe
+    if ($team->users()->where('user_id', $user->id)->exists()) {
+        return response()->json(['message' => 'Vous êtes déjà membre de cette équipe.'], 403);
     }
+
+    // Ajoute l'utilisateur à l'équipe
+    $team->users()->attach($user->id);
+
+    return response()->json(['message' => 'Vous avez rejoint l\'équipe avec succès.'], 200);
+}
 
 
     public function store(Request $request)

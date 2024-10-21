@@ -32,9 +32,6 @@ const Teams = () => {
     const { props } = usePage();
     const initialTeams = props.teams || [];
     const initialUsers = props.users || [];
-    const handleTeamJoin = (teamCode) => {
-
-    }
     const [isHovered, setIsHovered] = useState(false);
     const [teams, setTeams] = useState(initialTeams);
     const [users, setUsers] = useState(initialUsers);
@@ -47,7 +44,7 @@ const Teams = () => {
     const [deleteTeamId, setDeleteTeamId] = useState(null);
     const [isConfirming, setIsConfirming] = useState(false);
     const [isConfirming2, setIsConfirming2] = useState(false);
-
+    const [copied, setCopied] = useState(false);
 
     // Fetch team users function
     const fetchTeamUsers = async (teamId) => {
@@ -294,14 +291,10 @@ const Teams = () => {
         );
     }
 
-
-
-
     return (
         <div className="bg-dark text-white p-6">
             <SearchModal
                 placeholder="Enter team code to join"
-                onSubmit={handleTeamJoin}
                 buttonLabel="Join a team"
             />
             {/* Form to create a new team */}
@@ -578,11 +571,49 @@ const Teams = () => {
                                                     </motion.div>
                                                 </ScrollArea>
                                             </div>
-                                            <div className="border-l-2 border-zinc-900 text-gray-500 text-xs pl-3 w-1/3 flex flex-col gap-5">
+                                            <motion.div
+                                                className="border-l-2 border-zinc-900 text-gray-500 text-xs pl-3 w-1/3 flex flex-col gap-5"
+                                                initial={{ opacity: 0 }}          // Animation initiale
+                                                animate={{ opacity: 1 }}           // Animation d'entrée
+                                                transition={{ duration: 0.5 }}     // Durée de la transition
+                                            >
                                                 <p>Created on {team.created_at}</p>
                                                 <p>Working on 0 projects</p>
-                                                <Button onClick={navigator.clipboard.writeText(team.team_code)}>Copy team code <CopyCheck /></Button>
-                                            </div>
+
+                                                <motion.div
+                                                    initial={{ scale: 1 }}                   // État initial avant le clic
+                                                    whileTap={{ scale: 0.95 }}               // Réduction de l'échelle pendant le clic
+                                                    transition={{ type: "spring", stiffness: 300 }}  // Effet de ressort
+                                                >
+                                                    <Button onClick={() =>
+                                                        navigator.clipboard.writeText(team.team_code).then(() => {
+                                                            setCopied(true);
+                                                            setTimeout(() => setCopied(false), 2000);
+                                                        })
+                                                    } className="w-full">
+                                                        {copied ? (
+                                                            <motion.span
+                                                                initial={{ opacity: 0, y: -10 }}
+                                                                exit={{ opacity: 0, y: -10 }}
+                                                                animate={{ opacity: 1, y: 0 }}
+                                                                transition={{ duration: 0.3 }}
+                                                                className="w-full flex items-center justify-center"  // Taille du bouton
+                                                            >
+                                                                <CopyCheck className='h-5'/> {/* Ton icône */}
+                                                            </motion.span>
+                                                        ) : (
+                                                            <motion.span
+                                                                initial={{ opacity: 0, y: -10 }}
+                                                                animate={{ opacity: 1, y: 0 }}
+                                                                transition={{ duration: 0.3 }}
+                                                                className="flex items-center justify-center" 
+                                                            >
+                                                                Copy team code
+                                                            </motion.span>
+                                                        )}
+                                                    </Button>
+                                                </motion.div>
+                                            </motion.div>
                                         </div>
 
                                         <DialogFooter>

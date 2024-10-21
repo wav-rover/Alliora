@@ -46,7 +46,7 @@ Route::middleware('auth')->group(function () {
         Route::put('/teams/{team}/demote/{user}', [TeamController::class, 'demoteMember']);
         Route::delete('/teams/{team}/remove/{user}', [TeamController::class, 'removeMember']);
         Route::post('/teams/{teamId}/leave', [TeamController::class, 'leaveTeam']);
-        Route::post('/teams/join', [TeamController::class, 'joinTeam'])->name('teams.join');
+        Route::post('/teams/join/{team_code}', [TeamController::class, 'joinTeam']);
 });    
 
     // Routes des projets
