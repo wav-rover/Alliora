@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -20,16 +21,16 @@ class Project extends Model
     // Relation avec l'équipe
     public function team()
     {
-        return $this->belongsTo(Team::class);
+        return $this->belongsTo(Team::class)->withDefault();
     }
+
 
     // Relation avec les utilisateurs via la table pivot project_user
     public function users()
-    {
-        return $this->belongsToMany(User::class, 'project_user')
-                    ->withPivot('role')
-                    ->withTimestamps();
-    }
+{
+    return $this->belongsToMany(User::class, 'project_user')->withPivot('role')->withTimestamps();
+}
+
 
     // Relation avec les tâches (tasks)
     public function tasks()

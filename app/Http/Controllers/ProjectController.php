@@ -4,11 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Models\Project;
 use App\Models\Team;
-use App\Models\User;
-use App\Models\Task;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use Inertia\Inertia;
 
 class ProjectController extends Controller
 {
@@ -17,51 +14,71 @@ class ProjectController extends Controller
 {
     $user = Auth::user();
 
-    // Récupérer les équipes où l'utilisateur est admin
+    // Fetch teams where the user is admin or member
     $teams = Team::whereHas('users', function($query) use ($user) {
-        $query->where('users.id', $user->id)
-              ->where('team_user.role', 'admin');
+        $query->where('users.id', $user->id);
     })->get();
 
-    // Récupérer les projets
-    $projects = Project::all(); // Ou appliquez une condition si nécessaire
+    // Fetch projects associated with the user's teams
+    $teamProjects = Project::with('team')->whereHas('team', function($query) use ($user) {
+        $query->whereHas('users', function($query) use ($user) {
+            $query->where('users.id', $user->id);
+        });
+    })->get();
+
+    // Fetch projects directly associated with the user via project_user
+    $userProjects = Project::whereHas('users', function($query) use ($user) {
+        $query->where('users.id', $user->id);
+    })->get();
+
+    // Merge both collections (team-based projects and user-based projects) and remove duplicates
+    $projects = $teamProjects->merge($userProjects)->unique('id');
 
     return inertia('ProjectsPage', [
         'teams' => $teams,
-        'projects' => $projects, // Ajoutez les projets ici
+        'projects' => $projects,
     ]);
 }
 
 
-    // Créer un nouveau projet
-    public function store(Request $request)
+public function store(Request $request)
 {
     $request->validate([
         'name' => 'required|string|max:255',
         'description' => 'required|string',
-        'team_id' => 'nullable|exists:teams,id', // Vérifiez si l'ID d'équipe est valide
+        'team_id' => 'nullable|exists:teams,id',
     ]);
 
-    // Si aucune équipe n'est sélectionnée, créer une nouvelle équipe
+    $user = Auth::user();
+
+    // Handle team creation or selection
     if (!$request->input('team_id')) {
         $team = Team::create([
-            'name' => $request->input('name') . ' Team', // Nom de l'équipe basée sur le projet
+            'name' => $request->input('name') . ' Team',
         ]);
-        // Ajouter le créateur comme membre
-        $team->users()->attach(Auth::user()->id, ['role' => 'admin']);
+        $team->users()->attach($user->id, ['role' => 'admin']);
     } else {
         $team = Team::find($request->input('team_id'));
+
+        if (!$team->users()->where('users.id', $user->id)->where('team_user.role', 'admin')->exists()) {
+            return response()->json(['error' => 'You do not have permission to create a project for this team.'], 403);
+        }
     }
 
-    // Créer le projet
+    // Create the project
     $project = Project::create([
         'name' => $request->input('name'),
         'description' => $request->input('description'),
-        'team_id' => $team->id, // Associer le projet à l'équipe
+        'team_id' => $team->id,
     ]);
 
-    return response()->json($project); // Retourne le projet créé
+    // Associate the creator (user) with the project in the project_user table
+    $project->users()->attach($user->id, ['role' => 'admin']);
+
+    return response()->json($project);
 }
+
+
 
     // Afficher un projet spécifique
     public function show($id)

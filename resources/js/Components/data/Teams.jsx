@@ -3,7 +3,7 @@ import axios from 'axios';
 import { usePage } from '@inertiajs/react';
 import { X, Check, UserCog, ArrowBigUpDash, UserMinus, ArrowBigDownDash, LogOut, CopyCheck } from 'lucide-react';
 import { Input } from "../ui/input";
-import { InviteMembers, Selected } from '../ui/invitemembers';
+import { InviteMembers, Selected } from '../form/invitemembers';
 import { Button } from "@/components/ui/button";
 import {
     Dialog,

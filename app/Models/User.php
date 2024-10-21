@@ -62,11 +62,10 @@ class User extends Authenticatable
      * Un utilisateur peut être assigné à plusieurs projets.
      */
     public function projects()
-    {
-        return $this->belongsToMany(Project::class, 'project_user')
-                    ->withPivot('role')
-                    ->withTimestamps();
-    }
+{
+    return $this->belongsToMany(Project::class, 'project_user')->withPivot('role')->withTimestamps();
+}
+
 
     public function index()
 {
