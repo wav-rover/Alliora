@@ -19,27 +19,33 @@ class ProjectController extends Controller
         $query->where('users.id', $user->id);
     })->get();
 
-    // Fetch projects associated with the user's teams
-    $teamProjects = Project::with('team')->whereHas('team', function($query) use ($user) {
-        $query->whereHas('users', function($query) use ($user) {
-            $query->where('users.id', $user->id);
-        });
+    $adminTeams = Team::whereHas('users', function($query) use ($user) {
+        $query->where('users.id', $user->id)->where('team_user.role', 'admin');
     })->get();
 
-    // Fetch projects directly associated with the user via project_user
-    $userProjects = Project::whereHas('users', function($query) use ($user) {
-        $query->where('users.id', $user->id);
-    })->get();
+    // Fetch projects associated with the user's teams, with the team relationship loaded
+    $teamProjects = Project::with('team') // Ensure 'team' relationship is loaded
+        ->whereHas('team', function($query) use ($user) {
+            $query->whereHas('users', function($query) use ($user) {
+                $query->where('users.id', $user->id);
+            });
+        })->get();
+
+    // Fetch projects directly associated with the user via project_user, with the team relationship loaded
+    $userProjects = Project::with('team') // Ensure 'team' relationship is loaded here as well
+        ->whereHas('users', function($query) use ($user) {
+            $query->where('users.id', $user->id);
+        })->get();
 
     // Merge both collections (team-based projects and user-based projects) and remove duplicates
     $projects = $teamProjects->merge($userProjects)->unique('id');
 
     return inertia('ProjectsPage', [
+        'adminTeams' => $adminTeams,
         'teams' => $teams,
         'projects' => $projects,
     ]);
 }
-
 
 public function store(Request $request)
 {

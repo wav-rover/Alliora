@@ -79,16 +79,16 @@ export const DesktopSidebar = ({ className, children, ...props }) => {
   
   return (
     <div
-      className={cn("relative")}
+      className={cn("my-5")}
+      
+    >
+      <motion.div
       onMouseEnter={() => setOpen(true)} // Ouvre la sidebar au hover
       onMouseLeave={() => setOpen(false)} // Ferme la sidebar lorsque le curseur sort
-    >
-      <div className="absolute -top-6 left-0 w-[300px] h-6 bg-neutral-900/10 rounded-tl-[30px] z-10" />
-      <motion.div
-        className={cn("h-full px-4 py-4 hidden md:flex md:flex-col bg-neutral-900/90 w-[300px] flex-shrink-0", className)}
+        className={cn(" h-full px-4 py-4 ml-5 hidden md:flex md:flex-col bg-neutral-900/90 w-[300px] rounded-3xl", className)}
         style={{ width: open ? "300px" : "60px" }} // Gère la largeur selon l'état ouvert
-        initial={{ width: "60px", opacity: 0.5 }} // État initial
-        animate={{ width: open ? "250px" : "60px", opacity: open ? 1 : 0.5 }} // Animation sur ouverture
+        initial={{ width: "60px", opacity: 0.7 }} // État initial
+        animate={{ width: open ? "250px" : "60px", opacity: open ? 1 : 0.7 }} // Animation sur ouverture
         transition={{ type: "spring", stiffness: 170, damping:19 }} // Transition d'animation
         {...props}
       >

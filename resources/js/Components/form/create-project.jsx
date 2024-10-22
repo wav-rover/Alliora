@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Input } from "../ui/input";
 import { Button } from "@/components/ui/button";
 
-const CreateProjectForm = ({ teams, onProjectCreated }) => {
+const CreateProjectForm = ({ adminTeams, onProjectCreated }) => {
     const [projectName, setProjectName] = useState('');
     const [projectDescription, setProjectDescription] = useState('');
     const [selectedTeam, setSelectedTeam] = useState('');
@@ -47,8 +47,8 @@ const CreateProjectForm = ({ teams, onProjectCreated }) => {
                 className="border rounded p-2"
             >
                 <option value="">Select a Team</option>
-                {teams.length > 0 ? (
-                    teams.map((team) => (
+                {adminTeams.length > 0 ? (
+                    adminTeams.map((team) => (
                         <option key={team.id} value={team.id}>
                             {team.name}
                         </option>

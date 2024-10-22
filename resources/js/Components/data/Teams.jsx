@@ -300,12 +300,12 @@ const Teams = () => {
             {/* Form to create a new team */}
             <h2 className="text-xl mt-6 ">Create a New Team</h2>
             <form onSubmit={handleSubmit} className="flex flex-col sm:flex-row sm:items-center space-y-4 sm:space-y-0 sm:space-x-4">
-                <Input
+                <input
                     type="text"
                     value={newTeamName}
                     onChange={(e) => setNewTeamName(e.target.value)}
                     placeholder="Team Name"
-                    className="text-black w-full"
+                    className="border border-input bg-background hover:bg-accent hover:text-accent-foreground inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 h-10 px-4 py-2"
                     required
                 />
 
@@ -313,12 +313,12 @@ const Teams = () => {
                     <InviteMembers selectedMembers={selectedMembers} setSelectedMembers={setSelectedMembers} members={users} />
                 </div>
 
-                <button
+                <Button
                     type="submit"
-                    className="bg-blue-500 text-white px-4 py-2 rounded"
+                    variant="secondary"
                 >
                     Create Team
-                </button>
+                </Button>
             </form>
             <Selected members={users} selectedMembers={selectedMembers} setSelectedMembers={setSelectedMembers} />
 
@@ -343,7 +343,7 @@ const Teams = () => {
                             return (
                                 <Dialog key={team.id} open={isDialogOpen && editingTeam?.id === team.id} onOpenChange={setIsDialogOpen}>
                                     <DialogTrigger asChild>
-                                        <tr className="hover:bg-gray-800 cursor-pointer" onClick={() => openEditDialog(team)}>
+                                        <tr className="cursor-pointer hover:bg-neutral-900" onClick={() => openEditDialog(team)}>
                                             <td className="border-b p-3">{team.name}</td>
                                             <td className="border-b p-3">
                                                 {team.users && renderTeamAdmins(team.users)} {/* Display admins */}
@@ -355,7 +355,7 @@ const Teams = () => {
                                                 <motion.button
                                                     whileHover={{ scale: 1.05 }}
                                                     whileTap={{ scale: 0.95 }}
-                                                    className="inline-flex bg-black px-2 py-2 mt-2 ml-2 items-center justify-center rounded-md border border-slate-800 text-slate-400"
+                                                    className="border border-input bg-background inline-flex items-center justify-center rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 h-10 px-4 py-2"
                                                     onClick={(e) => {
                                                         e.stopPropagation();
                                                         handleLeave(team.id); // Passer le bon ID de l'utilisateur
@@ -371,7 +371,7 @@ const Teams = () => {
                                                             <motion.button
                                                                 whileHover={{ scale: 1.05 }}
                                                                 whileTap={{ scale: 0.95 }}
-                                                                className="inline-flex bg-black px-2 py-2 mt-2 ml-2 items-center justify-center rounded-md border border-slate-800 text-slate-400"
+                                                                className="border border-input bg-background inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 h-10 px-4 py-2"
                                                                 onClick={(e) => {
                                                                     e.stopPropagation();
                                                                     handleDeleteClick2(team.id); // Passer le bon ID de l'équipe

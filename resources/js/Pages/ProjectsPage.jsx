@@ -8,20 +8,20 @@ import axios from 'axios';
 const ProjectsPage = () => {
     const { teams } = usePage().props;
     const initialProjects = usePage().props.projects;
+    const { adminTeams } = usePage().props;
 
     // État local pour les projets
     const [projects, setProjects] = useState(initialProjects);
 
-    // Fonction pour mettre à jour la liste des projets
-    const fetchProjects = async () => {
+    const reloadProjects = async () => {
         try {
-            const response = await axios.get('/projects');
-            // Vérifie que la réponse est bien un tableau, sinon, setProjects([]) pour éviter l'erreur
-            setProjects(Array.isArray(response.data) ? response.data : []);
+            const response = await axios.get('/projects'); // Assurez-vous que cette route retourne la liste des projets avec les relations
+            setProjects(response.data); // Mettre à jour l'état des projets avec les nouvelles données
         } catch (error) {
-            console.error('Erreur lors de la récupération des projets :', error);
+            console.error('Erreur lors du rechargement des projets :', error);
         }
     };
+    
 
     // Gestion de la création, modification et suppression
     const onProjectModified = async (action, projectData) => {
@@ -51,12 +51,12 @@ const ProjectsPage = () => {
         <AuthenticatedLayout>
             <Head title="Manage Projects" />
             <h1>Projects</h1>
-            <CreateProjects teams={teams} onProjectCreated={(projectData) => onProjectModified('create', projectData)} />
+            <CreateProjects adminTeams={adminTeams} onProjectCreated={(projectData) => onProjectModified('create', projectData)} />
             <div>
                 {projects.length === 0 ? (
                     <p>No projects available.</p>
                 ) : (
-                    <Projects projects={projects} onProjectModified={onProjectModified} />
+                    <Projects projects={projects} onProjectModified={onProjectModified} adminTeams={adminTeams} teams={teams} />
                 )}
             </div>
         </AuthenticatedLayout>

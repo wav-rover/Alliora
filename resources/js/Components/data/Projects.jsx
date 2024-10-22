@@ -1,9 +1,11 @@
 import React, { useState } from 'react';
 
-const Projects = ({ projects, onProjectModified }) => {
+const Projects = ({ projects, onProjectModified, adminTeams }) => {
     const [editingProject, setEditingProject] = useState(null);
     const [editedProjectName, setEditedProjectName] = useState('');
     const [editedProjectDescription, setEditedProjectDescription] = useState('');
+    const [editedProjectTeam, setEditedProjectTeam] = useState('');
+
     if (!Array.isArray(projects) || projects.length === 0) {
         return <div>No projects available</div>;
     }
@@ -12,19 +14,21 @@ const Projects = ({ projects, onProjectModified }) => {
         setEditingProject(project.id);
         setEditedProjectName(project.name);
         setEditedProjectDescription(project.description);
+        setEditedProjectTeam(project.team_id);
     };
 
     // Gère la soumission des modifications
-    const handleEditSubmit = async (e, project) => {
-        e.preventDefault();
-        await onProjectModified('edit', {
-            id: project.id,
-            name: editedProjectName,
-            description: editedProjectDescription,
-            team_id: project.team_id, // Tu pourrais permettre de changer l'équipe aussi ici
-        });
-        setEditingProject(null); // Sortir du mode édition après la mise à jour
-    };
+const handleEditSubmit = async (e, project) => {
+    e.preventDefault();
+    await onProjectModified('edit', {
+        id: project.id,
+        name: editedProjectName,
+        description: editedProjectDescription,
+        team_id: editedProjectTeam, // Utilise la valeur de l'équipe sélectionnée
+    });
+    setEditingProject(null); // Sortir du mode édition après la mise à jour
+};
+
 
     // Supprime un projet
     const handleDelete = async (projectId) => {
@@ -63,6 +67,21 @@ const Projects = ({ projects, onProjectModified }) => {
                                             onChange={(e) => setEditedProjectDescription(e.target.value)}
                                             required
                                         />
+                                        <select
+                                            value={editedProjectTeam}
+                                            onChange={(e) => setEditedProjectTeam(e.target.value)}
+                                        >
+                                            <option value="">Select a Team</option>
+                                            {adminTeams.length > 0 ? (
+                                                adminTeams.map((team) => (
+                                                    <option key={team.id} value={team.id}>
+                                                        {team.name}
+                                                    </option>
+                                                ))
+                                            ) : (
+                                                <option disabled>No teams available</option>
+                                            )}
+                                        </select>
                                         <button type="submit">Save</button>
                                         <button onClick={() => setEditingProject(null)}>Cancel</button>
                                     </form>
