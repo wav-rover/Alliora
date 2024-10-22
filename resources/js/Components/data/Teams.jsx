@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import axios from 'axios';
 import { usePage } from '@inertiajs/react';
-import { X, Check, UserCog, ArrowBigUpDash, UserMinus, ArrowBigDownDash, LogOut, CopyCheck } from 'lucide-react';
+import { X, Check, UserCog, ArrowBigUpDash, UserMinus, ArrowBigDownDash, LogOut, CopyCheck, Plus, Trash } from 'lucide-react';
 import { Input } from "../ui/input";
 import { InviteMembers, Selected } from '../form/invitemembers';
 import { Button } from "@/components/ui/button";
@@ -41,6 +41,7 @@ const Teams = () => {
     const [editingTeam, setEditingTeam] = useState(null);
     const [updatedTeamName, setUpdatedTeamName] = useState('');
     const [isDialogOpen, setIsDialogOpen] = useState(false);
+    const [isDialog2Open, setIsDialog2Open] = useState(false);
     const [deleteTeamId, setDeleteTeamId] = useState(null);
     const [isConfirming, setIsConfirming] = useState(false);
     const [isConfirming2, setIsConfirming2] = useState(false);
@@ -293,37 +294,55 @@ const Teams = () => {
 
     return (
         <div className="bg-dark text-white p-6">
+            <h1 className='text-3xl'>Manage your <span className='rounded-md bg-neutral-800 bg-opacity-20 pt-3 pb-1 px-1'><span class="bg-gradient-to-r from-slate-400 via-white to-black-300 text-transparent bg-clip-text text-5xl font-bold drop-shadow-[0_0_10px_rgba(200,255,255,0.3)]">
+                Teams
+            </span></span></h1>
+            <div className='flex justify-end gap-5'>
             <SearchModal
                 placeholder="Enter team code to join"
                 buttonLabel="Join a team"
             />
-            {/* Form to create a new team */}
-            <h2 className="text-xl mt-6 ">Create a New Team</h2>
-            <form onSubmit={handleSubmit} className="flex flex-col sm:flex-row sm:items-center space-y-4 sm:space-y-0 sm:space-x-4">
-                <input
-                    type="text"
-                    value={newTeamName}
-                    onChange={(e) => setNewTeamName(e.target.value)}
-                    placeholder="Team Name"
-                    className="border border-input bg-background hover:bg-accent hover:text-accent-foreground inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 h-10 px-4 py-2"
-                    required
-                />
+            <Dialog open={isDialog2Open} onOpenChange={setIsDialog2Open}>
+                <DialogTrigger asChild>
+                    <button className="bg-neutral-900 px-3 rounded-md"><Plus className='h-4 w-4' /></button>
+                </DialogTrigger>
+                <DialogContent>
+                    {/* Form to create a new team */}
+                    <DialogHeader>
+                        <DialogTitle>Create a new team</DialogTitle>
+                    </DialogHeader>
 
-                <div className="flex-1">
-                    <InviteMembers selectedMembers={selectedMembers} setSelectedMembers={setSelectedMembers} members={users} />
-                </div>
+                    <form onSubmit={(e) => {
+                        handleSubmit(e);
+                        setIsDialog2Open(false);
+                    }} className="flex flex-col gap-4">
 
-                <Button
-                    type="submit"
-                    variant="secondary"
-                >
-                    Create Team
-                </Button>
-            </form>
-            <Selected members={users} selectedMembers={selectedMembers} setSelectedMembers={setSelectedMembers} />
+                        <input
+                            type="text"
+                            value={newTeamName}
+                            onChange={(e) => setNewTeamName(e.target.value)}
+                            placeholder="Team Name"
+                            className="border border-input bg-background hover:bg-accent hover:text-accent-foreground inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium  h-10 px-4 py-2"
+                            required
+                        />
 
-            <h2 className="text-xl mb-4">Teams</h2>
+                        <div className="flex-1">
+                            <InviteMembers selectedMembers={selectedMembers} setSelectedMembers={setSelectedMembers} members={users} />
+                        </div>
+                        <Selected members={users} selectedMembers={selectedMembers} setSelectedMembers={setSelectedMembers} />
 
+                        <DialogFooter>
+                            <Button
+                                type="submit"
+                                variant="secondary"
+                            >
+                                Create Team
+                            </Button>
+                        </DialogFooter>
+                    </form></DialogContent>
+
+            </Dialog>
+            </div>
             <div className="overflow-auto">
                 <table className="table-auto w-full text-left border-collapse">
                     <thead>
@@ -331,7 +350,7 @@ const Teams = () => {
                             <th className="border-b p-3">Team Name</th>
                             <th className="border-b p-3">Admins</th>
                             <th className="border-b p-3">Members</th>
-                            <th className="border-b p-3">Actions</th>
+                            <th className="border-b p-3"></th>
                         </tr>
                     </thead>
                     <tbody>
@@ -343,7 +362,12 @@ const Teams = () => {
                             return (
                                 <Dialog key={team.id} open={isDialogOpen && editingTeam?.id === team.id} onOpenChange={setIsDialogOpen}>
                                     <DialogTrigger asChild>
-                                        <tr className="cursor-pointer hover:bg-neutral-900" onClick={() => openEditDialog(team)}>
+                                        <motion.tr 
+                                        whileHover={
+                                            { backgroundColor: '#26262633' }
+                                        } 
+                                        transition={{ duration: 0.1 }} 
+                                        className="cursor-pointer" onClick={() => openEditDialog(team)}>
                                             <td className="border-b p-3">{team.name}</td>
                                             <td className="border-b p-3">
                                                 {team.users && renderTeamAdmins(team.users)} {/* Display admins */}
@@ -352,18 +376,6 @@ const Teams = () => {
                                                 {team.users && renderTeamMembers(team.users)}
                                             </td>
                                             <td className="border-b p-3 text-right">
-                                                <motion.button
-                                                    whileHover={{ scale: 1.05 }}
-                                                    whileTap={{ scale: 0.95 }}
-                                                    className="border border-input bg-background inline-flex items-center justify-center rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 h-10 px-4 py-2"
-                                                    onClick={(e) => {
-                                                        e.stopPropagation();
-                                                        handleLeave(team.id); // Passer le bon ID de l'utilisateur
-                                                    }}
-                                                >
-                                                    <LogOut className="w-4 h-4" />
-                                                </motion.button>
-
                                                 {/* Bouton de suppression rapide si l'utilisateur est admin */}
                                                 {isTeamAdmin && (
                                                     <Popover open={isConfirming2 && deleteTeamId === team.id} onOpenChange={setIsConfirming2}>
@@ -371,25 +383,35 @@ const Teams = () => {
                                                             <motion.button
                                                                 whileHover={{ scale: 1.05 }}
                                                                 whileTap={{ scale: 0.95 }}
-                                                                className="border border-input bg-background inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 h-10 px-4 py-2"
+                                                                className="bg-background px-3 py-3 rounded-md"
                                                                 onClick={(e) => {
                                                                     e.stopPropagation();
                                                                     handleDeleteClick2(team.id); // Passer le bon ID de l'équipe
                                                                 }}
                                                             >
-                                                                {isConfirming2 && deleteTeamId === team.id ? <Check className="w-4 h-4" /> : <X className="w-4 h-4" />}
+                                                                {isConfirming2 && deleteTeamId === team.id ? <Check className="w-3 h-3" /> : <Trash className="w-3 h-3" />}
                                                             </motion.button>
                                                         </PopoverTrigger>
                                                         <PopoverContent>
-                                                            <div className="text-center">
+                                                            <div className="text-center text-sm">
                                                                 <p>Really ?</p>
                                                             </div>
                                                         </PopoverContent>
                                                     </Popover>
-
                                                 )}
+                                                <motion.button
+                                                    whileHover={{ scale: 1.05 }}
+                                                    whileTap={{ scale: 0.95 }}
+                                                    className="bg-background ml-2 px-3 py-3 rounded-md"
+                                                    onClick={(e) => {
+                                                        e.stopPropagation();
+                                                        handleLeave(team.id); // Passer le bon ID de l'utilisateur
+                                                    }}
+                                                >
+                                                    <LogOut className="w-3 h-3" />
+                                                </motion.button>
                                             </td>
-                                        </tr>
+                                        </motion.tr>
                                     </DialogTrigger>
 
                                     {/* Dialog Content */}
@@ -599,14 +621,14 @@ const Teams = () => {
                                                                 transition={{ duration: 0.3 }}
                                                                 className="w-full flex items-center justify-center"  // Taille du bouton
                                                             >
-                                                                <CopyCheck className='h-5'/> {/* Ton icône */}
+                                                                <CopyCheck className='h-5' /> {/* Ton icône */}
                                                             </motion.span>
                                                         ) : (
                                                             <motion.span
                                                                 initial={{ opacity: 0, y: -10 }}
                                                                 animate={{ opacity: 1, y: 0 }}
                                                                 transition={{ duration: 0.3 }}
-                                                                className="flex items-center justify-center" 
+                                                                className="flex items-center justify-center"
                                                             >
                                                                 Copy team code
                                                             </motion.span>

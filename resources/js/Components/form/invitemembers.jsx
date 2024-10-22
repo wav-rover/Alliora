@@ -113,40 +113,43 @@ export function Selected({ members, selectedMembers, setSelectedMembers }) {
     };
 
     return (
-        <div className="mt-1 flex flex-wrap">
-            <AnimatePresence>
-                {Array.from(selectedMembers).map(memberId => {
-                    const member = members.find(m => m.id === memberId);
-                    return (
-                        <motion.div
-                            key={memberId}
-                            layout
-                            initial={{ opacity: 0, scale: 0.8, y: -10 }}
-                            animate={{ opacity: 1, scale: 1, y: 0 }}
-                            exit={{ opacity: 0.8, scale: 0.8 }}
-                            transition={{
-                                type: "spring",
-                                stiffness: 200,
-                                damping: 17,
-                                duration: 0.3,
-                            }}
-                            className="text-sm inline-flex min-w-fit px-4 py-2 mt-2 ml-2 items-center justify-center rounded-full border border-slate-800 bg-[linear-gradient(110deg,#000103,45%,#1e2631,55%,#000103)] bg-[length:200%_100%] text-slate-400 transition-colors"
-                            title="Désélectionner"
-                        >
-                            {member?.name}
-                            <motion.span
-                                className="ml-1 w-4 h-4 flex justify-center items-center text-black-400 cursor-pointer"
-                                initial={{ opacity: 0, scale: 0.8, rotate: 0 }}
-                                animate={{ opacity: 1, scale: 1, rotate: 360 }}
-                                transition={{ duration: 0.3 }}
-                                onClick={() => toggleMemberSelection(memberId)}
+        <div className="min-h-12">
+            <div className="mt-1 flex flex-wrap">
+                <AnimatePresence>
+                    {Array.from(selectedMembers).map(memberId => {
+                        const member = members.find(m => m.id === memberId);
+                        return (
+                            <motion.div
+                                key={memberId}
+                                layout
+                                initial={{ opacity: 0, scale: 0.8, y: -10 }}
+                                animate={{ opacity: 1, scale: 1, y: 0 }}
+                                exit={{ opacity: 0.8, scale: 0.8 }}
+                                transition={{
+                                    type: "spring",
+                                    stiffness: 200,
+                                    damping: 17,
+                                    duration: 0.3,
+                                }}
+                                className="text-sm bg-zinc-900 border inline-flex min-w-fit px-4 py-1 mt-2 ml-2 items-center justify-center rounded-full"
+                                title="Désélectionner"
                             >
-                                <X />
-                            </motion.span>
-                        </motion.div>
-                    );
-                })}
-            </AnimatePresence>
+                                <a href="">{member?.name}</a>
+                                <motion.span
+                                    className="ml-1 w-4 h-4 flex justify-center items-center text-white cursor-pointer"
+                                    initial={{ opacity: 0, scale: 0.8, rotate: 0 }}
+                                    animate={{ opacity: 1, scale: 1, rotate: 360 }}
+                                    transition={{ duration: 0.3 }}
+                                    onClick={() => toggleMemberSelection(memberId)}
+                                >
+                                    <X />
+                                </motion.span>
+                            </motion.div>
+                        );
+                    })}
+
+                </AnimatePresence>
+            </div>
         </div>
     );
 }

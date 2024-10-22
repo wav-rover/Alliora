@@ -69,7 +69,7 @@ export default function SearchModal({ placeholder, onSubmit, buttonLabel }) {
               style={{ left: "37vw" }}
             >
               <div className="relative">
-                <div className="absolute inset-0 bg-zinc-300 rounded-lg blur-md"></div>
+                <div className="absolute inset-0 bg-zinc-700 rounded-lg blur-md"></div>
                 <form onSubmit={handleSubmit} className="relative overflow-hidden">
                   <Input
                     type="text"

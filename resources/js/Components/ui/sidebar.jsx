@@ -89,7 +89,7 @@ export const DesktopSidebar = ({ className, children, ...props }) => {
         style={{ width: open ? "300px" : "60px" }} // Gère la largeur selon l'état ouvert
         initial={{ width: "60px", opacity: 0.7 }} // État initial
         animate={{ width: open ? "250px" : "60px", opacity: open ? 1 : 0.7 }} // Animation sur ouverture
-        transition={{ type: "spring", stiffness: 170, damping:19 }} // Transition d'animation
+        transition={{ type: "spring", stiffness: 170, damping:20 }} // Transition d'animation
         {...props}
       >
         {children}
