@@ -1,4 +1,12 @@
 import React, { useState } from 'react';
+import {
+    Card,
+    CardContent,
+    CardDescription,
+    CardFooter,
+    CardHeader,
+    CardTitle,
+  } from "@/components/ui/card"
 
 const Projects = ({ projects, onProjectModified, adminTeams }) => {
     const [editingProject, setEditingProject] = useState(null);
@@ -9,6 +17,7 @@ const Projects = ({ projects, onProjectModified, adminTeams }) => {
     if (!Array.isArray(projects) || projects.length === 0) {
         return <div>No projects available</div>;
     }
+
     // Active le mode édition pour un projet
     const handleEditClick = (project) => {
         setEditingProject(project.id);
@@ -18,40 +27,31 @@ const Projects = ({ projects, onProjectModified, adminTeams }) => {
     };
 
     // Gère la soumission des modifications
-const handleEditSubmit = async (e, project) => {
-    e.preventDefault();
-    await onProjectModified('edit', {
-        id: project.id,
-        name: editedProjectName,
-        description: editedProjectDescription,
-        team_id: editedProjectTeam, // Utilise la valeur de l'équipe sélectionnée
-    });
-    setEditingProject(null); // Sortir du mode édition après la mise à jour
-};
-
+    const handleEditSubmit = async (e, project) => {
+        e.preventDefault();
+        await onProjectModified('edit', {
+            id: project.id,
+            name: editedProjectName,
+            description: editedProjectDescription,
+            team_id: editedProjectTeam,
+        });
+        setEditingProject(null);
+    };
 
     // Supprime un projet
     const handleDelete = async (projectId) => {
         await onProjectModified('delete', { id: projectId });
     };
 
-    if (!projects || projects.length === 0) {
-        return <div>No projects available</div>;
-    }
+    // Vérifie si l'utilisateur est admin de l'équipe du projet
+    const isAdminOfProjectTeam = (project) => {
+        return adminTeams.some((team) => team.id === project.team_id);
+    };
 
     return (
-        <div>
-            <table>
-                <thead>
-                    <tr>
-                        <th>Project Name</th>
-                        <th>Team Name</th>
-                        <th>Actions</th>
-                    </tr>
-                </thead>
-                <tbody>
+        <>
                     {projects.map((project) => (
-                        <tr key={project.id}>
+                        <Card key={project.id}>
                             <td>
                                 {editingProject === project.id ? (
                                     <form onSubmit={(e) => handleEditSubmit(e, project)}>
@@ -72,15 +72,11 @@ const handleEditSubmit = async (e, project) => {
                                             onChange={(e) => setEditedProjectTeam(e.target.value)}
                                         >
                                             <option value="">Select a Team</option>
-                                            {adminTeams.length > 0 ? (
-                                                adminTeams.map((team) => (
-                                                    <option key={team.id} value={team.id}>
-                                                        {team.name}
-                                                    </option>
-                                                ))
-                                            ) : (
-                                                <option disabled>No teams available</option>
-                                            )}
+                                            {adminTeams.map((team) => (
+                                                <option key={team.id} value={team.id}>
+                                                    {team.name}
+                                                </option>
+                                            ))}
                                         </select>
                                         <button type="submit">Save</button>
                                         <button onClick={() => setEditingProject(null)}>Cancel</button>
@@ -93,18 +89,16 @@ const handleEditSubmit = async (e, project) => {
                             </td>
                             <td>{project.team ? project.team.name : 'No team assigned'}</td>
                             <td>
-                                {editingProject !== project.id && (
+                                {isAdminOfProjectTeam(project) && editingProject !== project.id && (
                                     <>
                                         <button onClick={() => handleEditClick(project)}>Edit</button>
                                         <button onClick={() => handleDelete(project.id)}>Delete</button>
                                     </>
                                 )}
                             </td>
-                        </tr>
+                        </Card>
                     ))}
-                </tbody>
-            </table>
-        </div>
+        </>
     );
 };
 

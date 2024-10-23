@@ -8,6 +8,9 @@ const TeamsPage = ({ teams }) => { // Recevez les équipes comme props
     return (
         <AuthenticatedLayout>
             <Head title="Manage Teams" />
+            <h1 className='text-3xl'>Manage your <span className='rounded-md bg-neutral-800 bg-opacity-20 pt-3 pb-1 px-1'><span class="bg-gradient-to-r from-slate-400 via-white to-black-300 text-transparent bg-clip-text text-5xl font-bold drop-shadow-[0_0_10px_rgba(200,255,255,0.3)]">
+                Teams
+            </span></span></h1>
             <div>
                 <Teams teams={teams} /> {/* Passez les équipes au composant Teams */}
             </div>
