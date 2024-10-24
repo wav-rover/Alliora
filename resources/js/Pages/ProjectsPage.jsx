@@ -15,7 +15,30 @@ const ProjectsPage = () => {
     const [searchTerm, setSearchTerm] = useState(''); // Ajout de l'état de recherche
 
     const onProjectModified = async (action, projectData) => {
-        // Reste de la logique pour gérer création, modification et suppression...
+        try {
+            if (action === 'create') {
+                const response = await axios.post('/projects', projectData);
+                const newProject = response.data;
+
+                // Ajouter le nouveau projet à la liste des projets
+                setProjects((prevProjects) => [...prevProjects, newProject]);
+            } else if (action === 'edit') {
+                const response = await axios.put(`/projects/${projectData.id}`, projectData);
+                const updatedProject = response.data.project;  // Récupérer le projet mis à jour
+
+                // Mettre à jour le projet modifié dans la liste des projets
+                setProjects((prevProjects) =>
+                    prevProjects.map((project) =>
+                        project.id === updatedProject.id ? updatedProject : project
+                    )
+                );
+            } else if (action === 'delete') {
+                await axios.delete(`/projects/${projectData.id}`);
+                setProjects((prevProjects) => prevProjects.filter((project) => project.id !== projectData.id));
+            }
+        } catch (error) {
+            console.error(`Erreur lors de la ${action} du projet :`, error);
+        }
     };
 
     // Filtrer les projets en fonction des termes de recherche

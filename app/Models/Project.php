@@ -32,9 +32,9 @@ class Project extends Model
 }
 
 
-    // Relation avec les tâches (tasks)
-    public function tasks()
-    {
-        return $this->belongsToMany(Task::class, 'project_task');
-    }
+public function tasks()
+{
+    return $this->hasMany(Task::class);
+}
+
 }

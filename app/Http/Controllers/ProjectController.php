@@ -6,6 +6,11 @@ use App\Models\Project;
 use App\Models\Team;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use App\Models\Task;
+use App\Events\NewTaskCreated;
+use Pusher\Pusher;
+use Illuminate\Support\Facades\Log;
+
 
 class ProjectController extends Controller
 {
@@ -146,19 +151,38 @@ class ProjectController extends Controller
     }
 }
 
-
-    // Attacher une tâche à un projet
-    public function attachTask(Request $request, $projectId)
+    public function newTask(Request $request)
     {
-        $validated = $request->validate([
-            'task_id' => 'required|exists:tasks,id',
+        $request->validate([
+            'name' => 'required|string|max:255',
+            'description' => 'nullable|string',
+            'project_id' => 'required|exists:projects,id', // Vérifie que le project_id est présent
         ]);
-
-        $project = Project::findOrFail($projectId);
-        $project->tasks()->attach($validated['task_id']);
-
-        return response()->json(['message' => 'Tâche liée au projet avec succès']);
+    
+        $task = Task::create([
+            'name' => $request->name,
+            'description' => $request->description,
+            'project_id' => $request->project_id, // Ajoute le project_id ici
+        ]);
+    
+        // Diffusion de l'événement
+        broadcast(new NewTaskCreated($task))->toOthers();
+    
+        return response()->json($task, 201);
     }
+
+    public function attachTask(Request $request, $projectId)
+{
+    $validated = $request->validate([
+        'task_id' => 'required|exists:tasks,id',
+    ]);
+
+    $project = Project::findOrFail($projectId);
+    $project->tasks()->attach($validated['task_id']);
+
+    return response()->json(['message' => 'Tâche liée au projet avec succès']);
+}
+
 
     // Détacher une tâche d'un projet
     public function detachTask(Request $request, $projectId)
@@ -173,10 +197,16 @@ class ProjectController extends Controller
         return response()->json(['message' => 'Tâche détachée du projet avec succès']);
     }
 
-    // Liste des tâches liées à un projet
-    public function listTasks($projectId)
-    {
-        $project = Project::with('tasks')->findOrFail($projectId);
-        return response()->json($project->tasks);
+
+public function show($id)
+{
+    $project = Project::with(['team'])->findOrFail($id);
+    
+    return inertia('ProjectShowPage', [
+        'project' => $project,
+        'tasks' => $project->tasks,
+    ]);
+
     }
+    
 }

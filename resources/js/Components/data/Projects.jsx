@@ -7,6 +7,7 @@ import {
     CardHeader,
     CardTitle,
   } from "@/components/ui/card"
+  import { Link } from "@inertiajs/react";
 
 const Projects = ({ projects, onProjectModified, adminTeams }) => {
     const [editingProject, setEditingProject] = useState(null);
@@ -51,6 +52,7 @@ const Projects = ({ projects, onProjectModified, adminTeams }) => {
     return (
         <>
                     {projects.map((project) => (
+                        <a href={route('projects.show', project.id)}>
                         <Card key={project.id}>
                             <td>
                                 {editingProject === project.id ? (
@@ -97,6 +99,7 @@ const Projects = ({ projects, onProjectModified, adminTeams }) => {
                                 )}
                             </td>
                         </Card>
+                        </a>
                     ))}
         </>
     );
