@@ -15,18 +15,35 @@ const ProjectShowPage = () => {
                 console.log('Nouvelle tâche reçue :', e.task);
                 setProject((prevProject) => ({
                     ...prevProject,
-                    tasks: [...prevProject.tasks, e.task], // Ajoute la nouvelle tâche reçue
+                    tasks: [...prevProject.tasks, e.task], // Ajoute la nouvelle tâche
+                }));
+            })
+            .listen('.task.edited', function (e) {
+                console.log('Tâche modifiée reçue :', e.task);
+                setProject((prevProject) => ({
+                    ...prevProject,
+                    tasks: prevProject.tasks.map((task) =>
+                        task.id === e.task.id ? e.task : task
+                    ),
+                }));
+            })
+            .listen('.task.deleted', function (e) {
+                console.log('Tâche supprimée reçue :', e.task);
+                setProject((prevProject) => ({
+                    ...prevProject,
+                    tasks: prevProject.tasks.filter((task) => task.id !== e.task.id),
                 }));
             })
             .error(function (error) {
                 console.error('Erreur lors de l\'écoute du canal privé :', error);
             });
-
+    
         // Cleanup listener on component unmount
         return () => {
             taskListener.stopListening();
         };
     }, [project.id]);
+    
     
     const onTaskModified = async (action, taskData) => {
         try {
@@ -37,7 +54,6 @@ const ProjectShowPage = () => {
                     project_id: taskData.project_id, // Utilise le project_id ici
                 });
                 console.log('Tâche créée:', response.data);
-                // Ne pas ajouter la tâche ici, elle sera ajoutée par l'écouteur Pusher
             }
             if (action === 'edit') {
                 const response = await axios.put(`/tasks/${taskData.id}`, {

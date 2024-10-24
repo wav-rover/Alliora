@@ -10,7 +10,7 @@ use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Queue\SerializesModels;
 use App\Models\Task;
 
-class NewTaskCreated implements ShouldBroadcast
+class TaskEdited implements ShouldBroadcast
 {
     use Dispatchable, InteractsWithSockets, SerializesModels;
 
@@ -32,6 +32,6 @@ class NewTaskCreated implements ShouldBroadcast
 
     public function broadcastAs()
     {
-        return 'task.new';
+        return 'task.edited';
     }
 }

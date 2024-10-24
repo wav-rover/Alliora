@@ -184,20 +184,6 @@ class ProjectController extends Controller
     }
 
 
-    // Détacher une tâche d'un projet
-    public function detachTask(Request $request, $projectId)
-    {
-        $validated = $request->validate([
-            'task_id' => 'required|exists:tasks,id',
-        ]);
-
-        $project = Project::findOrFail($projectId);
-        $project->tasks()->detach($validated['task_id']);
-
-        return response()->json(['message' => 'Tâche détachée du projet avec succès']);
-    }
-
-
     public function show($id)
 {
     // Récupérer le projet avec l'équipe associée
