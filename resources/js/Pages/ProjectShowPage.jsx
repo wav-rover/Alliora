@@ -10,7 +10,7 @@ const ProjectShowPage = () => {
 
     useEffect(() => {
         console.log('Écoute du canal privé pour les tâches du projet :', project.id);
-        window.Echo.private('task.' + project.id)
+        const taskListener = window.Echo.private('task.' + project.id)
             .listen('.task.new', function (e) {
                 console.log('Nouvelle tâche reçue :', e.task);
                 setProject((prevProject) => ({
@@ -21,6 +21,11 @@ const ProjectShowPage = () => {
             .error(function (error) {
                 console.error('Erreur lors de l\'écoute du canal privé :', error);
             });
+
+        // Cleanup listener on component unmount
+        return () => {
+            taskListener.stopListening();
+        };
     }, [project.id]);
     
     const onTaskModified = async (action, taskData) => {
@@ -32,10 +37,7 @@ const ProjectShowPage = () => {
                     project_id: taskData.project_id, // Utilise le project_id ici
                 });
                 console.log('Tâche créée:', response.data);
-                setProject((prevProject) => ({
-                    ...prevProject,
-                    tasks: [...prevProject.tasks, response.data],
-                }));
+                // Ne pas ajouter la tâche ici, elle sera ajoutée par l'écouteur Pusher
             }
             if (action === 'edit') {
                 const response = await axios.put(`/tasks/${taskData.id}`, {

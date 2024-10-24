@@ -132,24 +132,24 @@ class ProjectController extends Controller
     }
 
     public function destroy($id)
-{
-    $project = Project::findOrFail($id);
-    
-    // Vérifie que l'utilisateur est administrateur de l'équipe associée au projet
-    $user = Auth::user();
-    $team = Team::find($project->team_id);
-    
-    if (!$team || !$team->users()->where('users.id', $user->id)->where('team_user.role', 'admin')->exists()) {
-        return response()->json(['error' => 'You do not have permission to delete this project.'], 403);
-    }
+    {
+        $project = Project::findOrFail($id);
 
-    try {
-        $project->delete();
-        return response()->json(['message' => 'Project deleted successfully'], 200);
-    } catch (\Exception $e) {
-        return response()->json(['message' => 'Error deleting project', 'error' => $e->getMessage()], 500);
+        // Vérifie que l'utilisateur est administrateur de l'équipe associée au projet
+        $user = Auth::user();
+        $team = Team::find($project->team_id);
+
+        if (!$team || !$team->users()->where('users.id', $user->id)->where('team_user.role', 'admin')->exists()) {
+            return response()->json(['error' => 'You do not have permission to delete this project.'], 403);
+        }
+
+        try {
+            $project->delete();
+            return response()->json(['message' => 'Project deleted successfully'], 200);
+        } catch (\Exception $e) {
+            return response()->json(['message' => 'Error deleting project', 'error' => $e->getMessage()], 500);
+        }
     }
-}
 
     public function newTask(Request $request)
     {
@@ -158,30 +158,30 @@ class ProjectController extends Controller
             'description' => 'nullable|string',
             'project_id' => 'required|exists:projects,id', // Vérifie que le project_id est présent
         ]);
-    
+
         $task = Task::create([
             'name' => $request->name,
             'description' => $request->description,
             'project_id' => $request->project_id, // Ajoute le project_id ici
         ]);
-    
+
         // Diffusion de l'événement
         broadcast(new NewTaskCreated($task))->toOthers();
-    
+
         return response()->json($task, 201);
     }
 
     public function attachTask(Request $request, $projectId)
-{
-    $validated = $request->validate([
-        'task_id' => 'required|exists:tasks,id',
-    ]);
+    {
+        $validated = $request->validate([
+            'task_id' => 'required|exists:tasks,id',
+        ]);
 
-    $project = Project::findOrFail($projectId);
-    $project->tasks()->attach($validated['task_id']);
+        $project = Project::findOrFail($projectId);
+        $project->tasks()->attach($validated['task_id']);
 
-    return response()->json(['message' => 'Tâche liée au projet avec succès']);
-}
+        return response()->json(['message' => 'Tâche liée au projet avec succès']);
+    }
 
 
     // Détacher une tâche d'un projet
@@ -198,15 +198,26 @@ class ProjectController extends Controller
     }
 
 
-public function show($id)
+    public function show($id)
 {
+    // Récupérer le projet avec l'équipe associée
     $project = Project::with(['team'])->findOrFail($id);
-    
+
+    // Vérifier si l'utilisateur est membre de l'équipe
+    $user = Auth::user();
+    $isMember = $project->team->users()->where('team_user.team_id', $project->team_id)
+                                         ->where('users.id', $user->id)
+                                         ->exists();
+
+    // Si l'utilisateur n'est pas membre de l'équipe, rediriger ou renvoyer une erreur
+    if (!$isMember) {
+        abort(403, 'Accès non autorisé à ce projet.');
+    }
+
     return inertia('ProjectShowPage', [
         'project' => $project,
         'tasks' => $project->tasks,
     ]);
+}
 
-    }
-    
 }
