@@ -16,6 +16,8 @@ const AuthenticatedLayout = ({ children }) => {
                 <div className="flex-1 h-screen overflow-y-auto w-full relative md:flex-1 p-6">
                     <div className='text-white rounded-3xl p-6 rounded-3xl min-h-full'>
                         {children}
+                        
+            
                     </div>
                 </div>
             </div>

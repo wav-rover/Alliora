@@ -1,18 +1,22 @@
 import React, { useState } from 'react';
 
-const TaskBoard = ({ tasks, projectId, onTaskModified }) => {
+const TaskBoard = ({ tasks, projectId, onTaskModified, lists, onListModified }) => {
     const [taskName, setTaskName] = useState('');
     const [taskDescription, setTaskDescription] = useState('');
     const [editingTaskId, setEditingTaskId] = useState(null);
     const [editedTaskName, setEditedTaskName] = useState('');
     const [editedTaskDescription, setEditedTaskDescription] = useState('');
 
+    const [newListTitle, setNewListTitle] = useState('');
+    const [editingListId, setEditingListId] = useState(null);
+    const [editedListTitle, setEditedListTitle] = useState('');
+
     const handleCreateTask = (e) => {
         e.preventDefault();
         onTaskModified('create', { 
             name: taskName, 
             description: taskDescription, 
-            project_id: projectId // Ajout de project_id ici
+            project_id: projectId
         });
         setTaskName('');
         setTaskDescription('');
@@ -37,6 +41,27 @@ const TaskBoard = ({ tasks, projectId, onTaskModified }) => {
             description: editedTaskDescription 
         });
         setEditingTaskId(null);
+    };
+
+    const handleCreateList = (e) => {
+        e.preventDefault();
+        onListModified('create', { title: newListTitle });
+        setNewListTitle('');
+    };
+
+    const handleEditListClick = (list) => {
+        setEditingListId(list.id);
+        setEditedListTitle(list.title);
+    };
+
+    const handleEditListSubmit = (e, list) => {
+        e.preventDefault();
+        onListModified('edit', { id: list.id, title: editedListTitle });
+        setEditingListId(null);
+    };
+
+    const handleDeleteList = (listId) => {
+        onListModified('delete', { id: listId });
     };
 
     return (
@@ -92,6 +117,47 @@ const TaskBoard = ({ tasks, projectId, onTaskModified }) => {
                     required
                 />
                 <button type="submit">Ajouter Tâche</button>
+            </form>
+
+            <h2>Listes associées au projet</h2>
+            {lists.length === 0 ? (
+                <p>Aucune liste disponible pour ce projet.</p>
+            ) : (
+                <ul>
+                    {lists.map((list) => (
+                        <li key={list.id}>
+                            {editingListId === list.id ? (
+                                <form onSubmit={(e) => handleEditListSubmit(e, list)}>
+                                    <input
+                                        type="text"
+                                        value={editedListTitle}
+                                        onChange={(e) => setEditedListTitle(e.target.value)}
+                                        required
+                                    />
+                                    <button type="submit">Enregistrer</button>
+                                    <button type="button" onClick={() => setEditingListId(null)}>Annuler</button>
+                                </form>
+                            ) : (
+                                <>
+                                    <h3>{list.title}</h3>
+                                    <button onClick={() => handleDeleteList(list.id)}>Supprimer</button>
+                                    <button onClick={() => handleEditListClick(list)}>Modifier</button>
+                                </>
+                            )}
+                        </li>
+                    ))}
+                </ul>
+            )}
+            <form onSubmit={handleCreateList}>
+                <h3>Créer une nouvelle liste</h3>
+                <input
+                    type="text"
+                    placeholder="Titre de la liste"
+                    value={newListTitle}
+                    onChange={(e) => setNewListTitle(e.target.value)}
+                    required
+                />
+                <button type="submit">Ajouter Liste</button>
             </form>
         </div>
     );

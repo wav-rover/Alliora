@@ -12,7 +12,7 @@ const ProjectsPage = () => {
     const { adminTeams } = usePage().props;
 
     const [projects, setProjects] = useState(initialProjects);
-    const [searchTerm, setSearchTerm] = useState(''); // Ajout de l'état de recherche
+    const [searchTerm, setSearchTerm] = useState(''); // Search state
 
     const onProjectModified = async (action, projectData) => {
         try {
@@ -20,13 +20,13 @@ const ProjectsPage = () => {
                 const response = await axios.post('/projects', projectData);
                 const newProject = response.data;
 
-                // Ajouter le nouveau projet à la liste des projets
+                // Add the new project to the list
                 setProjects((prevProjects) => [...prevProjects, newProject]);
             } else if (action === 'edit') {
                 const response = await axios.put(`/projects/${projectData.id}`, projectData);
-                const updatedProject = response.data.project;  // Récupérer le projet mis à jour
+                const updatedProject = response.data.project;  // Get the updated project
 
-                // Mettre à jour le projet modifié dans la liste des projets
+                // Update the modified project in the project list
                 setProjects((prevProjects) =>
                     prevProjects.map((project) =>
                         project.id === updatedProject.id ? updatedProject : project
@@ -37,14 +37,13 @@ const ProjectsPage = () => {
                 setProjects((prevProjects) => prevProjects.filter((project) => project.id !== projectData.id));
             }
         } catch (error) {
-            console.error(`Erreur lors de la ${action} du projet :`, error);
+            console.error(`Error during ${action} of the project:`, error);
         }
     };
 
-    // Filtrer les projets en fonction des termes de recherche
+    // Filter projects based on search terms
     const filteredProjects = projects.filter((project) => {
         const projectNameMatch = project.name.toLowerCase().includes(searchTerm.toLowerCase());
-        const teamNameMatch = project.team && project.team.name.toLowerCase().includes(searchTerm.toLowerCase());
         return projectNameMatch || teamNameMatch;
     });
 

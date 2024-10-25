@@ -9,8 +9,16 @@ use App\Http\Controllers\ProjectController;
 use App\Http\Controllers\TaskController;
 use App\Http\Controllers\Auth\AuthenticatedSessionController;
 
+use App\Http\Controllers\ListController;
+
 
 use Pusher\Pusher;
+
+use Illuminate\Support\Facades\Broadcast;
+
+Broadcast::routes(['middleware' => ['auth:api']]);
+
+Route::post('/broadcasting/auth', 'BroadcastController@authenticate');
 
 Route::get('/', function () {
     return Inertia::render('HomePage', [
@@ -54,6 +62,12 @@ Route::middleware('auth')->group(function () {
     Route::get('/projects/{id}', [ProjectController::class, 'show'])->name('projects.show');
     Route::put('/projects/{id}', [ProjectController::class, 'update'])->name('projects.update');
     Route::delete('/projects/{id}', [ProjectController::class, 'destroy'])->name('projects.destroy');
+
+
+    // Gestion des listes liées aux projets
+    Route::post('/lists', [ListController::class, 'store'])->name('lists.store');
+    Route::put('/lists/{id}', [ListController::class, 'update'])->name('lists.update');
+    Route::delete('/lists/{id}', [ListController::class, 'destroy'])->name('lists.destroy');
 
     // Gestion des tâches liées aux projets
     Route::post('/projects/{id}/tasks', [ProjectController::class, 'attachTask'])->name('projects.attachTask');

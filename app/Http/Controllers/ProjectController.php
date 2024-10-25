@@ -10,6 +10,7 @@ use App\Models\Task;
 use App\Events\NewTaskCreated;
 use Pusher\Pusher;
 use Illuminate\Support\Facades\Log;
+use App\Events\UserConnected;
 
 
 class ProjectController extends Controller
@@ -157,12 +158,16 @@ class ProjectController extends Controller
             'name' => 'required|string|max:255',
             'description' => 'nullable|string',
             'project_id' => 'required|exists:projects,id', // Vérifie que le project_id est présent
+            'user_id' => 'nullable|exists:users,id',
+            'dependencies' => 'nullable|exists:tasks,id',
         ]);
 
         $task = Task::create([
             'name' => $request->name,
             'description' => $request->description,
             'project_id' => $request->project_id, // Ajoute le project_id ici
+            'user_id' => $request->user_id,
+            'dependencies' => $request->dependencies,
         ]);
 
         // Diffusion de l'événement
@@ -186,11 +191,12 @@ class ProjectController extends Controller
 
     public function show($id)
 {
-    // Récupérer le projet avec l'équipe associée
-    $project = Project::with(['team'])->findOrFail($id);
+    // Récupérer le projet avec l'équipe associée et les listes
+    $project = Project::with(['team', 'lists'])->findOrFail($id);
 
     // Vérifier si l'utilisateur est membre de l'équipe
     $user = Auth::user();
+    event(new UserConnected($user));
     $isMember = $project->team->users()->where('team_user.team_id', $project->team_id)
                                          ->where('users.id', $user->id)
                                          ->exists();
@@ -203,7 +209,10 @@ class ProjectController extends Controller
     return inertia('ProjectShowPage', [
         'project' => $project,
         'tasks' => $project->tasks,
+        'lists' => $project->lists,  // Ajoutez cette ligne pour inclure les listes
     ]);
 }
+
+
 
 }

@@ -13,6 +13,8 @@ class Task extends Model
         'name',
         'description',
         'project_id',
+        'user_id',
+        'dependencies', // ID de la tâche dont dépend cette tâche
     ];
 
     // Relation avec l'utilisateur
@@ -21,15 +23,14 @@ class Task extends Model
         return $this->belongsTo(User::class);
     }
 
+    // Relation avec le projet
     public function project()
-{
-    return $this->belongsTo(Project::class);
-}
-
-
-    // Gérer la dépendance des tâches
-    public function dependency()
     {
-        return $this->belongsTo(Task::class, 'dependencies');
+        return $this->belongsTo(Project::class);
+    }
+
+    public function list()
+    {
+        return $this->belongsTo(ListModel::class);
     }
 }
