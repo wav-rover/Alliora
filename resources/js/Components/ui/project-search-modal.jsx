@@ -7,13 +7,34 @@ import { useMemo } from "react";
 export function ProjectSearch({ searchTerm, setSearchTerm }) {
   const placeholders = [
     "Find your projects",
-    "Where is this damn remote ?",
-    "Web development project",
-    "Art project",
+    "Where is this damn remote?",
+    "Web development projects",
+    "Art projects",
     "Any type of project",
     "Alliora is the best project management app",
     "Don't search how to assemble your own PC here",
-  ];
+    "Lost? Me too don't worry",
+    "Projects: A journey into the unknown",
+    "This is not a black hole, it's your workspace!",
+    "Just another day in project paradise",
+    "Warning: Genius ideas ahead!",
+    "Welcome to the project jungle!",
+    "Your creativity starts here!",
+    "Where ideas go to get organized",
+    "Searching for inspiration... Please wait!",
+    "Enter at your own risk: Projects inside!",
+    "Let the chaos unfold!",
+    "Project land: Populated by ideas!",
+    "Loading... please do not feed the projects",
+    "This placeholder is on a coffee break ☕",
+    "Finding your next big idea...",
+    "Hold tight! Projects are being summoned!",
+    "Your next adventure starts here!",
+    "Project management: The ultimate quest!",
+    "Every project needs a hero. Is it you?",
+    "Warning: May contain awesome projects!",
+];
+
 
   const sparkles = useMemo(() => (
     <SparklesCore

@@ -2,11 +2,14 @@ import React, { useState, useEffect } from 'react';
 import AuthenticatedLayout from '../Layouts/AuthenticatedLayout';
 import { Head, usePage } from '@inertiajs/react';
 import TaskBoard from '../Components/data/TasksBoard';
-import { UsersOnProject } from '../Components/data/UsersOnProject';
+import { UserTooltip, MousePositions } from '../Components/data/UsersOnProject';
 import axios from 'axios';
 
 const ProjectShowPage = () => {
-    const { project: initialProject, users: initialUsers } = usePage().props; 
+    
+  const { auth } = usePage().props;
+
+    const { project: initialProject, users: initialUsers } = usePage().props;
     const [project, setProject] = useState(initialProject);
     const [users, setUsers] = useState(initialUsers || []);
 
@@ -159,12 +162,15 @@ const ProjectShowPage = () => {
                 lists={project.lists} 
                 onListModified={onListModified}
             />
-            <div className='scale-75 mr-5 mb-10 flex h-fit absolute bottom-0 right-0'>
-                <UsersOnProject 
-                    initialUsers={project.users} // Pass users directly
-                    projectId={project.id} // Pass project ID for presence channel
-                />
+            <div className='scale-75 ml-10 mb-5 flex h-fit absolute bottom-0 left-0'>
+                <UserTooltip projectId={project.id} />
             </div>
+            {/* Mouse positions of all users, it's working but don't use it if you don't want to 
+            make Pusher go insane also not recomended performance wise */}
+            {/* <MousePositions 
+                projectId={project.id}
+                currentUserId={auth.user?.id}
+            /> */}
         </AuthenticatedLayout>
     );
 };

@@ -3,6 +3,7 @@
 use Illuminate\Support\Facades\Broadcast;
 use Illuminate\Support\Facades\Auth;
 use App\Models\Project;
+use Illuminate\Support\Facades\DB;
 
 
 Broadcast::channel('App.Models.User.{id}', function ($user, $id) {
@@ -24,14 +25,13 @@ Broadcast::channel('task.{projectId}', function ($user, $projectId) {
 
 use App\Models\User;
 
-Broadcast::channel('task.{projectId}', function ($user, $projectId) {
-    if (Auth::check()) {
-        $project = Project::with('team.users')->find($projectId);
+Broadcast::channel('presence.project.{projectId}', function ($user, $projectId) {
+    $teamId = \App\Models\Project::findOrFail($projectId)->team_id;
+    $role = DB::table('team_user')->where('team_id', $teamId)->where('user_id', $user->id)->value('role');
 
-        if ($project && $project->team->users()->where('users.id', $user->id)->exists()) {
-            return ['id' => $user->id, 'name' => $user->name];
-        }
-    }
-
-    return null;
+    return [
+        'id' => $user->id,
+        'name' => $user->name,
+        'role' => $role, // Ajoute le rôle ici
+    ];
 });

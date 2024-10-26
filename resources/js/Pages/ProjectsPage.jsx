@@ -12,21 +12,17 @@ const ProjectsPage = () => {
     const { adminTeams } = usePage().props;
 
     const [projects, setProjects] = useState(initialProjects);
-    const [searchTerm, setSearchTerm] = useState(''); // Search state
+    const [searchTerm, setSearchTerm] = useState(''); // État pour le terme de recherche
 
     const onProjectModified = async (action, projectData) => {
         try {
             if (action === 'create') {
                 const response = await axios.post('/projects', projectData);
                 const newProject = response.data;
-
-                // Add the new project to the list
                 setProjects((prevProjects) => [...prevProjects, newProject]);
             } else if (action === 'edit') {
                 const response = await axios.put(`/projects/${projectData.id}`, projectData);
-                const updatedProject = response.data.project;  // Get the updated project
-
-                // Update the modified project in the project list
+                const updatedProject = response.data.project;
                 setProjects((prevProjects) =>
                     prevProjects.map((project) =>
                         project.id === updatedProject.id ? updatedProject : project
@@ -41,9 +37,13 @@ const ProjectsPage = () => {
         }
     };
 
-    // Filter projects based on search terms
+    // Filtrer les projets en fonction du terme de recherche
     const filteredProjects = projects.filter((project) => {
         const projectNameMatch = project.name.toLowerCase().includes(searchTerm.toLowerCase());
+        
+        // On vérifie si le nom de l'équipe est défini et s'il correspond au terme de recherche
+        const teamNameMatch = project.team?.name?.toLowerCase().includes(searchTerm.toLowerCase()) || false;
+
         return projectNameMatch || teamNameMatch;
     });
 

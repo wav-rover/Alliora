@@ -191,17 +191,19 @@ class ProjectController extends Controller
 
     public function show($id)
 {
-    // Récupérer le projet avec l'équipe associée et les listes
-    $project = Project::with(['team', 'lists'])->findOrFail($id);
+    $project = Project::with(['team', 'lists', 'team.users' => function ($query) {
+        $query->select('users.id', 'users.name')
+            ->addSelect('team_user.role'); // Sélectionner le rôle des utilisateurs
+    }])->findOrFail($id);
 
-    // Vérifier si l'utilisateur est membre de l'équipe
     $user = Auth::user();
     event(new UserConnected($user));
-    $isMember = $project->team->users()->where('team_user.team_id', $project->team_id)
-                                         ->where('users.id', $user->id)
-                                         ->exists();
 
-    // Si l'utilisateur n'est pas membre de l'équipe, rediriger ou renvoyer une erreur
+    // Vérifier si l'utilisateur est membre de l'équipe
+    $isMember = $project->team->users()->where('team_user.team_id', $project->team_id)
+        ->where('users.id', $user->id)
+        ->exists();
+
     if (!$isMember) {
         abort(403, 'Accès non autorisé à ce projet.');
     }
@@ -209,10 +211,10 @@ class ProjectController extends Controller
     return inertia('ProjectShowPage', [
         'project' => $project,
         'tasks' => $project->tasks,
-        'lists' => $project->lists,  // Ajoutez cette ligne pour inclure les listes
+        'lists' => $project->lists,
+        'users' => $project->team->users, // Transmet les utilisateurs avec le rôle
+        'currentUserId' => $user->id, // Ajout de l'ID de l'utilisateur connecté
     ]);
 }
-
-
 
 }

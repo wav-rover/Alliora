@@ -1,45 +1,105 @@
-import React, { useEffect, useState } from 'react';
-import Echo from 'laravel-echo';
+'use client'
 
-export const UsersOnProject = ({ initialUsers, projectId }) => {
-    const [members, setMembers] = useState(initialUsers); // Initialize with initial users
+import React, { useEffect, useState } from 'react'
+import { debounce } from 'lodash'
+import AnimatedTooltip from '../ui/animated-tooltip'
 
-    // Ensure initialUsers is an array
-    const usersList = initialUsers || [];
+export function UserTooltip({ projectId }) {
+  const [usersList, setUsersList] = useState([])
 
-    useEffect(() => {
-        const presenceChannel = window.Echo.join('presence-project.' + projectId)
-            .here((members) => {
-                console.log('Membres présents:', members);
-                setMembers(members); // Set the initial list of members
-            })
-            .joining((member) => {
-                console.log('Membre a rejoint:', member);
-                setMembers(prevMembers => [...prevMembers, member]); // Add new member
-            })
-            .leaving((member) => {
-                console.log('Membre a quitté:', member);
-                setMembers(prevMembers => prevMembers.filter(m => m.id !== member.id)); // Remove member
-            })
-            .error(function (error) {
-                console.error('Erreur lors de l\'écoute du canal de présence :', error);
-            });
+  useEffect(() => {
+    const presenceChannel = window.Echo.join(`presence.project.${projectId}`)
+      .here((users) => {
+        setUsersList(users)
+      })
+      .joining((user) => {
+        setUsersList((prevUsers) => [...prevUsers, user])
+      })
+      .leaving((user) => {
+        setUsersList((prevUsers) => prevUsers.filter((u) => u.id !== user.id))
+      })
+      .error((error) => {
+        console.error('Error listening to presence channel:', error)
+      })
 
-        // Cleanup on component unmount
-        return () => {
-            presenceChannel.stopListening();
-        };
-    }, [projectId]); // Run effect when projectId changes
+    return () => {
+      presenceChannel.leave()
+    }
+  }, [projectId])
 
+  return <AnimatedTooltip users={usersList} />
+}
 
-    return (
-        <div>
-            <h2>Utilisateurs Connectés :</h2>
-            <ul>
-                {usersList.map(user => (
-                    <li key={user.id}>{user.info.name}</li>
-                ))}
-            </ul>
-        </div>
-    );
-};
+export function MousePositions({ projectId, currentUserId }) {
+  const [usersList, setUsersList] = useState([])
+  const [mousePositions, setMousePositions] = useState({})
+
+  useEffect(() => {
+    const presenceChannel = window.Echo.join(`presence.project.${projectId}`)
+      .here((users) => {
+        setUsersList(users)
+      })
+      .joining((user) => {
+        setUsersList((prevUsers) => [...prevUsers, user])
+      })
+      .leaving((user) => {
+        setUsersList((prevUsers) => prevUsers.filter((u) => u.id !== user.id))
+        setMousePositions((prev) => {
+          const newPositions = { ...prev }
+          delete newPositions[user.id]
+          return newPositions
+        })
+      })
+      .error((error) => {
+        console.error('Error listening to presence channel:', error)
+      })
+      .listenForWhisper('mouse-move', (data) => {
+        setMousePositions((prev) => ({
+          ...prev,
+          [data.userId]: data.position,
+        }))
+        console.log(data);
+      })
+
+    const handleMouseMove = debounce((e) => {
+      const position = { x: e.clientX, y: e.clientY }
+      setMousePositions((prev) => ({
+        ...prev,
+        [currentUserId]: position,
+      }))
+      presenceChannel.whisper('mouse-move', {
+        userId: currentUserId,
+        position,
+      })
+    }, 10) // Debounce to limit the number of updates
+
+    window.addEventListener('mousemove', handleMouseMove)
+
+    return () => {
+      presenceChannel.leave()
+      window.removeEventListener('mousemove', handleMouseMove)
+    }
+  }, [projectId, currentUserId])
+
+  return (
+    <div className="bg-red-400">
+      {Object.entries(mousePositions).map(([userId, position]) => (
+        userId !== currentUserId.toString() && (
+          <div
+            key={userId}
+            className="z-50 absolute top-0 left-0 w-4 h-4 bg-blue-500 rounded-full opacity-50 pointer-events-none"
+            style={{
+              left: position.x,
+              top: position.y,
+              transform: 'translate(-50%, -50%)',
+            }}
+          >
+            <span className="absolute top-4 left-4 text-xs whitespace-nowrap">
+              {usersList.find(user => user.id.toString() === userId)?.name || `User ${userId}`}
+            </span>
+          </div>
+        )
+      ))}
+    </div>
+  )
+}
