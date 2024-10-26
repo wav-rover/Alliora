@@ -79,6 +79,7 @@ const ProjectShowPage = () => {
                     name: taskData.name,
                     description: taskData.description,
                     project_id: taskData.project_id,
+                    list_id: taskData.list_id,
                 });
                 console.log('Tâche créée:', response.data);
             }
@@ -86,6 +87,7 @@ const ProjectShowPage = () => {
                 const response = await axios.put(`/tasks/${taskData.id}`, {
                     name: taskData.name,
                     description: taskData.description,
+
                 });
                 console.log('Tâche modifiée:', response.data);
                 setProject((prevProject) => ({
@@ -116,17 +118,7 @@ const ProjectShowPage = () => {
                     project_id: project.id,
                 });
                 console.log('Liste créée:', response.data);
-                setProject((prevProject) => {
-                    const exists = prevProject.lists.some(list => list.id === response.data.id);
-                    if (!exists) {
-                        return {
-                            ...prevProject,
-                            lists: [...prevProject.lists, response.data],
-                        };
-                    }
-                    return prevProject;
-                });
-            }
+               }
             if (action === 'edit') {
                 const response = await axios.put(`/lists/${listData.id}`, {
                     title: listData.title,
@@ -166,7 +158,7 @@ const ProjectShowPage = () => {
                 <UserTooltip projectId={project.id} />
             </div>
             {/* Mouse positions of all users, it's working but don't use it if you don't want to 
-            make Pusher go insane also not recomended performance wise */}
+            make Pusher go insane also absolutely not recomended performance wise */}
             {/* <MousePositions 
                 projectId={project.id}
                 currentUserId={auth.user?.id}

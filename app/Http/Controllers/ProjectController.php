@@ -160,6 +160,7 @@ class ProjectController extends Controller
             'project_id' => 'required|exists:projects,id', // Vérifie que le project_id est présent
             'user_id' => 'nullable|exists:users,id',
             'dependencies' => 'nullable|exists:tasks,id',
+            'list_id' => 'required|exists:list_models,id',
         ]);
 
         $task = Task::create([
@@ -168,6 +169,7 @@ class ProjectController extends Controller
             'project_id' => $request->project_id, // Ajoute le project_id ici
             'user_id' => $request->user_id,
             'dependencies' => $request->dependencies,
+            'list_id' => $request->list_id,
         ]);
 
         // Diffusion de l'événement
