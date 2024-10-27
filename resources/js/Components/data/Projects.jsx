@@ -6,8 +6,8 @@ import {
     CardFooter,
     CardHeader,
     CardTitle,
-  } from "@/components/ui/card"
-  import { Link } from "@inertiajs/react";
+} from "@/components/ui/card"
+import { Link } from "@inertiajs/react";
 
 const Projects = ({ projects, onProjectModified, adminTeams }) => {
     const [editingProject, setEditingProject] = useState(null);
@@ -51,56 +51,56 @@ const Projects = ({ projects, onProjectModified, adminTeams }) => {
 
     return (
         <>
-                    {projects.map((project) => (
-                        <a href={route('projects.show', project.id)}>
-                        <Card key={project.id}>
-                            <td>
-                                {editingProject === project.id ? (
-                                    <form onSubmit={(e) => handleEditSubmit(e, project)}>
-                                        <input
-                                            type="text"
-                                            value={editedProjectName}
-                                            onChange={(e) => setEditedProjectName(e.target.value)}
-                                            required
-                                        />
-                                        <input
-                                            type="text"
-                                            value={editedProjectDescription}
-                                            onChange={(e) => setEditedProjectDescription(e.target.value)}
-                                            required
-                                        />
-                                        <select
-                                            value={editedProjectTeam}
-                                            onChange={(e) => setEditedProjectTeam(e.target.value)}
-                                        >
-                                            <option value="">Select a Team</option>
-                                            {adminTeams.map((team) => (
-                                                <option key={team.id} value={team.id}>
-                                                    {team.name}
-                                                </option>
-                                            ))}
-                                        </select>
-                                        <button type="submit">Save</button>
-                                        <button onClick={() => setEditingProject(null)}>Cancel</button>
-                                    </form>
-                                ) : (
-                                    <>
-                                        {project.name}
-                                    </>
-                                )}
-                            </td>
-                            <td>{project.team ? project.team.name : 'No team assigned'}</td>
-                            <td>
-                                {isAdminOfProjectTeam(project) && editingProject !== project.id && (
-                                    <>
-                                        <button onClick={() => handleEditClick(project)}>Edit</button>
-                                        <button onClick={() => handleDelete(project.id)}>Delete</button>
-                                    </>
-                                )}
-                            </td>
-                        </Card>
-                        </a>
-                    ))}
+            {projects.map((project) => (
+                <a href={route('projects.show', project.id)}>
+                    <Card key={project.id}>
+                        <td>
+                            {editingProject === project.id ? (
+                                <form onSubmit={(e) => handleEditSubmit(e, project)}>
+                                    <input
+                                        type="text"
+                                        value={editedProjectName}
+                                        onChange={(e) => setEditedProjectName(e.target.value)}
+                                        required
+                                    />
+                                    <input
+                                        type="text"
+                                        value={editedProjectDescription}
+                                        onChange={(e) => setEditedProjectDescription(e.target.value)}
+                                        required
+                                    />
+                                    <select
+                                        value={editedProjectTeam}
+                                        onChange={(e) => setEditedProjectTeam(e.target.value)}
+                                    >
+                                        <option value="">Select a Team</option>
+                                        {adminTeams.map((team) => (
+                                            <option key={team.id} value={team.id}>
+                                                {team.name}
+                                            </option>
+                                        ))}
+                                    </select>
+                                    <button type="submit">Save</button>
+                                    <button onClick={() => setEditingProject(null)}>Cancel</button>
+                                </form>
+                            ) : (
+                                <>
+                                    {project.name}
+                                </>
+                            )}
+                        </td>
+                        <td>{project.team ? project.team.name : 'No team assigned'}</td>
+                        <td>
+                            {isAdminOfProjectTeam(project) && editingProject !== project.id && (
+                                <>
+                                    <button onClick={() => handleEditClick(project)}>Edit</button>
+                                    <button onClick={() => handleDelete(project.id)}>Delete</button>
+                                </>
+                            )}
+                        </td>
+                    </Card>
+                </a>
+            ))}
         </>
     );
 };

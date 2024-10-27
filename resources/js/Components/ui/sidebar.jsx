@@ -178,12 +178,12 @@ export const SidebarLink = ({ link, setActivePage, className, ...props }) => {
 export const Logo = () => {
   const { open } = useSidebar();
   return (
-    <Link href="#" className="font-normal flex space-x-2 items-center text-sm text-white py-1 relative z-20">
+    <a href={route('home')} className="font-normal flex space-x-2 items-center text-sm text-white py-1 relative z-20">
       <div className="h-5 w-6 bg-white dark:bg-white rounded-br-lg rounded-tr-sm rounded-tl-lg rounded-bl-sm flex-shrink-0" />
       <span style={{ opacity: open ? 1 : 0 }} className="font-medium text-white whitespace-pre">
         Alliora
       </span>
-    </Link>
+    </a>
   );
 };
 

@@ -89,3 +89,7 @@
     scrollbar-color: #191919 #ffffff00; /* Couleurs de la poignée et de l'arrière-plan */
   }
   
+  .mask-image-radial {
+    -webkit-mask-image: radial-gradient(circle, black 50%, transparent 50%);
+    mask-image: radial-gradient(circle, black 50%, transparent 80%);
+}
