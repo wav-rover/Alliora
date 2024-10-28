@@ -11,6 +11,7 @@ use App\Events\NewTaskCreated;
 use Pusher\Pusher;
 use Illuminate\Support\Facades\Log;
 use App\Events\UserConnected;
+use Illuminate\Support\Facades\DB;
 
 
 class ProjectController extends Controller
@@ -153,30 +154,54 @@ class ProjectController extends Controller
     }
 
     public function newTask(Request $request)
-    {
-        $request->validate([
-            'name' => 'required|string|max:255',
-            'description' => 'nullable|string',
-            'project_id' => 'required|exists:projects,id', // Vérifie que le project_id est présent
-            'user_id' => 'nullable|exists:users,id',
-            'dependencies' => 'nullable|exists:tasks,id',
-            'list_id' => 'required|exists:list_models,id',
-        ]);
+{
+    $request->validate([
+        'name' => 'required|string|max:255',
+        'description' => 'nullable|string',
+        'status' => 'required|string|in:pending,in progress,finished',
+        'start_date' => 'nullable|date',
+        'end_date' => 'nullable|date',
+        'project_id' => 'required|exists:projects,id',
+        'user_id' => 'nullable|exists:users,id',
+        'dependencies' => 'nullable|array', // Accept an array for dependencies
+        'dependencies.*' => 'exists:tasks,id', // Each element in the array must be a valid task ID
+        'list_id' => 'required|exists:list_models,id',
+    ]);
 
+    DB::beginTransaction(); // Start a transaction
+
+    try {
+        // Create the main task
         $task = Task::create([
             'name' => $request->name,
             'description' => $request->description,
-            'project_id' => $request->project_id, // Ajoute le project_id ici
+            'status' => $request->status,
+            'start_date' => $request->start_date,
+            'end_date' => $request->end_date,
+            'project_id' => $request->project_id,
             'user_id' => $request->user_id,
-            'dependencies' => $request->dependencies,
             'list_id' => $request->list_id,
         ]);
 
-        // Diffusion de l'événement
+        // Handle dependencies
+        if (is_array($request->dependencies)) {
+            foreach ($request->dependencies as $dependencyId) {
+                $task->dependencies()->attach($dependencyId);
+            }
+        }
+
+        DB::commit(); // Commit the transaction
+
+        // Broadcast the new task to the project channel
         broadcast(new NewTaskCreated($task))->toOthers();
 
-        return response()->json($task, 201);
+        return response()->json(['message' => 'Task created successfully', 'task' => $task], 201);
+    } catch (\Exception $e) {
+        DB::rollBack(); // Rollback the transaction in case of error
+        return response()->json(['error' => $e->getMessage()], 500);
     }
+}
+
 
     public function attachTask(Request $request, $projectId)
     {

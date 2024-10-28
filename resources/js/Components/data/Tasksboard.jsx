@@ -6,6 +6,12 @@ const TaskBoard = ({ tasks, projectId, onTaskModified, lists, onListModified }) 
     const [taskName, setTaskName] = useState('');
     const [taskDescription, setTaskDescription] = useState('');
     const [newListTitle, setNewListTitle] = useState('');
+    const [startDate, setStartDate] = useState('');
+    const [endDate, setEndDate] = useState('');
+    const [dependencies, setDependencies] = useState([]);
+    const [userId, setUserId] = useState('');
+    const [status, setStatus] = useState('pending');
+
 
     const onDragEnd = (result) => {
         const { destination, source, draggableId, type } = result;
@@ -37,18 +43,26 @@ const TaskBoard = ({ tasks, projectId, onTaskModified, lists, onListModified }) 
         }
     };
 
-    const handleCreateTask = (e, listId) => {
+    const handleCreateTask = (e, listId, formattedDependencies) => {
         e.preventDefault();
+        console.log('Creating task:', taskName, taskDescription, listId, startDate, endDate, formattedDependencies, userId, status);
         onTaskModified('create', {
-            name: taskName,
-            description: taskDescription,
-            project_id: projectId,
-            list_id: listId,
-            position: lists.find(list => list.id === listId).tasks?.length || 1
+          name: taskName,
+          description: taskDescription,
+          project_id: projectId,
+          list_id: listId,
+          position: lists.find(list => list.id === listId).tasks?.length || 1,
+          status: status,
+          start_date: startDate,
+          end_date: endDate,
+          dependencies: formattedDependencies, // This is now an array of integers
+          user_id: userId,
         });
         setTaskName('');
         setTaskDescription('');
+        setStatus('pending'); // Reset to default option
     };
+    
 
     const handleDeleteTask = (taskId) => {
         onTaskModified('delete', { id: taskId });
@@ -80,6 +94,7 @@ const TaskBoard = ({ tasks, projectId, onTaskModified, lists, onListModified }) 
                                     {(provided) => (
                                         <div ref={provided.innerRef} {...provided.draggableProps} {...provided.dragHandleProps}>
                                             <div className='p-3 bg-gray-500 m-2'>
+                                                <h3>{list.title}</h3>
                                                 <button onClick={() => handleDeleteList(list.id)}>Supprimer Liste</button>
 
                                                 <ul className="task-list">
@@ -96,11 +111,24 @@ const TaskBoard = ({ tasks, projectId, onTaskModified, lists, onListModified }) 
 
                                                 <CreateTask
                                                     listId={list.id}
+                                                    list={list}
                                                     taskName={taskName}
                                                     setTaskName={setTaskName}
                                                     taskDescription={taskDescription}
                                                     setTaskDescription={setTaskDescription}
                                                     handleCreateTask={handleCreateTask}
+                                                    startDate={startDate}
+                                                    setStartDate={setStartDate}
+                                                    endDate={endDate}
+                                                    setEndDate={setEndDate}
+                                                    dependencies={dependencies}
+                                                    setDependencies={setDependencies}
+                                                    userId={userId}
+                                                    setUserId={setUserId}
+                                                    status={status}
+                                                    setStatus={setStatus}
+                                                    
+        tasks={tasks}
                                                 />
                                             </div>
                                         </div>

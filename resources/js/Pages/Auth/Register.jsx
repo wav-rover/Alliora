@@ -2,7 +2,7 @@ import InputError from '@/Components/InputError';
 import PrimaryButton from '@/Components/PrimaryButton';
 import GuestLayout from '@/Layouts/GuestLayout';
 import { Head, Link, useForm } from '@inertiajs/react';
-import { Input } from '../../Components/ui/input';
+import { Input } from '../../Components/ui/input2';
 import { Label } from '../../Components/ui/label';
 import { motion } from 'framer-motion';
 

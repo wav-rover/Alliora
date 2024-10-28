@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Input } from "../ui/input";
+import { Input } from "../ui/input2";
 import { Button } from "@/components/ui/button";
 import { Check, ChevronsUpDown, Plus } from "lucide-react";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
