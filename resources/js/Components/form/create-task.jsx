@@ -71,7 +71,6 @@ export default function CreateTask({
               </span>
             </DialogTitle>
           </DialogHeader>
-          <ScrollArea className="h-[50vh] pr-4">
             <form onSubmit={handleSubmit} className="space-y-4">
               <Input
                 type="text"
@@ -85,7 +84,7 @@ export default function CreateTask({
                 value={taskDescription}
                 onChange={(e) => setTaskDescription(e.target.value)}
                 required
-                className="min-h-[100px]"
+                className="min-h-[225px] resize-none"
               />
               <div className="grid grid-cols-2 gap-4">
                 <Popover>
@@ -150,26 +149,17 @@ export default function CreateTask({
                 </div>
               </div>
               
-            </form>
-          </ScrollArea>
+            
           <DialogFooter className="mt-4">
             <Button
               type="submit"
-              onClick={handleSubmit}
               className="bg-neutral-800 hover:bg-neutral-700 text-white px-6 py-2 rounded-md shadow-lg hover:shadow-xl transition-all duration-300"
             >
               Add Task
             </Button>
           </DialogFooter>
+          </form>
         </motion.div>
-        <motion.button
-          onClick={() => setIsDialogOpen(false)}
-          className="absolute top-2 right-2 text-neutral-400 hover:text-white transition-colors duration-200"
-          whileHover={{ scale: 1.1 }}
-          whileTap={{ scale: 0.9 }}
-        >
-          <X className="w-6 h-6" />
-        </motion.button>
       </DialogContent>
     </Dialog>
   )
