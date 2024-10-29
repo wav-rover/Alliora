@@ -91,5 +91,5 @@
   
   .mask-image-radial {
     -webkit-mask-image: radial-gradient(circle, black 50%, transparent 50%);
-    mask-image: radial-gradient(circle, black 50%, transparent 80%);
+    mask-image: radial-gradient(circle, black 30%, transparent 40%);
 }

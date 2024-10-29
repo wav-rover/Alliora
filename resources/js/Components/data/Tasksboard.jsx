@@ -1,8 +1,10 @@
 import React, { useState } from 'react';
 import { DragDropContext, Draggable, Droppable } from 'react-beautiful-dnd';
 import CreateTask from '../form/create-task';
+import TaskDetailDialog from './TaskDetailDialog';
 
-const TaskBoard = ({ tasks, projectId, onTaskModified, lists, onListModified }) => {
+const TaskBoard = ({ tasks: initialTasks, projectId, onTaskModified, initialLists, onListModified, users }) => {
+    const [tasks, setTasks] = useState(initialTasks);
     const [taskName, setTaskName] = useState('');
     const [taskDescription, setTaskDescription] = useState('');
     const [newListTitle, setNewListTitle] = useState('');
@@ -11,60 +13,56 @@ const TaskBoard = ({ tasks, projectId, onTaskModified, lists, onListModified }) 
     const [dependencies, setDependencies] = useState([]);
     const [userId, setUserId] = useState('');
     const [status, setStatus] = useState('pending');
+    const [selectedTask, setSelectedTask] = useState(null);
+    const [isDialogOpen, setIsDialogOpen] = useState(false);
 
+    const [lists, setLists] = useState(initialLists);
 
     const onDragEnd = (result) => {
         const { destination, source, draggableId, type } = result;
-
-        if (!destination) {
-            return;
-        }
+        if (!destination) return;
 
         if (type === 'list') {
-            const list = lists.find(list => list.id === draggableId);
-            const newPosition = destination.index + 1;
-
-            if (source.index === destination.index) {
-                return;
-            }
-
-        }
-
-        if (type === 'task') {
-
-            const task = tasks.find(task => task.id === draggableId);
-            const newListId = destination.droppableId;
-            const newPosition = destination.index + 1;
-
-            if (source.index === destination.index && source.droppableId === destination.droppableId) {
-                return;
-            }
-
+            if (source.index === destination.index) return;
+            const updatedLists = Array.from(lists);
+            const [movedList] = updatedLists.splice(source.index, 1);
+            updatedLists.splice(destination.index, 0, movedList);
+            setLists(updatedLists);
         }
     };
 
     const handleCreateTask = (e, listId, formattedDependencies) => {
         e.preventDefault();
-        console.log('Creating task:', taskName, taskDescription, listId, startDate, endDate, formattedDependencies, userId, status);
-        onTaskModified('create', {
-          name: taskName,
-          description: taskDescription,
-          project_id: projectId,
-          list_id: listId,
-          position: lists.find(list => list.id === listId).tasks?.length || 1,
-          status: status,
-          start_date: startDate,
-          end_date: endDate,
-          dependencies: formattedDependencies, // This is now an array of integers
-          user_id: userId,
-        });
+        const newTask = {
+            name: taskName,
+            description: taskDescription,
+            project_id: projectId,
+            list_id: listId,
+            position: lists.find(list => list.id === listId).tasks?.length || 1,
+            status,
+            start_date: startDate,
+            end_date: endDate,
+            dependencies: formattedDependencies,
+            user_id: userId,
+        };
+        onTaskModified('create', newTask);
+        setTasks([...tasks, newTask]);
         setTaskName('');
         setTaskDescription('');
-        setStatus('pending'); // Reset to default option
+        setStatus('pending');
     };
-    
+
+    const handleTaskEdit = (taskData) => {
+        const updatedTasks = tasks.map(task => 
+            task.id === taskData.id ? { ...task, ...taskData } : task
+        );
+        setTasks(updatedTasks);
+        onTaskModified('edit', taskData);
+    };
 
     const handleDeleteTask = (taskId) => {
+        const updatedTasks = tasks.filter(task => task.id !== taskId);
+        setTasks(updatedTasks);
         onTaskModified('delete', { id: taskId });
     };
 
@@ -78,17 +76,23 @@ const TaskBoard = ({ tasks, projectId, onTaskModified, lists, onListModified }) 
         onListModified('delete', { id: listId });
     };
 
+    const handleTaskClick = (task) => {
+        setSelectedTask({ ...task });
+        setIsDialogOpen(true);
+    };
+
+    const handleCloseDialog = () => {
+        setIsDialogOpen(false);
+        setSelectedTask(null);
+    };
+
     return (
-        <div className="">
+        <div>
             <h2>Tâches associées au projet</h2>
             <DragDropContext onDragEnd={onDragEnd}>
                 <Droppable droppableId="all-lists" direction="horizontal" type="list">
                     {(provided) => (
-                        <div
-                            ref={provided.innerRef}
-                            {...provided.droppableProps}
-                            className="flex"
-                        >
+                        <div ref={provided.innerRef} {...provided.droppableProps} className="flex">
                             {lists.map((list, index) => (
                                 <Draggable key={list.id} draggableId={list.id.toString()} index={index}>
                                     {(provided) => (
@@ -96,19 +100,18 @@ const TaskBoard = ({ tasks, projectId, onTaskModified, lists, onListModified }) 
                                             <div className='p-3 bg-gray-500 m-2'>
                                                 <h3>{list.title}</h3>
                                                 <button onClick={() => handleDeleteList(list.id)}>Supprimer Liste</button>
-
                                                 <ul className="task-list">
                                                     {tasks
                                                         .filter(task => task.list_id === list.id)
                                                         .map((task) => (
                                                             <li key={task.id} className="task-item">
-                                                                <h4>{task.name}</h4>
+                                                                <h4 onClick={() => handleTaskClick(task)} className="cursor-pointer">{task.name}</h4>
                                                                 <p>{task.description}</p>
+                                                                <p>Status: {task.status}</p>
                                                                 <button onClick={() => handleDeleteTask(task.id)}>Supprimer</button>
                                                             </li>
                                                         ))}
                                                 </ul>
-
                                                 <CreateTask
                                                     listId={list.id}
                                                     list={list}
@@ -127,8 +130,7 @@ const TaskBoard = ({ tasks, projectId, onTaskModified, lists, onListModified }) 
                                                     setUserId={setUserId}
                                                     status={status}
                                                     setStatus={setStatus}
-                                                    
-        tasks={tasks}
+                                                    tasks={tasks}
                                                 />
                                             </div>
                                         </div>
@@ -150,6 +152,17 @@ const TaskBoard = ({ tasks, projectId, onTaskModified, lists, onListModified }) 
                 />
                 <button type="submit">Ajouter Liste</button>
             </form>
+
+            {selectedTask && (
+                <TaskDetailDialog
+                    list={lists.find(list => list.id === selectedTask.list_id)}
+                    task={selectedTask}
+                    isOpen={isDialogOpen}
+                    onClose={handleCloseDialog}
+                    users={users}
+                    onTaskUpdate={handleTaskEdit}
+                />
+            )}
         </div>
     );
 };

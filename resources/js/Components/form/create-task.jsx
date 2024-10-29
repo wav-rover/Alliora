@@ -83,7 +83,6 @@ export default function CreateTask({
                 placeholder="Task description"
                 value={taskDescription}
                 onChange={(e) => setTaskDescription(e.target.value)}
-                required
                 className="min-h-[225px] resize-none"
               />
               <div className="grid grid-cols-2 gap-4">

@@ -7,7 +7,7 @@ import axios from 'axios';
 
 const ProjectShowPage = () => {
     
-  const { auth } = usePage().props;
+    const { auth } = usePage().props;
 
     const { project: initialProject, users: initialUsers } = usePage().props;
     const [project, setProject] = useState(initialProject);
@@ -92,9 +92,11 @@ const ProjectShowPage = () => {
                 const response = await axios.put(`/tasks/${taskData.id}`, {
                     name: taskData.name,
                     description: taskData.description,
-
+                    start_date: taskData.start_date,
+                    end_date: taskData.end_date,
+                    status: taskData.status,
+                    user_id: taskData.user_id,
                 });
-                console.log('Tâche modifiée:', response.data);
                 setProject((prevProject) => ({
                     ...prevProject,
                     tasks: prevProject.tasks.map((task) =>
@@ -156,8 +158,9 @@ const ProjectShowPage = () => {
                 tasks={project.tasks} 
                 projectId={project.id} 
                 onTaskModified={onTaskModified} 
-                lists={project.lists} 
+                initialLists={project.lists} 
                 onListModified={onListModified}
+                users={users}
             />
             <div className='scale-75 ml-10 mb-5 flex h-fit absolute bottom-0 left-0'>
                 <UserTooltip projectId={project.id} />

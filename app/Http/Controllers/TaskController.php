@@ -10,26 +10,7 @@ use Illuminate\Support\Facades\Log;
 
 class TaskController extends Controller
 {
-    
-    public function updateTaskPosition(Request $request)
-{
-    // Validate the request
-    $request->validate([
-        'taskId' => 'required|integer|exists:tasks,id',
-        'newPosition' => 'required|integer',
-    ]);
-
-    // Find the task
-    $task = Task::find($request->taskId);
-
-    // Update the task position
-    $task->position = $request->newPosition;
-    $task->save();
-
-    return response()->json(['message' => 'Task position updated successfully']);
-}
-
-
+  
     public function destroy($id)
 {
     $task = Task::findOrFail($id);
@@ -51,7 +32,10 @@ class TaskController extends Controller
         $validated = $request->validate([
             'name' => 'required|string|max:255',
             'description' => 'nullable|string',
-            // Autres champs selon vos besoins
+            'start_date' => 'nullable|date',
+            'end_date' => 'nullable|date',
+            'status' => 'required|string',
+            'user_id' => 'nullable|exists:users,id',
         ]);
 
         // Mettre à jour la tâche

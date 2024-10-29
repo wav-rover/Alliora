@@ -22,7 +22,7 @@ export default function Welcome({ auth, laravelVersion, phpVersion }) {
                     <motion.div
                     initial={{ opacity: 0 }}
                     animate={{ opacity: 1 }}
-                    transition={{ duration: 1, delay: 1 }}
+                    transition={{ duration: 2, delay: 1 }}
                     className='w-full h-screen'>
                     <Spline scene="https://prod.spline.design/Bdemj0lL8vMNRKo9/scene.splinecode" />
                     </motion.div>
