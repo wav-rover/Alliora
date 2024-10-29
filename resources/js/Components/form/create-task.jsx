@@ -29,8 +29,6 @@ export default function CreateTask({
   setStartDate,
   endDate,
   setEndDate,
-  dependencies,
-  setDependencies,
   status,
   setStatus,
   list,

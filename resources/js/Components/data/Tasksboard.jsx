@@ -10,7 +10,7 @@ const TaskBoard = ({ tasks: initialTasks, projectId, onTaskModified, initialList
     const [newListTitle, setNewListTitle] = useState('');
     const [startDate, setStartDate] = useState('');
     const [endDate, setEndDate] = useState('');
-    const [dependencies, setDependencies] = useState([]);
+    const [dependency, setDependency] = useState('');
     const [userId, setUserId] = useState('');
     const [status, setStatus] = useState('pending');
     const [selectedTask, setSelectedTask] = useState(null);
@@ -31,7 +31,7 @@ const TaskBoard = ({ tasks: initialTasks, projectId, onTaskModified, initialList
         }
     };
 
-    const handleCreateTask = (e, listId, formattedDependencies) => {
+    const handleCreateTask = (e, listId) => {
         e.preventDefault();
         const newTask = {
             name: taskName,
@@ -42,7 +42,6 @@ const TaskBoard = ({ tasks: initialTasks, projectId, onTaskModified, initialList
             status,
             start_date: startDate,
             end_date: endDate,
-            dependencies: formattedDependencies,
             user_id: userId,
         };
         onTaskModified('create', newTask);
@@ -124,8 +123,8 @@ const TaskBoard = ({ tasks: initialTasks, projectId, onTaskModified, initialList
                                                     setStartDate={setStartDate}
                                                     endDate={endDate}
                                                     setEndDate={setEndDate}
-                                                    dependencies={dependencies}
-                                                    setDependencies={setDependencies}
+                                                    dependency={dependency}
+                                                    setDependency={setDependency}
                                                     userId={userId}
                                                     setUserId={setUserId}
                                                     status={status}
@@ -161,6 +160,7 @@ const TaskBoard = ({ tasks: initialTasks, projectId, onTaskModified, initialList
                     onClose={handleCloseDialog}
                     users={users}
                     onTaskUpdate={handleTaskEdit}
+                    handleCreateTask={handleCreateTask}
                 />
             )}
         </div>
