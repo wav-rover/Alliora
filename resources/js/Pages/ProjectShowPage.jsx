@@ -88,6 +88,20 @@ const ProjectShowPage = () => {
                 });
                 console.log('Tâche créée:', response.data);
             }
+            if (action === 'createDependency') {
+                const response = await axios.post('/tasks', {
+                    name: taskData.name,
+                    description: taskData.description,
+                    status: taskData.status,
+                    start_date: taskData.start_date,
+                    end_date: taskData.end_date,
+                    dependencies: taskData.dependencies,
+                    user_id: taskData.user_id,
+                    project_id: taskData.project_id,
+                    list_id: taskData.list_id,
+                });
+                console.log('Dépendance créée:', response.data);
+            }
             if (action === 'edit') {
                 const response = await axios.put(`/tasks/${taskData.id}`, {
                     name: taskData.name,

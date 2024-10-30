@@ -10,7 +10,7 @@ const TaskBoard = ({ tasks: initialTasks, projectId, onTaskModified, initialList
     const [newListTitle, setNewListTitle] = useState('');
     const [startDate, setStartDate] = useState('');
     const [endDate, setEndDate] = useState('');
-    const [dependency, setDependency] = useState('');
+    const [dependencies, setDependencies] = useState('');
     const [userId, setUserId] = useState('');
     const [status, setStatus] = useState('pending');
     const [selectedTask, setSelectedTask] = useState(null);
@@ -31,26 +31,34 @@ const TaskBoard = ({ tasks: initialTasks, projectId, onTaskModified, initialList
         }
     };
 
-    const handleCreateTask = (e, listId) => {
-        e.preventDefault();
-        const newTask = {
-            name: taskName,
-            description: taskDescription,
-            project_id: projectId,
-            list_id: listId,
-            position: lists.find(list => list.id === listId).tasks?.length || 1,
-            status,
-            start_date: startDate,
-            end_date: endDate,
-            user_id: userId,
-        };
-        onTaskModified('create', newTask);
-        setTasks([...tasks, newTask]);
-        setTaskName('');
-        setTaskDescription('');
-        setStatus('pending');
+    const handleCreateTask = (taskOrDependency, listId) => {
+        // Check if the argument is an event or a task/dependency object
+        if (taskOrDependency.preventDefault) {
+            // This is an event, handle task creation
+            taskOrDependency.preventDefault();
+            const newTask = {
+                name: taskName,
+                description: taskDescription,
+                project_id: projectId,
+                list_id: listId,
+                dependencies: dependencies,
+                status,
+                start_date: startDate,
+                end_date: endDate,
+                user_id: userId,
+            };
+            onTaskModified('create', newTask);
+            setTasks([...tasks, newTask]);
+            setTaskName('');
+            setTaskDescription('');
+            setStatus('pending');
+        } else {
+            console.log('Creating PAS:');
+            const dependency = taskOrDependency;
+            onTaskModified('createDependency', dependency);
+            setTasks([...tasks, dependency]);
+        }
     };
-
     const handleTaskEdit = (taskData) => {
         const updatedTasks = tasks.map(task => 
             task.id === taskData.id ? { ...task, ...taskData } : task
@@ -60,7 +68,8 @@ const TaskBoard = ({ tasks: initialTasks, projectId, onTaskModified, initialList
     };
 
     const handleDeleteTask = (taskId) => {
-        const updatedTasks = tasks.filter(task => task.id !== taskId);
+        const updatedTasks = tasks.filter(task => task.id !== taskId && task.dependencies !== taskId);
+        
         setTasks(updatedTasks);
         onTaskModified('delete', { id: taskId });
     };
@@ -69,10 +78,13 @@ const TaskBoard = ({ tasks: initialTasks, projectId, onTaskModified, initialList
         e.preventDefault();
         onListModified('create', { title: newListTitle });
         setNewListTitle('');
+        setLists([...lists, { id: Math.random().toString(), title: newListTitle }]);
     };
 
     const handleDeleteList = (listId) => {
         onListModified('delete', { id: listId });
+        const updatedLists = lists.filter(list => list.id !== listId);
+        setLists(updatedLists);
     };
 
     const handleTaskClick = (task) => {
@@ -123,8 +135,8 @@ const TaskBoard = ({ tasks: initialTasks, projectId, onTaskModified, initialList
                                                     setStartDate={setStartDate}
                                                     endDate={endDate}
                                                     setEndDate={setEndDate}
-                                                    dependency={dependency}
-                                                    setDependency={setDependency}
+                                                    dependencies={dependencies}
+                                                    setDependencies={setDependencies}
                                                     userId={userId}
                                                     setUserId={setUserId}
                                                     status={status}
@@ -161,6 +173,7 @@ const TaskBoard = ({ tasks: initialTasks, projectId, onTaskModified, initialList
                     users={users}
                     onTaskUpdate={handleTaskEdit}
                     handleCreateTask={handleCreateTask}
+                    tasks={tasks}
                 />
             )}
         </div>

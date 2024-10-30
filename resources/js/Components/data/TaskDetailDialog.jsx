@@ -3,14 +3,16 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/u
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { format } from "date-fns";
-import { CalendarIcon, User, Edit2 } from "lucide-react";
+import { CalendarIcon, User, Edit2, Check, ChevronsUpDown } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Badge } from '@/components/ui/badge';
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { ScrollArea } from '@/Components/ui/scroll-area';
 import AddDependency from '@/Components/form/add-dependency';
+import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from "@/components/ui/command";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import { cn } from "@/lib/utils";
 
 const statusColors = {
   pending: 'bg-red-600 drop-shadow-[0_0_10px_rgba(250,0,0,0.2)]',
@@ -19,13 +21,14 @@ const statusColors = {
 };
 
 export default function TaskDetailDialog({
+  tasks = [],
   users = [],
   list = {},
   task = {},
   onTaskUpdate = () => { },
   isOpen = false,
   onClose = () => { },
-  handleCreateTask
+  handleCreateTask = () => { },
 }) {
   const [isEditingName, setIsEditingName] = useState(false);
   const [isEditingDescription, setIsEditingDescription] = useState(false);
@@ -38,6 +41,14 @@ export default function TaskDetailDialog({
   const [tempStatus, setTempStatus] = useState(task.status);
   const [tempUserId, setTempUserId] = useState(task.user_id);
   const [dependencies, setDependencies] = useState(task.dependencies || []);
+  const [open, setOpen] = useState(false);
+
+  const handleCreateDependency = (dependencies) => {
+    console.log('Creating dependency:', dependencies);
+    handleCreateTask(dependencies);
+    
+    setDependencies(prevDependencies => [...prevDependencies, dependencies]);
+  };
 
   useEffect(() => {
     setTempName(task.name);
@@ -68,7 +79,7 @@ export default function TaskDetailDialog({
     onTaskUpdate({ ...task, end_date: tempEndDate });
     setIsEditingEndDate(false);
   };
-
+  
   const cycleStatus = () => {
     const statusOrder = ['pending', 'in progress', 'finished'];
     const currentIndex = statusOrder.indexOf(tempStatus);
@@ -81,11 +92,13 @@ export default function TaskDetailDialog({
   const handleUserChange = (userId) => {
     setTempUserId(userId);
     onTaskUpdate({ ...task, user_id: userId });
+    setOpen(false);
   };
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent className="max-w-3xl w-full">
+      <ScrollArea className="h-[80vh] rounded-md pr-4">
         <motion.div
           initial={{ opacity: 0, y: -20 }}
           animate={{ opacity: 1, y: 0 }}
@@ -119,7 +132,7 @@ export default function TaskDetailDialog({
               </div>
               <motion.button
                 onClick={cycleStatus}
-                className={`mr-4 px-3 py-1 rounded-full text-xs font-semibold capitalize transition-all duration-200 ${statusColors[tempStatus]}`}
+                className={`mr-4 mt-5 px-3 py-1 rounded-full text-xs font-semibold capitalize transition-all duration-200 ${statusColors[tempStatus]}`}
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
               >
@@ -129,6 +142,7 @@ export default function TaskDetailDialog({
           </DialogHeader>
           <div className='flex items-start justify-between gap-5'>
             <div className="space-y-4 w-full">
+              
               <ScrollArea className="h-72 rounded-md pr-4">
                 <label className="text-sm font-medium text-neutral-300">Description</label>
                 {isEditingDescription ? (
@@ -205,29 +219,60 @@ export default function TaskDetailDialog({
             <div>
               <div>
                 <label className="text-sm font-medium text-neutral-300">Assigned To</label>
-                <Select onValueChange={handleUserChange} value={tempUserId}>
-                  <SelectTrigger className="min-w-36">
-                    {users.find((user) => user.id === tempUserId)?.name || "Nobody"}
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value={null} className="h-1/2">
-                      <div className='flex items-center'>
-                        <Avatar className="scale-75">
-                          <AvatarImage src="" />
-                        </Avatar>
-                      </div>
-                    </SelectItem>
-                    {users.map((user) => (
-                      <SelectItem key={user.id} value={user.id} className="h-1/2">
-                        <div className='flex items-center'>
-                          <Avatar className="scale-75">
-                            <AvatarImage src={user.img_profile} />
-                          </Avatar>{user.name}
-                        </div>
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
+                <Popover open={open} onOpenChange={setOpen}>
+                  <PopoverTrigger asChild>
+                    <Button
+                      variant="outline"
+                      role="combobox"
+                      aria-expanded={open}
+                      className="w-full justify-between"
+                    >
+                      {tempUserId
+                        ? users.find((user) => user.id === tempUserId)?.name
+                        : "Select user"}
+                      <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+                    </Button>
+                  </PopoverTrigger>
+                  <PopoverContent className="w-[200px] p-0">
+                    <Command>
+                      <CommandInput placeholder="Search user..." />
+                      <CommandList>
+                        <CommandEmpty>No user found.</CommandEmpty>
+                        <CommandGroup>
+                            <CommandItem
+                              onSelect={() => handleUserChange(null)}
+                            >
+                              <Check
+                                className={cn(
+                                  "mr-2 h-4 w-4",
+                                  tempUserId === null ? "opacity-100" : "opacity-0"
+                                )}
+                              />
+                              Unassigned
+                            </CommandItem>
+                          {users.map((user) => (
+                            <CommandItem
+                              key={user.id}
+                              onSelect={() => handleUserChange(user.id)}
+                            >
+                              <Check
+                                className={cn(
+                                  "mr-2 h-4 w-4",
+                                  tempUserId === user.id ? "opacity-100" : "opacity-0"
+                                )}
+                              />
+                              <Avatar className="mr-2 h-6 w-6">
+                                <AvatarImage src={user.img_profile} alt={user.name} />
+                                <AvatarFallback>{user.name.charAt(0)}</AvatarFallback>
+                              </Avatar>
+                              {user.name}
+                            </CommandItem>
+                          ))}
+                        </CommandGroup>
+                      </CommandList>
+                    </Command>
+                  </PopoverContent>
+                </Popover>
                 <div className="flex items-center gap-2 mt-5">
                   {tempStartDate && tempEndDate && (
                     <>
@@ -248,7 +293,7 @@ export default function TaskDetailDialog({
             taskId={task.id}
             taskName={tempName}
             setTaskName={setTempName}
-            handleCreateTask={handleCreateTask}
+            handleCreateDependency={handleCreateDependency} 
             startDate={tempStartDate}
             setStartDate={setTempStartDate}
             endDate={tempEndDate}
@@ -258,8 +303,10 @@ export default function TaskDetailDialog({
             list={list}
             dependencies={dependencies}
             setDependencies={setDependencies}
+            tasks={tasks}
           />
         </motion.div>
+        </ScrollArea>
       </DialogContent>
     </Dialog>
   );

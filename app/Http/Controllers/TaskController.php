@@ -12,17 +12,24 @@ class TaskController extends Controller
 {
   
     public function destroy($id)
-{
-    $task = Task::findOrFail($id);
-    $projectId = $task->project_id;
-    Log::info('Tâche supprimée : ', ['task' => $task]); // Log avant de diffuser l'événement
-    broadcast(new TaskDeleted($task))->toOthers();
-    
-    // Supprimer la tâche
-    $task->delete();
+    {
+        $task = Task::findOrFail($id);
+        $projectId = $task->project_id;
+        Log::info('Tâche supprimée : ', ['task' => $task]);
+        
+        // Trouver et supprimer les tâches dépendantes
+        $dependentTasks = Task::where('dependencies', $id)->get();
+        foreach ($dependentTasks as $dependentTask) {
+            broadcast(new TaskDeleted($dependentTask))->toOthers();
+            $dependentTask->delete();
+        }
 
-    return response()->json($task, 204);
-}
+        broadcast(new TaskDeleted($task))->toOthers();
+        // Supprimer la tâche principale
+        $task->delete();
+
+        return response()->json($task, 204);
+    }
 
 
     public function update(Request $request, $id)
