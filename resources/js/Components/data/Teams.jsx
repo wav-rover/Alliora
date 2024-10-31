@@ -157,11 +157,9 @@ const Teams = () => {
 
             // Vérifier la réponse pour voir si l'équipe a été supprimée
             if (response.data.message === 'Team deleted as no admins were left') {
-                // Si l'équipe est supprimée, gérer cette situation (par exemple, rediriger ou mettre à jour l'état)
+
                 console.log('Team was deleted');
-                // Redirection ou rafraîchissement général
-                // window.location.href = '/teams'; // Exemple de redirection vers une page de liste d'équipes
-            } else {
+                 } else {
                 // Actualiser les utilisateurs de l'équipe si elle n'a pas été supprimée
                 await refreshTeamUsers(editingTeam.id);
             }
@@ -245,7 +243,7 @@ const Teams = () => {
         try {
             const response = await axios.post(`/teams/${teamId}/leave`); // Appelle l'API pour quitter l'équipe
 
-            // Mettre à jour l'état des équipes après avoir quitté
+          
             setTeams(teams.filter(team => team.id !== teamId)); // Retire l'équipe si l'utilisateur était le dernier membre
         } catch (error) {
             console.error('Error leaving team:', error);
@@ -616,7 +614,7 @@ const Teams = () => {
                                                                 exit={{ opacity: 0, y: -10 }}
                                                                 animate={{ opacity: 1, y: 0 }}
                                                                 transition={{ duration: 0.3 }}
-                                                                className="w-full flex items-center justify-center"  // Taille du bouton
+                                                                className="w-full flex items-center justify-center" 
                                                             >
                                                                 <CopyCheck className='h-5' /> {/* Ton icône */}
                                                             </motion.span>
@@ -651,10 +649,10 @@ const Teams = () => {
                                                     <motion.button
                                                         whileHover={{ scale: 1.05 }}
                                                         whileTap={{ scale: 0.95 }}
-                                                        className={`inline-flex min-w-20 bg-black px-4 py-2 mt-2 ml-2 items-center justify-center rounded-md border border-slate-800 text-slate-400 ${isTeamAdmin ? '' : 'hidden'}`} // Bouton de suppression uniquement si l'utilisateur est admin
+                                                        className={`inline-flex min-w-20 bg-black px-4 py-2 mt-2 ml-2 items-center justify-center rounded-md border border-slate-800 text-slate-400 ${isTeamAdmin ? '' : 'hidden'}`} 
                                                         onClick={(e) => {
                                                             e.stopPropagation();
-                                                            handleDeleteClick(team.id); // Passer le bon ID de l'équipe
+                                                            handleDeleteClick(team.id);
                                                         }}
                                                     >
                                                         {isConfirming && deleteTeamId === team.id ? 'Yes' : 'Delete'}

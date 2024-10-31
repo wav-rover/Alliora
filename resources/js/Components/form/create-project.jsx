@@ -24,7 +24,7 @@ const CreateProjectForm = ({ adminTeams, onProjectCreated }) => {
             team_id: selectedTeam,
         };
         try {
-            await onProjectCreated(projectData); // Utilise la fonction passée en props
+            await onProjectCreated(projectData);
             setProjectName(''); // Réinitialiser le formulaire après la création
             setProjectDescription('');
             setSelectedTeam('');

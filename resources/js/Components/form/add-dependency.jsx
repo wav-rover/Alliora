@@ -59,31 +59,6 @@ export default function AddDependency({
 
     const filteredTasks = tasks.filter(t => t.dependencies === taskId);
 
-
-
-    const updateDependency = (index, field, value) => {
-        const updatedDependencies = dependencies.map((dep, i) =>
-            i === index ? { ...dep, [field]: value } : dep
-        );
-        setDependencies(updatedDependencies);
-    };
-
-    const saveDependency = () => {
-        setEditingDependency(null);
-    };
-
-    const editDependency = (index) => {
-        setEditingDependency(index);
-    };
-
-    const updateDependencyStatus = (index) => {
-        const updatedDependencies = dependencies.map((dep, i) =>
-            i === index ? { ...dep, status: dep.status === 'pending' ? 'completed' : 'pending' } : dep
-        );
-        setDependencies(updatedDependencies);
-    };
-
-
     return (
         <Accordion type="single" collapsible className="w-full" defaultValue="dependencies">
             <AccordionItem value="dependencies">

@@ -68,6 +68,7 @@ Route::middleware('auth')->group(function () {
     Route::post('/lists', [ListController::class, 'store'])->name('lists.store');
     Route::put('/lists/{id}', [ListController::class, 'update'])->name('lists.update');
     Route::delete('/lists/{id}', [ListController::class, 'destroy'])->name('lists.destroy');
+    Route::put('/lists', [ListController::class, 'updatePositions']);
 
     // Gestion des tâches liées aux projets
     Route::post('/projects/{id}/tasks', [ProjectController::class, 'attachTask'])->name('projects.attachTask');

@@ -10,7 +10,7 @@ class ListModel extends Model
     use HasFactory;
 
     protected $table = 'list_models';
-    protected $fillable = ['title', 'project_id'];
+    protected $fillable = ['title', 'project_id', 'position'];
 
 
     public function tasks()

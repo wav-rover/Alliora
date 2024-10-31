@@ -24,7 +24,6 @@ export function InviteMembers({ members = [], selectedMembers, setSelectedMember
     const [open, setOpen] = React.useState(false);
     const [searchTerm, setSearchTerm] = React.useState('');
 
-    // Si `members` est vide ou indéfini, cette vérification évite les erreurs
     const filteredMembers = (members || []).filter(member =>
         member.name.toLowerCase().includes(searchTerm.toLowerCase())
     );

@@ -41,7 +41,6 @@ const ProjectShowPage = () => {
                 }));
             })
             .listen('.list.created', function (e) {
-                console.log('Nouvelle liste reçue :', e.list);
                 setProject((prevProject) => ({
                     ...prevProject,
                     lists: [...prevProject.lists, e.list],
@@ -61,6 +60,12 @@ const ProjectShowPage = () => {
                 setProject((prevProject) => ({
                     ...prevProject,
                     lists: prevProject.lists.filter((list) => list.id !== e.list.id),
+                }));
+            })
+            .listen('.lists.updated', function (e) {
+                setProject((prevProject) => ({
+                    ...prevProject,
+                    lists: e.lists, 
                 }));
             })
             .error(function (error) {
@@ -110,12 +115,14 @@ const ProjectShowPage = () => {
                 const response = await axios.post('/lists', {
                     title: listData.title,
                     project_id: project.id,
+                    position: listData.position
                 });
                 console.log('Liste créée:', response.data);
                }
             if (action === 'edit') {
                 const response = await axios.put(`/lists/${listData.id}`, {
                     title: listData.title,
+                    position: listData.position,
                 });
                 console.log('Liste modifiée:', response.data);
                 setProject((prevProject) => ({

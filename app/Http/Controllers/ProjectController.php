@@ -99,7 +99,6 @@ class ProjectController extends Controller
 
 
 
-    // Mettre à jour un projet
     public function update(Request $request, $id)
     {
         $validated = $request->validate([
@@ -113,30 +112,26 @@ class ProjectController extends Controller
 
         $project = Project::findOrFail($id);
 
-        // Check if the user has admin rights for the team
         $user = Auth::user();
         $team = Team::find($request->input('team_id'));
         if (!$team->users()->where('users.id', $user->id)->where('team_user.role', 'admin')->exists()) {
             return response()->json(['error' => 'You do not have permission to update this project for this team.'], 403);
         }
 
-        // Update the project with the validated data
         $project->update($validated);
 
-        // Load the team relationship before returning the project
         $project->load('team');
 
         return response()->json([
             'message' => 'Projet mis à jour avec succès',
             'project' => $project
-        ], 200);  // Return the updated project with the team relationship loaded
+        ], 200);  
     }
 
     public function destroy($id)
     {
         $project = Project::findOrFail($id);
 
-        // Vérifie que l'utilisateur est administrateur de l'équipe associée au projet
         $user = Auth::user();
         $team = Team::find($project->team_id);
 
@@ -169,7 +164,7 @@ class ProjectController extends Controller
     $task = Task::create([
         'name' => $request->name,
         'description' => $request->description,
-        'status' => $request->status, // Use the provided status
+        'status' => $request->status, 
         'start_date' => $request->start_date,
         'end_date' => $request->end_date,
         'project_id' => $request->project_id,
@@ -199,16 +194,23 @@ class ProjectController extends Controller
 
     public function show($id)
 {
-    $project = Project::with(['team', 'lists', 'team.users' => function ($query) {
-        $query->select('users.id', 'users.name')
-            ->addSelect('team_user.role'); // Sélectionner le rôle des utilisateurs
-    }])->findOrFail($id);
+    $project = Project::with([
+        'team',
+        'lists' => function ($query) {
+            $query->orderBy('position'); // Trier les listes par position
+        },
+        'team.users' => function ($query) {
+            $query->select('users.id', 'users.name')
+                ->addSelect('team_user.role'); // Sélectionner le rôle des utilisateurs
+        }
+    ])->findOrFail($id);
 
     $user = Auth::user();
     event(new UserConnected($user));
 
     // Vérifier si l'utilisateur est membre de l'équipe
-    $isMember = $project->team->users()->where('team_user.team_id', $project->team_id)
+    $isMember = $project->team->users()
+        ->where('team_user.team_id', $project->team_id)
         ->where('users.id', $user->id)
         ->exists();
 
@@ -219,10 +221,11 @@ class ProjectController extends Controller
     return inertia('ProjectShowPage', [
         'project' => $project,
         'tasks' => $project->tasks,
-        'lists' => $project->lists,
+        'lists' => $project->lists, // Les listes sont maintenant triées par position
         'users' => $project->team->users, // Transmet les utilisateurs avec le rôle
         'currentUserId' => $user->id, // Ajout de l'ID de l'utilisateur connecté
     ]);
 }
+
 
 }

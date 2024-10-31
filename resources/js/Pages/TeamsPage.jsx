@@ -4,7 +4,7 @@ import AuthenticatedLayout from '../Layouts/AuthenticatedLayout';
 import { Head } from '@inertiajs/react';
 import AddTeam from '@/Components/form/add-teams';
 
-const TeamsPage = ({ teams }) => { // Recevez les équipes comme props
+const TeamsPage = ({ teams }) => {
     return (
         <AuthenticatedLayout>
             <Head title="Manage Teams" />
@@ -12,7 +12,7 @@ const TeamsPage = ({ teams }) => { // Recevez les équipes comme props
                 Teams
             </span></span></h1>
             <div>
-                <Teams teams={teams} /> {/* Passez les équipes au composant Teams */}
+                <Teams teams={teams} />
             </div>
         </AuthenticatedLayout>
     );
