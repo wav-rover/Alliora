@@ -21,6 +21,9 @@ const statusColors = {
 };
 
 export default function TaskDetailDialog({
+  handleTaskClick = {},
+  selectedTask = [],
+  setSelectedTask ={},
   tasks = [],
   users = [],
   list = {},
@@ -301,6 +304,9 @@ export default function TaskDetailDialog({
             dependencies={dependencies}
             setDependencies={setDependencies}
             tasks={tasks}
+            handleTaskClick={handleTaskClick}
+            selectedTask={selectedTask}
+            setSelectedTask={setSelectedTask}
           />
         </motion.div>
         </ScrollArea>

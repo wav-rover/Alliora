@@ -15,6 +15,9 @@ const statusColors = {
 };
 
 export default function AddDependency({
+    handleTaskClick,
+    selectedTask,
+    setSelectedTask,
     tasks,
     listId,
     taskId,
@@ -157,7 +160,7 @@ export default function AddDependency({
                             <li key={filteredTask.id} className="p-2 bg-neutral-800 rounded-md flex items-center justify-between">
                                 <div className='flex items-center gap-3'>
                                 <div className={`w-2 h-2 rounded-full animate-pulse ${statusColors[filteredTask.status]}`}></div>
-                                {filteredTask.name}
+                                <h1 onClick={() => handleTaskClick(filteredTask)} className="cursor-pointer">{filteredTask.name}</h1>
                                 </div>
 
                                 <div className='flex items-center gap-3'>

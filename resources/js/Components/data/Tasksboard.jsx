@@ -3,6 +3,7 @@ import { DragDropContext, Draggable, Droppable } from 'react-beautiful-dnd';
 import CreateTask from '../form/create-task';
 import TaskDetailDialog from './TaskDetailDialog';
 import { current } from 'tailwindcss/colors';
+import axios from 'axios';
 
 const TaskBoard = ({ tasks: initialTasks, projectId, onTaskModified, initialLists, onListModified, users }) => {
     const [tasks, setTasks] = useState(initialTasks);
@@ -91,12 +92,25 @@ const TaskBoard = ({ tasks: initialTasks, projectId, onTaskModified, initialList
         onTaskModified('delete', { id: taskId });
     };
 
-    const handleCreateList = (e) => {
-        e.preventDefault();
-        onListModified('create', { title: newListTitle });
-        setNewListTitle('');
-        setLists([...lists, { id: Math.random().toString(), title: newListTitle }]);
-    };
+    const handleCreateList = async (listData) => {
+        if (listData.preventDefault) {
+            listData.preventDefault();
+            const newList = {
+                title: newListTitle,
+                project_id: projectId,
+            };
+
+            try {
+                const response = await axios.post('/lists', newList);
+                const createdList = response.data;
+                setLists([...lists, createdList]);
+                setNewListTitle('');
+
+            } catch (error) {
+                console.error("Erreur lors de la création de la liste :", error);
+            }
+        }
+    }
 
     const handleDeleteList = (listId) => {
         onListModified('delete', { id: listId });
@@ -116,20 +130,26 @@ const TaskBoard = ({ tasks: initialTasks, projectId, onTaskModified, initialList
 
     const findDependencies = (taskId, depth = 0) => {
         const dependencies = [];
-        
+
         const findRecursively = (id, currentDepth) => {
             const dependentTasks = tasks.filter(task => task.dependencies === id);
-            
+
             dependentTasks.forEach(dependentTask => {
                 dependencies.push({ task: dependentTask, depth: currentDepth });
                 findRecursively(dependentTask.id, currentDepth + 1); // Incrémenter la profondeur
             });
         };
-        
+
         findRecursively(taskId, depth);
-        return dependencies;
+        const sortedDependencies = dependencies.sort((a, b) => {
+            if (a.depth !== b.depth) {
+                return a.depth - b.depth; // Trier d'abord par profondeur
+            }
+            return a.task.name.localeCompare(b.task.created_at); // Puis par nom ou autre critère si la profondeur est la même
+        });
+        return sortedDependencies;
     };
-    
+
 
     return (
         <div>
@@ -156,7 +176,7 @@ const TaskBoard = ({ tasks: initialTasks, projectId, onTaskModified, initialList
                                                                     <p>{task.description}</p>
                                                                     <p>{task.id}</p>
                                                                     <button onClick={() => handleDeleteTask(task.id)}>Supprimer</button>
-                                                                    {allDependencies.map(({task: dependencyTask, depth}) => (
+                                                                    {allDependencies.map(({ task: dependencyTask, depth }) => (
                                                                         <h1 key={dependencyTask.id} onClick={() => handleTaskClick(dependencyTask)} className="cursor-pointer" style={{ marginLeft: `${depth * 10}px` }}>
                                                                             {dependencyTask.name}
                                                                         </h1>
@@ -216,6 +236,9 @@ const TaskBoard = ({ tasks: initialTasks, projectId, onTaskModified, initialList
                     onTaskUpdate={handleTaskEdit}
                     handleCreateTask={handleCreateTask}
                     tasks={tasks}
+                    handleTaskClick={handleTaskClick}
+                    selectedTask={selectedTask}
+                    setSelectedTask={setSelectedTask}
                 />
             )}
         </div>
