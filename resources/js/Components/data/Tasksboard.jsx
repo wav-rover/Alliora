@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { DragDropContext, Draggable, Droppable } from 'react-beautiful-dnd';
 import CreateTask from '../form/create-task';
 import TaskDetailDialog from './TaskDetailDialog';
+import { current } from 'tailwindcss/colors';
 
 const TaskBoard = ({ tasks: initialTasks, projectId, onTaskModified, initialLists, onListModified, users }) => {
     const [tasks, setTasks] = useState(initialTasks);
@@ -31,10 +32,8 @@ const TaskBoard = ({ tasks: initialTasks, projectId, onTaskModified, initialList
         }
     };
 
-    const handleCreateTask = (taskOrDependency, listId) => {
-        // Check if the argument is an event or a task/dependency object
+    const handleCreateTask = async (taskOrDependency, listId) => {
         if (taskOrDependency.preventDefault) {
-            // This is an event, handle task creation
             taskOrDependency.preventDefault();
             const newTask = {
                 name: taskName,
@@ -47,20 +46,38 @@ const TaskBoard = ({ tasks: initialTasks, projectId, onTaskModified, initialList
                 end_date: endDate,
                 user_id: userId,
             };
-            onTaskModified('create', newTask);
-            setTasks([...tasks, newTask]);
-            setTaskName('');
-            setTaskDescription('');
-            setStatus('pending');
+
+            try {
+                const response = await axios.post('/tasks', newTask);
+                const createdTask = response.data;
+                setTasks([...tasks, createdTask]);
+                setTaskName('');
+                setTaskDescription('');
+                setStatus('pending');
+
+            } catch (error) {
+                console.error("Erreur lors de la création de la tâche :", error);
+            }
         } else {
-            console.log('Creating PAS:');
             const dependency = taskOrDependency;
-            onTaskModified('createDependency', dependency);
-            setTasks([...tasks, dependency]);
+
+            try {
+                const response = await axios.post('/tasks', dependency);
+                const createdDependency = response.data;
+
+                setTasks(prevTasks => [...prevTasks, createdDependency]);
+                console.log("Nouvelle dépendance reçue :", createdDependency);
+
+            } catch (error) {
+                console.error("Erreur lors de la création de la dépendance :", error);
+            }
         }
     };
+
+
+
     const handleTaskEdit = (taskData) => {
-        const updatedTasks = tasks.map(task => 
+        const updatedTasks = tasks.map(task =>
             task.id === taskData.id ? { ...task, ...taskData } : task
         );
         setTasks(updatedTasks);
@@ -69,7 +86,7 @@ const TaskBoard = ({ tasks: initialTasks, projectId, onTaskModified, initialList
 
     const handleDeleteTask = (taskId) => {
         const updatedTasks = tasks.filter(task => task.id !== taskId && task.dependencies !== taskId);
-        
+
         setTasks(updatedTasks);
         onTaskModified('delete', { id: taskId });
     };
@@ -97,6 +114,23 @@ const TaskBoard = ({ tasks: initialTasks, projectId, onTaskModified, initialList
         setSelectedTask(null);
     };
 
+    const findDependencies = (taskId, depth = 0) => {
+        const dependencies = [];
+        
+        const findRecursively = (id, currentDepth) => {
+            const dependentTasks = tasks.filter(task => task.dependencies === id);
+            
+            dependentTasks.forEach(dependentTask => {
+                dependencies.push({ task: dependentTask, depth: currentDepth });
+                findRecursively(dependentTask.id, currentDepth + 1); // Incrémenter la profondeur
+            });
+        };
+        
+        findRecursively(taskId, depth);
+        return dependencies;
+    };
+    
+
     return (
         <div>
             <h2>Tâches associées au projet</h2>
@@ -113,15 +147,23 @@ const TaskBoard = ({ tasks: initialTasks, projectId, onTaskModified, initialList
                                                 <button onClick={() => handleDeleteList(list.id)}>Supprimer Liste</button>
                                                 <ul className="task-list">
                                                     {tasks
-                                                        .filter(task => task.list_id === list.id)
-                                                        .map((task) => (
-                                                            <li key={task.id} className="task-item">
-                                                                <h4 onClick={() => handleTaskClick(task)} className="cursor-pointer">{task.name}</h4>
-                                                                <p>{task.description}</p>
-                                                                <p>Status: {task.status}</p>
-                                                                <button onClick={() => handleDeleteTask(task.id)}>Supprimer</button>
-                                                            </li>
-                                                        ))}
+                                                        .filter(task => task.list_id === list.id && task.dependencies === null)
+                                                        .map((task) => {
+                                                            const allDependencies = findDependencies(task.id);
+                                                            return (
+                                                                <li key={task.id} className="task-item">
+                                                                    <h4 onClick={() => handleTaskClick(task)} className="cursor-pointer">{task.name}</h4>
+                                                                    <p>{task.description}</p>
+                                                                    <p>{task.id}</p>
+                                                                    <button onClick={() => handleDeleteTask(task.id)}>Supprimer</button>
+                                                                    {allDependencies.map(({task: dependencyTask, depth}) => (
+                                                                        <h1 key={dependencyTask.id} onClick={() => handleTaskClick(dependencyTask)} className="cursor-pointer" style={{ marginLeft: `${depth * 10}px` }}>
+                                                                            {dependencyTask.name}
+                                                                        </h1>
+                                                                    ))}
+                                                                </li>
+                                                            );
+                                                        })}
                                                 </ul>
                                                 <CreateTask
                                                     listId={list.id}

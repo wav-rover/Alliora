@@ -46,8 +46,6 @@ export default function TaskDetailDialog({
   const handleCreateDependency = (dependencies) => {
     console.log('Creating dependency:', dependencies);
     handleCreateTask(dependencies);
-    
-    setDependencies(prevDependencies => [...prevDependencies, dependencies]);
   };
 
   useEffect(() => {
@@ -142,7 +140,6 @@ export default function TaskDetailDialog({
           </DialogHeader>
           <div className='flex items-start justify-between gap-5'>
             <div className="space-y-4 w-full">
-              
               <ScrollArea className="h-72 rounded-md pr-4">
                 <label className="text-sm font-medium text-neutral-300">Description</label>
                 {isEditingDescription ? (

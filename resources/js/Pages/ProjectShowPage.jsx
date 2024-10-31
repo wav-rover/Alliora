@@ -74,53 +74,26 @@ const ProjectShowPage = () => {
 
     const onTaskModified = async (action, taskData) => {
         try {
-            if (action === 'create') {
-                const response = await axios.post('/tasks', {
-                    name: taskData.name,
-                    description: taskData.description,
-                    status: taskData.status,
-                    start_date: taskData.start_date,
-                    end_date: taskData.end_date,
-                    dependencies: taskData.dependencies,
-                    user_id: taskData.user_id,
-                    project_id: taskData.project_id,
-                    list_id: taskData.list_id,
-                });
-                console.log('Tâche créée:', response.data);
-            }
-            if (action === 'createDependency') {
-                const response = await axios.post('/tasks', {
-                    name: taskData.name,
-                    description: taskData.description,
-                    status: taskData.status,
-                    start_date: taskData.start_date,
-                    end_date: taskData.end_date,
-                    dependencies: taskData.dependencies,
-                    user_id: taskData.user_id,
-                    project_id: taskData.project_id,
-                    list_id: taskData.list_id,
-                });
-                console.log('Dépendance créée:', response.data);
+            if (action === 'create' || action === 'createDependency') {
+                const response = await axios.post('/tasks', taskData);
+                const newTask = response.data;
+                setProject((prevProject) => ({
+                    ...prevProject,
+                    tasks: [...prevProject.tasks, newTask],
+                }));
             }
             if (action === 'edit') {
-                const response = await axios.put(`/tasks/${taskData.id}`, {
-                    name: taskData.name,
-                    description: taskData.description,
-                    start_date: taskData.start_date,
-                    end_date: taskData.end_date,
-                    status: taskData.status,
-                    user_id: taskData.user_id,
-                });
+                const response = await axios.put(`/tasks/${taskData.id}`, taskData);
+                const updatedTask = response.data;
                 setProject((prevProject) => ({
                     ...prevProject,
                     tasks: prevProject.tasks.map((task) =>
-                        task.id === taskData.id ? response.data : task
+                        task.id === updatedTask.id ? updatedTask : task
                     ),
                 }));
             }
             if (action === 'delete') {
                 await axios.delete(`/tasks/${taskData.id}`);
-                console.log('Tâche supprimée:', taskData);
                 setProject((prevProject) => ({
                     ...prevProject,
                     tasks: prevProject.tasks.filter((task) => task.id !== taskData.id),
@@ -130,7 +103,7 @@ const ProjectShowPage = () => {
             console.error('Erreur lors de la modification de la tâche:', error);
         }
     };
-
+    
     const onListModified = async (action, listData) => {
         try {
             if (action === 'create') {
