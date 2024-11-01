@@ -4,6 +4,7 @@ import { Head, usePage } from '@inertiajs/react';
 import TaskBoard from '../Components/data/TasksBoard';
 import { UserTooltip, MousePositions } from '../Components/data/UsersOnProject';
 import axios from 'axios';
+import { FloatingDockWithLinks } from '../Components/ui/floating-dock-Links'
 
 const ProjectShowPage = () => {
     
@@ -146,6 +147,7 @@ const ProjectShowPage = () => {
     };
 
     return (
+        <>
         <AuthenticatedLayout>
             <Head title="Project Show" />
             <TaskBoard 
@@ -166,6 +168,8 @@ const ProjectShowPage = () => {
                 currentUserId={auth.user?.id}
             /> */}
         </AuthenticatedLayout>
+        <FloatingDockWithLinks />
+        </>
     );
 };
 
