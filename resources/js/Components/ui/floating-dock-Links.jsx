@@ -68,9 +68,9 @@ export function FloatingDockWithLinks() {
     },
   ];
   return (
-    <div className="absolute bottom-0 right-50 w-full flex items-center justify-center mb-5">
-      <FloatingDock
-        items={links} />
+    <div className="absolute bottom-0 left-1/2 transform -translate-x-1/2 w-fit flex items-center z-0 justify-center mb-5">
+      <FloatingDock items={links} />
     </div>
+
   );
 }
