@@ -155,11 +155,14 @@ class ProjectController extends Controller
         'status' => 'required|string|in:pending,in progress,finished', // Only accept these values
         'start_date' => 'nullable|date',
         'end_date' => 'nullable|date',
+        'position' => 'integer',
         'project_id' => 'required|exists:projects,id',
         'user_id' => 'nullable|exists:users,id',
         'dependencies' => 'nullable|exists:tasks,id',
         'list_id' => 'required|exists:list_models,id',
     ]);
+
+    $position = Task::where('list_id', $request->list_id)->count();
 
     $task = Task::create([
         'name' => $request->name,
@@ -167,6 +170,7 @@ class ProjectController extends Controller
         'status' => $request->status, 
         'start_date' => $request->start_date,
         'end_date' => $request->end_date,
+        'position' => $position,
         'project_id' => $request->project_id,
         'user_id' => $request->user_id,
         'dependencies' => $request->dependencies,

@@ -36,7 +36,6 @@ class ListController extends Controller
         return response()->json($list, 201);
     }
 
-// app/Http/Controllers/ListController.php
 public function updatePositions(Request $request) {
     $lists = $request->lists;
     $updatedLists = [];

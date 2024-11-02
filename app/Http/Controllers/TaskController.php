@@ -31,17 +31,31 @@ class TaskController extends Controller
         return response()->json($task, 204);
     }
 
+    public function updatePositions(Request $request) {
+        $tasks = $request->tasks;
+        $updatedTasks = [];
+    
+        foreach ($tasks as $taskdata) {
+            $task = Task::find($taskdata['id']);
+            $task->update(['position' => $taskdata['position']]);
+            $updatedTasks[] = $task;
+        }
+    
+        return response()->json(['message' => 'Positions mises à jour avec succès']);
+    }
+
 
     public function update(Request $request, $id)
     {
         $task = Task::findOrFail($id);
 
         $validated = $request->validate([
-            'name' => 'required|string|max:255',
+            'name' => 'string|max:255',
             'description' => 'nullable|string',
+            'position' => 'integer',
             'start_date' => 'nullable|date',
             'end_date' => 'nullable|date',
-            'status' => 'required|string',
+            'status' => 'string',
             'user_id' => 'nullable|exists:users,id',
         ]);
 

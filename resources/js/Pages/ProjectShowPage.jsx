@@ -81,7 +81,11 @@ const ProjectShowPage = () => {
     const onTaskModified = async (action, taskData) => {
         try {
             if (action === 'create' || action === 'createDependency') {
-                const response = await axios.post('/tasks', taskData);
+                const listTasks = project.tasks.filter(task => task.list_id === taskData.list_id);
+                const response = await axios.post('/tasks', {
+                    ...taskData,
+                    position: listTasks.length
+                });
                 const newTask = response.data;
                 setProject((prevProject) => ({
                     ...prevProject,
