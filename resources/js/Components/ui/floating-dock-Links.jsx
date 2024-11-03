@@ -1,20 +1,13 @@
 import React from "react";
 import { FloatingDock } from "@/components/ui/floating-dock";
-import {
-  IconBrandGithub,
-  IconBrandX,
-  IconExchange,
-  IconHome,
-  IconNewSection,
-  IconTerminal2,
-} from "@tabler/icons-react";
+import { ChartLine, Terminal, LayoutTemplate, ListPlus, MessageSquareDashed } from "lucide-react";
 
 export function FloatingDockWithLinks() {
   const links = [
     {
-      title: "Home",
+      title: "Statistics",
       icon: (
-        <IconHome className="h-full w-full text-neutral-500 dark:text-neutral-300" />
+        <ChartLine className="h-full w-full text-neutral-500 dark:text-neutral-300" />
       ),
       href: "#",
     },
@@ -22,14 +15,21 @@ export function FloatingDockWithLinks() {
     {
       title: "Products",
       icon: (
-        <IconTerminal2 className="h-full w-full text-neutral-500 dark:text-neutral-300" />
+        <Terminal className="h-full w-full text-neutral-500 dark:text-neutral-300" />
       ),
       href: "#",
     },
     {
       title: "Components",
       icon: (
-        <IconNewSection className="h-full w-full text-neutral-500 dark:text-neutral-300" />
+        <LayoutTemplate className="h-full w-full text-neutral-500 dark:text-neutral-300" />
+      ),
+      href: "#",
+    },
+    {
+      title: "Open Team Chat",
+      icon: (
+        <MessageSquareDashed className="h-full w-full text-neutral-500 dark:text-neutral-300" />
       ),
       href: "#",
     },
@@ -45,24 +45,9 @@ export function FloatingDockWithLinks() {
       href: "#",
     },
     {
-      title: "Changelog",
+      title: "Add a list",
       icon: (
-        <IconExchange className="h-full w-full text-neutral-500 dark:text-neutral-300" />
-      ),
-      href: "#",
-    },
-
-    {
-      title: "Twitter",
-      icon: (
-        <IconBrandX className="h-full w-full text-neutral-500 dark:text-neutral-300" />
-      ),
-      href: "#",
-    },
-    {
-      title: "GitHub",
-      icon: (
-        <IconBrandGithub className="h-full w-full text-neutral-500 dark:text-neutral-300" />
+        <ListPlus className="h-full w-full text-neutral-500 dark:text-neutral-300" />
       ),
       href: "#",
     },

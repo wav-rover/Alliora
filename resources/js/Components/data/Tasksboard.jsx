@@ -20,7 +20,7 @@ const TaskBoard = ({ tasks: initialTasks, projectId, onTaskModified, initialList
 
     const [lists, setLists] = useState(initialLists);
     useEffect(() => {
-        setTasks(initialTasks);
+        setTasks(initialTasks.sort((a,b)=> a.position - b.position));
     }, [initialTasks]);
 
     useEffect(() => {
@@ -44,50 +44,116 @@ const TaskBoard = ({ tasks: initialTasks, projectId, onTaskModified, initialList
             }));
 
             setLists(listsWithUpdatedPositions);
-            console.log('envoi')
-            try {
-                const response = await axios.put(`/lists`, {
-                    projectId,
-                    lists: listsWithUpdatedPositions.map(({ id, position, title }) => ({ id, position, title }))
-                });
-
-                console.log('Réponse du serveur:', response.data);
-
-                if (response.status === 200) {
-                    setLists(listsWithUpdatedPositions);
-                }
-            } catch (error) {
-                console.error("Erreur lors de la mise à jour des positions :", error);
-            }
+            
         }
 
-        if (type === 'task') {
-            const updatedTasks = Array.from(tasks);
-            const [movedTask] = updatedTasks.splice(source.index, 1);
-            updatedTasks.splice(destination.index, 0, movedTask);
-
-            const tasksWithUpdatedPositions = updatedTasks.map((task, index) => ({
-                ...task,
-                position: index
-            }));
-
-            setTasks(tasksWithUpdatedPositions);
-            console.log('envoi')
-            try {
-                const response = await axios.put(`/tasks`, {
-                    listId: movedTask.list_id,
-                    lists: tasksWithUpdatedPositions.map(({ id, position }) => ({ id, position }))
-                });
-
-                console.log('Réponse du serveur:', response.data);
-
-                if (response.status === 200) {
-                    setLists(tasksWithUpdatedPositions);
+                if (type === 'task') {
+            const sourceListId = source.droppableId;
+            const destinationListId = destination.droppableId;
+        
+            console.log('Source List ID:', sourceListId);
+            console.log('Destination List ID:', destinationListId);
+        
+            // 1. Vérifier si la liste de destination est différente de celle d'origine
+            if (sourceListId !== destinationListId) {
+                // 2. Filtrer les tâches pour les listes source et destination
+                const sourceListTasks = tasks
+                    .filter(task => task.list_id === parseInt(sourceListId));
+                const destinationListTasks = tasks
+                    .filter(task => task.list_id === parseInt(destinationListId));
+        
+                console.log('Source List Tasks:', sourceListTasks);
+                console.log('Destination List Tasks:', destinationListTasks);
+        
+                // 3. Retirer la tâche déplacée de la liste source
+                const [movedTask] = sourceListTasks.splice(source.index, 1);
+        
+                console.log('Moved Task:', movedTask);
+        
+                // 4. Mettre à jour la position et la liste de la tâche déplacée
+                movedTask.list_id = parseInt(destinationListId);
+                destinationListTasks.splice(destination.index, 0, movedTask);
+        
+                console.log('Updated Moved Task:', movedTask);
+                console.log('Updated Destination List Tasks:', destinationListTasks);
+        
+                // 5. Recalculer les positions dans les deux listes
+                const updatedSourceListTasks = sourceListTasks.map((task, index) => ({
+                    ...task,
+                    position: index,
+                }));
+        
+                const updatedDestinationListTasks = destinationListTasks.map((task, index) => ({
+                    ...task,
+                    position: index,
+                }));
+        
+                console.log('Updated Source List Tasks:', updatedSourceListTasks);
+                console.log('Updated Destination List Tasks:', updatedDestinationListTasks);
+        
+                // 6. Mettre à jour l'état global des tâches
+                const updatedTasks = tasks
+                    .filter(task => task.list_id !== parseInt(sourceListId) && task.list_id !== parseInt(destinationListId))
+                    .concat(updatedSourceListTasks, updatedDestinationListTasks);
+        
+                console.log('Updated Tasks:', updatedTasks);
+        
+                setTasks(updatedTasks);
+        
+                // Envoi des nouvelles positions au backend avec axios
+                try {
+                    await axios.put('/tasks', {
+                        tasks: updatedTasks.map(task => ({
+                            id: task.id,
+                            list_id: task.list_id,
+                            position: task.position
+                        }))
+                    });
+                    console.log('Positions mises à jour dans la base de données');
+                } catch (error) {
+                    console.error('Erreur lors de la mise à jour des positions :', error);
                 }
-            } catch (error) {
-                console.error("Erreur lors de la mise à jour des positions :", error);
+            } else {
+                // 7. Gérer le cas où la tâche est déplacée dans la même liste (sans changement de liste)
+                const listTasks = tasks.filter(task => task.list_id === parseInt(sourceListId));
+                const [movedTask] = listTasks.splice(source.index, 1);
+                listTasks.splice(destination.index, 0, movedTask);
+        
+                console.log('Moved Task in Same List:', movedTask);
+                console.log('Updated List Tasks:', listTasks);
+        
+                const tasksWithUpdatedPositions = listTasks.map((task, index) => ({
+                    ...task,
+                    position: index
+                }));
+        
+                console.log('Tasks with Updated Positions:', tasksWithUpdatedPositions);
+        
+                const updatedTasks = tasks
+                    .filter(task => task.list_id !== parseInt(sourceListId))
+                    .concat(tasksWithUpdatedPositions);
+        
+                console.log('Updated Tasks:', updatedTasks);
+        
+                setTasks(updatedTasks);
+        
+                // Envoi des nouvelles positions au backend avec axios
+                try {
+                    await axios.put('/tasks', {
+                        tasks: updatedTasks.map(task => ({
+                            id: task.id,
+                            list_id: task.list_id,
+                            position: task.position
+                        }))
+                    });
+                    console.log('Positions mises à jour dans la base de données');
+                } catch (error) {
+                    console.error('Erreur lors de la mise à jour des positions :', error);
+                }
             }
         }
+        
+        
     };
 
     const handleCreateTask = async (taskOrDependency, listId) => {
@@ -220,7 +286,7 @@ const TaskBoard = ({ tasks: initialTasks, projectId, onTaskModified, initialList
                                     {(provided) => (
                                         <div ref={provided.innerRef} {...provided.draggableProps} {...provided.dragHandleProps}>
                                             <div className='p-3 bg-gray-500 m-2'>
-                                                <h3>{list.title} {list.position}</h3>
+                                                <h3>{list.title}</h3>
                                                 <button onClick={() => handleDeleteList(list.id)}>Supprimer Liste</button>
                                                 <Droppable droppableId={list.id.toString()} type="task">
                                                     {(provided) => (
@@ -233,9 +299,7 @@ const TaskBoard = ({ tasks: initialTasks, projectId, onTaskModified, initialList
                                                                         <Draggable key={task.id} draggableId={task.id.toString()} index={index}>
                                                                             {(provided) => (
                                                                                 <li ref={provided.innerRef} {...provided.draggableProps} {...provided.dragHandleProps} className="task-item">
-                                                                                    <h4 onClick={() => handleTaskClick(task)} className="cursor-pointer">{task.name}</h4>
-                                                                                    <p>{task.description}</p>
-                                                                                    <p>{task.id}</p>
+                                                                                    <h4 onClick={() => handleTaskClick(task)} className="cursor-pointer">{task.name}  {task.position}</h4>
                                                                                     <button onClick={() => handleDeleteTask(task.id)}>Supprimer</button>
                                                                                     {allDependencies.map(({ task: dependencyTask, depth }) => (
                                                                                         <h1 key={dependencyTask.id} onClick={() => handleTaskClick(dependencyTask)} className="cursor-pointer" style={{ marginLeft: `${depth * 10}px` }}>

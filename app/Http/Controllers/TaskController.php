@@ -31,18 +31,23 @@ class TaskController extends Controller
         return response()->json($task, 204);
     }
 
-    public function updatePositions(Request $request) {
-        $tasks = $request->tasks;
-        $updatedTasks = [];
-    
-        foreach ($tasks as $taskdata) {
-            $task = Task::find($taskdata['id']);
-            $task->update(['position' => $taskdata['position']]);
-            $updatedTasks[] = $task;
+public function updateTaskPositions(Request $request)
+{
+    // Récupérer les nouvelles données des tâches depuis la requête
+    $tasks = $request->input('tasks');
+
+    // Parcourir chaque tâche pour mettre à jour sa position et sa liste
+    foreach ($tasks as $taskData) {
+        $task = Task::find($taskData['id']);
+        if ($task) {
+            $task->list_id = $taskData['list_id'];
+            $task->position = $taskData['position'];
+            $task->save();
         }
-    
-        return response()->json(['message' => 'Positions mises à jour avec succès']);
     }
+
+    return response()->json(['message' => 'Positions updated successfully'], 200);
+}
 
 
     public function update(Request $request, $id)
