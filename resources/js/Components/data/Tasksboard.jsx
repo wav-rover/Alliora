@@ -3,8 +3,24 @@ import { DragDropContext, Draggable, Droppable } from 'react-beautiful-dnd';
 import CreateTask from '../form/create-task';
 import TaskDetailDialog from './TaskDetailDialog';
 import { current } from 'tailwindcss/colors';
-import axios from 'axios';
+import axios from 'axios';import { motion, AnimatePresence } from 'framer-motion'
+import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion"
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
+import { Badge } from "@/components/ui/badge"
+import { ScrollArea } from "@/components/ui/scroll-area"
+import { ChevronDown, Plus, Trash2, CheckCircle, Clock, XCircle } from 'lucide-react'
 
+const statusColors = {
+  pending: 'bg-red-600 shadow-[0_0_10px_rgba(250,0,0,0.6)]',
+  'in progress': 'bg-cyan-500 drop-shadow-[0_0_10px_rgba(0,200,200,0.4)]',
+  finished: 'bg-emerald-600 drop-shadow-[0_0_10px_rgba(0,200,100,0.6)]'
+}
+
+const statusIcons = {
+  pending: XCircle,
+  'in progress': Clock,
+  finished: CheckCircle
+}
 const TaskBoard = ({ tasks: initialTasks, projectId, onTaskModified, initialLists, onListModified, users }) => {
     const [tasks, setTasks] = useState(initialTasks);
     const [taskName, setTaskName] = useState('');
@@ -24,7 +40,6 @@ const TaskBoard = ({ tasks: initialTasks, projectId, onTaskModified, initialList
     }, [initialTasks]);
 
     useEffect(() => {
-        console.log("RECHARGEMENT!!!!!!!!!!!!")
         setLists(initialLists.sort((a, b) => a.position - b.position));
     }, [initialLists]);
 
@@ -44,39 +59,37 @@ const TaskBoard = ({ tasks: initialTasks, projectId, onTaskModified, initialList
             }));
 
             setLists(listsWithUpdatedPositions);
-            
-        }
+            try {
+                const response = await axios.put(`/lists`, {
+                    projectId,
+                    lists: listsWithUpdatedPositions.map(({ id, position, title }) => ({ id, position, title }))
+                });
 
-                if (type === 'task') {
+                console.log('Réponse du serveur:', response.data);
+
+                if (response.status === 200) {
+                    setLists(listsWithUpdatedPositions);
+                }
+            } catch (error) {
+                console.error("Erreur lors de la mise à jour des positions :", error);
+            }
+        }
+        if (type === 'task') {
             const sourceListId = source.droppableId;
             const destinationListId = destination.droppableId;
         
-            console.log('Source List ID:', sourceListId);
-            console.log('Destination List ID:', destinationListId);
-        
-            // 1. Vérifier si la liste de destination est différente de celle d'origine
             if (sourceListId !== destinationListId) {
                 // 2. Filtrer les tâches pour les listes source et destination
-                const sourceListTasks = tasks
-                    .filter(task => task.list_id === parseInt(sourceListId));
-                const destinationListTasks = tasks
-                    .filter(task => task.list_id === parseInt(destinationListId));
-        
-                console.log('Source List Tasks:', sourceListTasks);
-                console.log('Destination List Tasks:', destinationListTasks);
+                const sourceListTasks = tasks.filter(task => task.list_id === parseInt(sourceListId));
+                const destinationListTasks = tasks.filter(task => task.list_id === parseInt(destinationListId));
         
                 // 3. Retirer la tâche déplacée de la liste source
                 const [movedTask] = sourceListTasks.splice(source.index, 1);
-        
-                console.log('Moved Task:', movedTask);
-        
+
                 // 4. Mettre à jour la position et la liste de la tâche déplacée
                 movedTask.list_id = parseInt(destinationListId);
                 destinationListTasks.splice(destination.index, 0, movedTask);
-        
-                console.log('Updated Moved Task:', movedTask);
-                console.log('Updated Destination List Tasks:', destinationListTasks);
-        
+
                 // 5. Recalculer les positions dans les deux listes
                 const updatedSourceListTasks = sourceListTasks.map((task, index) => ({
                     ...task,
@@ -87,20 +100,14 @@ const TaskBoard = ({ tasks: initialTasks, projectId, onTaskModified, initialList
                     ...task,
                     position: index,
                 }));
-        
-                console.log('Updated Source List Tasks:', updatedSourceListTasks);
-                console.log('Updated Destination List Tasks:', updatedDestinationListTasks);
-        
+
                 // 6. Mettre à jour l'état global des tâches
                 const updatedTasks = tasks
                     .filter(task => task.list_id !== parseInt(sourceListId) && task.list_id !== parseInt(destinationListId))
                     .concat(updatedSourceListTasks, updatedDestinationListTasks);
-        
-                console.log('Updated Tasks:', updatedTasks);
-        
+
                 setTasks(updatedTasks);
         
-                // Envoi des nouvelles positions au backend avec axios
                 try {
                     await axios.put('/tasks', {
                         tasks: updatedTasks.map(task => ({
@@ -114,7 +121,6 @@ const TaskBoard = ({ tasks: initialTasks, projectId, onTaskModified, initialList
                     console.error('Erreur lors de la mise à jour des positions :', error);
                 }
             } else {
-                // 7. Gérer le cas où la tâche est déplacée dans la même liste (sans changement de liste)
                 const listTasks = tasks.filter(task => task.list_id === parseInt(sourceListId));
                 const [movedTask] = listTasks.splice(source.index, 1);
                 listTasks.splice(destination.index, 0, movedTask);
@@ -127,17 +133,12 @@ const TaskBoard = ({ tasks: initialTasks, projectId, onTaskModified, initialList
                     position: index
                 }));
         
-                console.log('Tasks with Updated Positions:', tasksWithUpdatedPositions);
-        
                 const updatedTasks = tasks
                     .filter(task => task.list_id !== parseInt(sourceListId))
                     .concat(tasksWithUpdatedPositions);
         
-                console.log('Updated Tasks:', updatedTasks);
-        
                 setTasks(updatedTasks);
-        
-                // Envoi des nouvelles positions au backend avec axios
+
                 try {
                     await axios.put('/tasks', {
                         tasks: updatedTasks.map(task => ({
@@ -290,7 +291,7 @@ const TaskBoard = ({ tasks: initialTasks, projectId, onTaskModified, initialList
                                                 <button onClick={() => handleDeleteList(list.id)}>Supprimer Liste</button>
                                                 <Droppable droppableId={list.id.toString()} type="task">
                                                     {(provided) => (
-                                                        <ul ref={provided.innerRef} {...provided.droppableProps}>
+                                                        <ul ref={provided.innerRef} {...provided.droppableProps} className="min-h-24 ht-92">
                                                             {tasks
                                                                 .filter(task => task.list_id === list.id && task.dependencies === null)
                                                                 .map((task, index) => {
@@ -345,17 +346,6 @@ const TaskBoard = ({ tasks: initialTasks, projectId, onTaskModified, initialList
                     )}
                 </Droppable>
             </DragDropContext>
-            <form onSubmit={handleCreateList}>
-                <input
-                    type="text"
-                    placeholder="Titre de la liste"
-                    value={newListTitle}
-                    onChange={(e) => setNewListTitle(e.target.value)}
-                    required
-                />
-                <button type="submit">Ajouter Liste</button>
-            </form>
-
             {selectedTask && (
                 <TaskDetailDialog
                     list={lists.find(list => list.id === selectedTask.list_id)}

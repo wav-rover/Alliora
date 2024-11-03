@@ -27,8 +27,9 @@ export function UserTooltip({ projectId }) {
     }
   }, [projectId])
 
-  return <AnimatedTooltip users={usersList} />
-}
+  return (
+  <AnimatedTooltip users={usersList} />
+)}
 
 export function MousePositions({ projectId, currentUserId }) {
   const [usersList, setUsersList] = useState([])
@@ -82,7 +83,7 @@ export function MousePositions({ projectId, currentUserId }) {
   }, [projectId, currentUserId])
 
   return (
-    <div className="bg-red-400">
+    <div className="">
       {Object.entries(mousePositions).map(([userId, position]) => (
         userId !== currentUserId.toString() && (
           <div

@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use App\Events\TaskEdited;
 use App\Events\TaskDeleted;
+use App\Events\TasksUpdated;
 use Illuminate\Support\Facades\Log;
 
 class TaskController extends Controller
@@ -31,23 +32,29 @@ class TaskController extends Controller
         return response()->json($task, 204);
     }
 
-public function updateTaskPositions(Request $request)
-{
-    // Récupérer les nouvelles données des tâches depuis la requête
-    $tasks = $request->input('tasks');
-
-    // Parcourir chaque tâche pour mettre à jour sa position et sa liste
-    foreach ($tasks as $taskData) {
-        $task = Task::find($taskData['id']);
-        if ($task) {
-            $task->list_id = $taskData['list_id'];
-            $task->position = $taskData['position'];
-            $task->save();
+    public function updateTaskPositions(Request $request)
+    {
+        // Récupérer les nouvelles données des tâches depuis la requête
+        $tasks = $request->input('tasks');
+        $updatedTasks = [];
+    
+        // Parcourir chaque tâche pour mettre à jour sa position et sa liste
+        foreach ($tasks as $taskData) {
+            $task = Task::find($taskData['id']);
+            if ($task) {
+                $task->list_id = $taskData['list_id'];
+                $task->position = $taskData['position'];
+                $task->save();
+                $updatedTasks[] = $task;
+            }
         }
+    
+        // Diffuse un tableau de tâches via l'événement
+        broadcast(new TasksUpdated($updatedTasks))->toOthers();
+    
+        return response()->json(['message' => 'Positions updated successfully'], 200);
     }
-
-    return response()->json(['message' => 'Positions updated successfully'], 200);
-}
+    
 
 
     public function update(Request $request, $id)

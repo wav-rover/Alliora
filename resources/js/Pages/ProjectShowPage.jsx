@@ -41,6 +41,12 @@ const ProjectShowPage = () => {
                     tasks: prevProject.tasks.filter((task) => task.id !== e.task.id),
                 }));
             })
+            .listen('.tasks.updated', function (e) {
+                setProject((prevProject) => ({
+                    ...prevProject,
+                    tasks: e.tasks, 
+                }));
+            })
             .listen('.list.created', function (e) {
                 setProject((prevProject) => ({
                     ...prevProject,
@@ -162,9 +168,6 @@ const ProjectShowPage = () => {
                 onListModified={onListModified}
                 users={users}
             />
-            <div className='scale-75 ml-10 mb-5 flex h-fit absolute bottom-0 left-0'>
-                <UserTooltip projectId={project.id} />
-            </div>
             {/* Mouse positions of all users, it's working but don't use it if you don't want to 
             make Pusher go insane also absolutely not recomended performance wise */}
             {/* <MousePositions 
@@ -172,6 +175,7 @@ const ProjectShowPage = () => {
                 currentUserId={auth.user?.id}
             /> */}
         </AuthenticatedLayout>
+        <UserTooltip projectId={project.id} />
         <FloatingDockWithLinks />
         </>
     );
