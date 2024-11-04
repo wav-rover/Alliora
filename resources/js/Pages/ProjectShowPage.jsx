@@ -170,10 +170,10 @@ const ProjectShowPage = () => {
             />
             {/* Mouse positions of all users, it's working but don't use it if you don't want to 
             make Pusher go insane also absolutely not recomended performance wise */}
-            {/* <MousePositions 
+            <MousePositions 
                 projectId={project.id}
                 currentUserId={auth.user?.id}
-            /> */}
+            />
         </AuthenticatedLayout>
         <UserTooltip projectId={project.id} />
         <FloatingDockWithLinks />
