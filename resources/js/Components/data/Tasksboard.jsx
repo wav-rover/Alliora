@@ -25,7 +25,6 @@ const TaskBoard = ({ tasks: initialTasks, projectId, onTaskModified, initialList
     const [tasks, setTasks] = useState(initialTasks);
     const [taskName, setTaskName] = useState('');
     const [taskDescription, setTaskDescription] = useState('');
-    const [newListTitle, setNewListTitle] = useState('');
     const [startDate, setStartDate] = useState('');
     const [endDate, setEndDate] = useState('');
     const [dependencies, setDependencies] = useState('');
@@ -33,6 +32,8 @@ const TaskBoard = ({ tasks: initialTasks, projectId, onTaskModified, initialList
     const [status, setStatus] = useState('pending');
     const [selectedTask, setSelectedTask] = useState(null);
     const [isDialogOpen, setIsDialogOpen] = useState(false);
+    const [editingListId, setEditingListId] = useState(null);
+    const [newListTitle, setNewListTitle] = useState('');
 
     const [lists, setLists] = useState(initialLists);
     useEffect(() => {
@@ -242,6 +243,23 @@ const TaskBoard = ({ tasks: initialTasks, projectId, onTaskModified, initialList
         setLists(updatedLists);
     };
 
+    const handleEditListTitle = (listId, currentTitle) => {
+        setEditingListId(listId);
+        setNewListTitle(currentTitle);
+    };
+    
+    const handleUpdateListTitle = async (listId) => {
+        try {
+            const response = await axios.put(`/lists/${listId}`, { title: newListTitle });
+            const updatedList = response.data;
+            setLists(lists.map(list => (list.id === listId ? updatedList : list)));
+            setEditingListId(null);
+            setNewListTitle('');
+        } catch (error) {
+            console.error("Erreur lors de la mise à jour de la liste :", error);
+        }
+    };
+
     const handleTaskClick = (task) => {
         setSelectedTask({ ...task });
         setIsDialogOpen(true);
@@ -287,7 +305,24 @@ const TaskBoard = ({ tasks: initialTasks, projectId, onTaskModified, initialList
                                     {(provided) => (
                                         <div ref={provided.innerRef} {...provided.draggableProps} {...provided.dragHandleProps}>
                                             <div className='p-3 bg-gray-500 m-2'>
-                                                <h3>{list.title}</h3>
+                                            {editingListId === list.id ? (
+            <input
+                type="text"
+                value={newListTitle}
+                onChange={(e) => setNewListTitle(e.target.value)}
+                onBlur={() => handleUpdateListTitle(list.id)}
+                onKeyDown={(e) => {
+                    if (e.key === 'Enter') {
+                        handleUpdateListTitle(list.id);
+                    }
+                }}
+                className="list-title-input"
+            />
+        ) : (
+            <h3 onClick={() => handleEditListTitle(list.id, list.title)} className="list-title">
+                {list.title}
+            </h3>
+        )}
                                                 <button onClick={() => handleDeleteList(list.id)}>Supprimer Liste</button>
                                                 <Droppable droppableId={list.id.toString()} type="task">
                                                     {(provided) => (

@@ -177,7 +177,7 @@ const ProjectShowPage = () => {
             
         <UserTooltip projectId={project.id} />
         </AuthenticatedLayout>
-        <FloatingDockWithLinks />
+        <FloatingDockWithLinks onListModified={onListModified} />
         </>
     );
 };
