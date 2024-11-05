@@ -1,26 +1,16 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { DragDropContext, Draggable, Droppable } from 'react-beautiful-dnd';
 import CreateTask from '../form/create-task';
 import TaskDetailDialog from './TaskDetailDialog';
 import { current } from 'tailwindcss/colors';
-import axios from 'axios';import { motion, AnimatePresence } from 'framer-motion'
-import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion"
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { Badge } from "@/components/ui/badge"
-import { ScrollArea } from "@/components/ui/scroll-area"
-import { ChevronDown, Plus, Trash2, CheckCircle, Clock, XCircle } from 'lucide-react'
-
-const statusColors = {
-  pending: 'bg-red-600 shadow-[0_0_10px_rgba(250,0,0,0.6)]',
-  'in progress': 'bg-cyan-500 drop-shadow-[0_0_10px_rgba(0,200,200,0.4)]',
-  finished: 'bg-emerald-600 drop-shadow-[0_0_10px_rgba(0,200,100,0.6)]'
-}
-
-const statusIcons = {
-  pending: XCircle,
-  'in progress': Clock,
-  finished: CheckCircle
-}
+import axios from 'axios';
+import { motion, AnimatePresence } from 'framer-motion';
+import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
+import { ScrollArea } from "@/components/ui/scroll-area";
+import { ChevronDown, Plus, Trash2, CheckCircle, Clock, XCircle } from 'lucide-react';
+import useOutsideClick from '../ui/useOutsideClick';
 const TaskBoard = ({ tasks: initialTasks, projectId, onTaskModified, initialLists, onListModified, users }) => {
     const [tasks, setTasks] = useState(initialTasks);
     const [taskName, setTaskName] = useState('');
@@ -37,13 +27,20 @@ const TaskBoard = ({ tasks: initialTasks, projectId, onTaskModified, initialList
 
     const [lists, setLists] = useState(initialLists);
     useEffect(() => {
-        setTasks(initialTasks.sort((a,b)=> a.position - b.position));
+        setTasks(initialTasks.sort((a, b) => a.position - b.position));
     }, [initialTasks]);
 
     useEffect(() => {
         setLists(initialLists.sort((a, b) => a.position - b.position));
     }, [initialLists]);
 
+    const inputRef = useRef(null);
+    useOutsideClick(inputRef, () => {
+        if (editingListId !== null) {
+            handleUpdateListTitle(editingListId);
+            setEditingListId(null);
+        }
+    });
 
     const onDragEnd = async (result) => {
         const { destination, source, draggableId, type } = result;
@@ -78,37 +75,32 @@ const TaskBoard = ({ tasks: initialTasks, projectId, onTaskModified, initialList
         if (type === 'task') {
             const sourceListId = source.droppableId;
             const destinationListId = destination.droppableId;
-        
+
             if (sourceListId !== destinationListId) {
-                // 2. Filtrer les tâches pour les listes source et destination
                 const sourceListTasks = tasks.filter(task => task.list_id === parseInt(sourceListId));
                 const destinationListTasks = tasks.filter(task => task.list_id === parseInt(destinationListId));
-        
-                // 3. Retirer la tâche déplacée de la liste source
+
                 const [movedTask] = sourceListTasks.splice(source.index, 1);
 
-                // 4. Mettre à jour la position et la liste de la tâche déplacée
                 movedTask.list_id = parseInt(destinationListId);
                 destinationListTasks.splice(destination.index, 0, movedTask);
 
-                // 5. Recalculer les positions dans les deux listes
                 const updatedSourceListTasks = sourceListTasks.map((task, index) => ({
                     ...task,
                     position: index,
                 }));
-        
+
                 const updatedDestinationListTasks = destinationListTasks.map((task, index) => ({
                     ...task,
                     position: index,
                 }));
 
-                // 6. Mettre à jour l'état global des tâches
                 const updatedTasks = tasks
                     .filter(task => task.list_id !== parseInt(sourceListId) && task.list_id !== parseInt(destinationListId))
                     .concat(updatedSourceListTasks, updatedDestinationListTasks);
 
                 setTasks(updatedTasks);
-        
+
                 try {
                     await axios.put('/tasks', {
                         tasks: updatedTasks.map(task => ({
@@ -125,19 +117,19 @@ const TaskBoard = ({ tasks: initialTasks, projectId, onTaskModified, initialList
                 const listTasks = tasks.filter(task => task.list_id === parseInt(sourceListId));
                 const [movedTask] = listTasks.splice(source.index, 1);
                 listTasks.splice(destination.index, 0, movedTask);
-        
+
                 console.log('Moved Task in Same List:', movedTask);
                 console.log('Updated List Tasks:', listTasks);
-        
+
                 const tasksWithUpdatedPositions = listTasks.map((task, index) => ({
                     ...task,
                     position: index
                 }));
-        
+
                 const updatedTasks = tasks
                     .filter(task => task.list_id !== parseInt(sourceListId))
                     .concat(tasksWithUpdatedPositions);
-        
+
                 setTasks(updatedTasks);
 
                 try {
@@ -154,8 +146,6 @@ const TaskBoard = ({ tasks: initialTasks, projectId, onTaskModified, initialList
                 }
             }
         }
-        
-        
     };
 
     const handleCreateTask = async (taskOrDependency, listId) => {
@@ -247,7 +237,7 @@ const TaskBoard = ({ tasks: initialTasks, projectId, onTaskModified, initialList
         setEditingListId(listId);
         setNewListTitle(currentTitle);
     };
-    
+
     const handleUpdateListTitle = async (listId) => {
         try {
             const response = await axios.put(`/lists/${listId}`, { title: newListTitle });
@@ -278,7 +268,7 @@ const TaskBoard = ({ tasks: initialTasks, projectId, onTaskModified, initialList
 
             dependentTasks.forEach(dependentTask => {
                 dependencies.push({ task: dependentTask, depth: currentDepth });
-                findRecursively(dependentTask.id, currentDepth + 1); // Incrémenter la profondeur
+                findRecursively(dependentTask.id, currentDepth + 1);
             });
         };
 
@@ -292,7 +282,6 @@ const TaskBoard = ({ tasks: initialTasks, projectId, onTaskModified, initialList
         return sortedDependencies;
     };
 
-
     return (
         <div>
             <h2>Tâches associées au projet</h2>
@@ -305,24 +294,25 @@ const TaskBoard = ({ tasks: initialTasks, projectId, onTaskModified, initialList
                                     {(provided) => (
                                         <div ref={provided.innerRef} {...provided.draggableProps} {...provided.dragHandleProps}>
                                             <div className='p-3 bg-gray-500 m-2'>
-                                            {editingListId === list.id ? (
-            <input
-                type="text"
-                value={newListTitle}
-                onChange={(e) => setNewListTitle(e.target.value)}
-                onBlur={() => handleUpdateListTitle(list.id)}
-                onKeyDown={(e) => {
-                    if (e.key === 'Enter') {
-                        handleUpdateListTitle(list.id);
-                    }
-                }}
-                className="list-title-input"
-            />
-        ) : (
-            <h3 onClick={() => handleEditListTitle(list.id, list.title)} className="list-title">
-                {list.title}
-            </h3>
-        )}
+                                                {editingListId === list.id ? (
+                                                    <input
+                                                        ref={inputRef}
+                                                        type="text"
+                                                        value={newListTitle}
+                                                        onChange={(e) => setNewListTitle(e.target.value)}
+                                                        onBlur={() => handleBlur(list.id)}
+                                                        onKeyDown={(e) => {
+                                                            if (e.key === 'Enter') {
+                                                                handleUpdateListTitle(list.id);
+                                                            }
+                                                        }}
+                                                        className="list-title-input"
+                                                    />
+                                                ) : (
+                                                    <h3 onClick={() => handleEditListTitle(list.id, list.title)} className="list-title">
+                                                        {list.title}
+                                                    </h3>
+                                                )}
                                                 <button onClick={() => handleDeleteList(list.id)}>Supprimer Liste</button>
                                                 <Droppable droppableId={list.id.toString()} type="task">
                                                     {(provided) => (
@@ -400,4 +390,4 @@ const TaskBoard = ({ tasks: initialTasks, projectId, onTaskModified, initialList
     );
 };
 
-export default TaskBoard;
+export default TaskBoard

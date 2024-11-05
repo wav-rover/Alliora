@@ -3,15 +3,23 @@ import { FloatingDock } from "@/components/ui/floating-dock";
 import { ChartLine, Terminal, LayoutTemplate, ListPlus, MessageSquareDashed } from "lucide-react";
 
 export function FloatingDockWithLinks({ onListModified }) {
-  // Tableau de noms aléatoires pour les nouvelles listes
-  const randomNames = ["Backlog", "In Progress", "Completed", "Review", "Ideas", "To Do", "Blocked"];
+  const randomNames = [
+    "Bright Beginnings",
+    "Barely Started tasks",
+    "Halfway... Sort Of",
+    "The impossible tasks",
+    "Incredible Ideas",
+    "Stuff to Do",
+    "No one wants to do those tasks",
+    "The Adventure List",
+    "Ideas for Inspiration",
 
-  // Fonction pour ajouter une liste avec un nom aléatoire
+  ];
   const addRandomList = () => {
     const randomName = randomNames[Math.floor(Math.random() * randomNames.length)];
 
     // Appelle `onListModified` pour créer la liste avec le nom sélectionné
-    onListModified('create', { title: randomName, position: Date.now() }); // La position pourrait être améliorée.
+    onListModified('create', { title: randomName, position: Date.now() });
   };
 
   const links = [
@@ -42,7 +50,7 @@ export function FloatingDockWithLinks({ onListModified }) {
       icon: (
         <MessageSquareDashed className="h-full w-full text-neutral-500 dark:text-neutral-300" />
       ),
-      href: "#",
+      href: "google.fr",
     },
     {
       title: "Aceternity UI",
@@ -60,7 +68,7 @@ export function FloatingDockWithLinks({ onListModified }) {
       icon: (
         <ListPlus
           className="h-full w-full text-neutral-500 dark:text-neutral-300 cursor-pointer"
-          onClick={addRandomList} // Appel de `addRandomList` au clic
+          onClick={addRandomList}
         />
       ),
       href: "#",
