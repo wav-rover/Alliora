@@ -47,6 +47,8 @@
         "clsx": "^2.1.1",
         "cmdk": "^1.0.0",
         "date-fns": "^3.6.0",
+        "embla-carousel-autoplay": "^8.3.1",
+        "embla-carousel-react": "^8.3.1",
         "framer-motion": "^11.9.0",
         "lodash": "^4.17.21",
         "lucide-react": "^0.446.0",
@@ -55,6 +57,8 @@
         "react-day-picker": "^8.10.1",
         "react-element-to-jsx-string": "^15.0.0",
         "react-router-dom": "^6.26.2",
+        "recharts": "^2.13.3",
+        "simplex-noise": "^4.0.3",
         "socket.io-client": "^4.8.0",
         "tailwind-merge": "^2.5.2",
         "tailwindcss-animate": "^1.0.7"

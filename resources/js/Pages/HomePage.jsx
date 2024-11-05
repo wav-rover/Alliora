@@ -53,21 +53,23 @@ export default function Welcome({ auth, laravelVersion, phpVersion }) {
                             Plans
                         </Link>
                     </div>
-                    <Button variant="outline" className="pointer-events-auto text-xs h-fit border-neutral-500 bg-background">
-                        {auth.user ? (
+                    {auth.user ? (
+                        <Link
+                            href={route('login')}>
+                            <Button variant="outline" className="pointer-events-auto text-xs h-fit border-neutral-500 bg-background">
+                                Dashboard
+                            </Button>
+                        </Link>
+                    ) : (
+                        <>
                             <Link
                                 href={route('login')}>
-                                Dashboard
-                            </Link>
-                        ) : (
-                            <>
-                                <Link
-                                    href={route('login')}>
+                                <Button variant="outline" className="pointer-events-auto text-xs h-fit border-neutral-500 bg-background">
                                     Get Started
-                                </Link>
-                            </>
-                        )}
-                    </Button>
+                                </Button>
+                            </Link>
+                        </>
+                    )}
                 </nav>
             </div>
             <header className="w-full h-screen relative overflow-hidden">
@@ -86,27 +88,28 @@ export default function Welcome({ auth, laravelVersion, phpVersion }) {
 
                 {/* Text overlay */}
                 <div className="pointer-events-none relative z-10 flex flex-col items-center justify-center w-full h-full">
-                    <div className="px-4 w-3/4 mx-auto">
-                    <div className="text-4xl mx-auto font-normal z-50 text-neutral-600 dark:text-neutral-400"> Build <FlipWords words={words} /> <br /> projects with Alliora Project Manager </div>
-                        <motion.div
-                            initial={{ opacity: 0, y: 20 }}
-                            animate={{ opacity: 1, y: 0 }}
-                            transition={{ duration: 1, delay: 2.5 }}
-                            className='pt-12'
-                        >
-                            <Button variant="outline" className="pointer-events-auto animate-shimmer bg-[linear-gradient(110deg,#000103,34%,#3588d065,45%,#000103)] bg-[length:200%_100%] transition-colors drop-shadow-[0_0_10px_rgba(200,200,200,0.3)]">
-                                {auth.user ? (
-                                    <Link href={route('login')}>
+                    <motion.div
+                        initial={{ opacity: 0, y: 20 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ duration: 1, delay: 0.3 }}
+                        className="px-4 w-3/4 mx-auto">
+                        <div className="text-4xl mx-auto font-normal z-50 text-neutral-600 dark:text-neutral-400"> Build <FlipWords words={words} /> <br /> projects with Alliora Project Manager </div>
+                        <div className='pt-12'>
+                            {auth.user ? (
+                                <Link href={route('login')}>
+                                    <Button variant="outline" className="pointer-events-auto animate-shimmer bg-[linear-gradient(110deg,#000103,34%,#3588d065,45%,#000103)] bg-[length:200%_100%] transition-colors drop-shadow-[0_0_10px_rgba(200,200,200,0.3)]">
                                         Enter Dashboard
-                                    </Link>
-                                ) : (
-                                    <Link href={route('login')}>
+                                    </Button>
+                                </Link>
+                            ) : (
+                                <Link href={route('login')}>
+                                    <Button variant="outline" className="pointer-events-auto animate-shimmer bg-[linear-gradient(110deg,#000103,34%,#3588d065,45%,#000103)] bg-[length:200%_100%] transition-colors drop-shadow-[0_0_10px_rgba(200,200,200,0.3)]">
                                         Get Started
-                                    </Link>
-                                )}
-                            </Button>
-                        </motion.div>
-                    </div>
+                                    </Button>
+                                </Link>
+                            )}
+                        </div>
+                    </motion.div>
                 </div>
             </header>
             <main className='px-10'>

@@ -1,95 +1,174 @@
-import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
-import { Head } from '@inertiajs/react';
-import { usePage } from "@inertiajs/react";
-import { SparklesCore } from "../Components/ui/sparkles";
+'use client'
+
+import { useEffect } from 'react'
+import { motion, useAnimate, stagger } from 'framer-motion'
+import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout'
+import { Head } from '@inertiajs/react'
+import { usePage } from "@inertiajs/react"
+import { Vortex } from '@/Components/ui/vortex'
+import DashboardChart from '@/Components/ui/dashboard-chart'
+import { Card, CardContent } from "@/components/ui/card"
+import {
+    Carousel,
+    CarouselContent,
+    CarouselItem,
+    CarouselNext,
+    CarouselPrevious,
+} from "@/components/ui/carousel"
+import Autoplay from "embla-carousel-autoplay"
+import { ScrollArea } from "@/components/ui/scroll-area"
+import { Calendar, Clock, Target, Users, CheckCircle, XCircle, AlertCircle } from 'lucide-react'
 
 export default function Dashboard() {
-    const { auth, recentProjects, upcomingTasks, projectCount } = usePage().props;
+    const { auth, recentProjects, upcomingTasks, projects, tasks } = usePage().props
+    const maxParticleCount = 1000
+    const particleCount = Math.min(projects.length * 50, maxParticleCount)
+
+    const [scope, animate] = useAnimate()
+
+    useEffect(() => {
+        animate([
+            ['.dashboard-item', { opacity: [0, 1], y: [20, 0] }, { duration: 0.5, delay: stagger(0.1) }],
+            ['.vortex-container', { scale: [0.9, 1] }, { duration: 0.5, delay: 0.5 }],
+            ['.welcome-text', { opacity: [0, 1], x: [-20, 0] }, { duration: 0.5, delay: 0.7 }],
+            ['.stats-item', { opacity: [0, 1], x: [20, 0] }, { duration: 0.3, delay: stagger(0.1, { startDelay: 0.8 }) }],
+        ])
+    }, [])
+
+    // Calculate project and task stats
+    const completedTasks = tasks.filter(task => task.status === 'finished').length
+    const productivityScore = Math.round((completedTasks / tasks.length) * 100) || 0
+    const mostActiveProject = projects.reduce((max, project) =>
+        tasks.filter(task => task.project_id === project.id).length >
+            tasks.filter(task => task.project_id === max.id).length ? project : max, projects[0])
+    const longestProjectName = projects.reduce((longest, project) =>
+        project.name.length > longest.length ? project.name : longest, '')
 
     return (
-        <AuthenticatedLayout
-            header={
-                <h2 className="text-xl font-semibold leading-tight text-gray-800">
-                    Dashboard
-                </h2>
-            }
-        >
+        <AuthenticatedLayout>
             <Head title="Dashboard" />
-
-            <div className="py-12 mx-auto space-y-3 w-3/4 h-full">
-                {/* Box de bienvenue */}
+            <motion.div
+                ref={scope}
+                className="py-12 px-4 mx-auto space-y-3 h-full"
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ duration: 0.5 }}
+            >
                 <div className="flex items-center gap-3 justify-between h-60">
-                    <div className="p-6 w-3/4 h-full bg-background border border-2 border-slate-100/5 rounded-xl">
+                    <motion.div className="dashboard-item p-6 min-w-1/4 h-full bg-background border border-2 border-slate-100/5 rounded-xl">
                         <div className="text-white">
-                            <p className='font-bold text-4xl'>Welcome back <span className='drop-shadow-[0_0_10px_rgba(200,255,255,0.3)]'>{auth.user?.name}</span> !</p>
+                            <motion.p className='welcome-text font-bold text-3xl text-pretty mb-4'>Welcome back <span className='drop-shadow-[0_0_10px_rgba(200,255,255,0.3)]'>{auth.user?.name}</span> !</motion.p>
+                            <motion.div className="stats-item flex items-center gap-2">
+                                <Target className="w-5 h-5 text-primary" />
+                                <p>Productivity Score: {productivityScore}%</p>
+                            </motion.div>
+                            <motion.div className="stats-item flex items-center gap-2 mt-2">
+                                <Users className="w-5 h-5 text-secondary" />
+                                <p>Active in {projects.length} projects</p>
+                            </motion.div>
                         </div>
-                    </div>
-                    
-                    <div className="relative overflow-hidden mx-auto h-full w-1/4 bg-background/50 border border-2 border-background rounded-xl">
-                        <SparklesCore
-                            background="transparent"
-                            minSize={0.4}
-                            maxSize={1}
-                            particleDensity={500}
-                            className="absolute inset-0 w-full h-full"
-                            particleColor="#FFFFFF"
-                        />
-                        <div className='relative z-10 flex flex-col justify-center items-center h-full'>
-                            <p className='text-7xl drop-shadow-[0_0_10px_rgba(200,255,255,0.3)]'>{projectCount}</p>
-                            <p>Projets rejoints</p>
-                        </div>
-                    </div>
-                    </div>
+                    </motion.div>
 
-                    {/* Box des projets récents */}
-                <div className='flex items-center gap-3 justify-between h-60'>
-                    <div className='w-1/4 flex flex-col justify-around h-full space-y-3'>
-                        <div className="p-6 w-full h-full bg-neutral-800 rounded-xl">
-                            <div className="text-white">
-                                <h3 className="text-xl font-semibold mb-2">5 Derniers Projets</h3>
-                                <ul className="space-y-1">
-                                    {recentProjects.map(project => (
-                                        <li key={project.id} className="text-sm">
-                                            {project.name} - {new Date(project.created_at).toLocaleDateString()}
-                                        </li>
-                                    ))}
-                                </ul>
-                            </div>
-                        </div>
-
-                        {/* Tâches à venir */}
-                        <div className="p-6 w-full h-full bg-neutral-900 rounded-xl">
-                            <div className="text-white">
-                                <h3 className="text-xl font-semibold mb-2">Tâches à venir</h3>
-                                <ul className="space-y-1">
-                                    {upcomingTasks.slice(0, 3).map(task => (
-                                        <li key={task.id} className="text-sm">
-                                            {recentProjects.find(project => project.id === task.project_id)?.name} - 
-                                            {task.name} - {new Date(task.start_date).toLocaleDateString()}
-                                        </li>
-                                    ))}
-                                </ul>
-                            </div>
-                        </div>
-                    </div>
-
-                    {/* Informations générales */}
-                    <div className="p-6 mx-auto h-full w-1/4 bg-neutral-900 rounded-xl">
+                    <motion.div className="dashboard-item p-6 w-2/4 h-full bg-background border border-2 border-slate-100/5 rounded-xl">
                         <div className="text-white">
-                            <h3 className="text-xl font-semibold mb-2">Informations générales</h3>
-                            {/* Place d'autres informations ou statistiques */}
+                            <h3 className="text-xl font-semibold mb-4">Your Project Insights</h3>
+                            <motion.p className="stats-item mb-2">🏆 Most Active Project: "{mostActiveProject.name}" with {tasks.filter(task => task.project_id === mostActiveProject.id).length} tasks</motion.p>
+                            <motion.p className="stats-item mb-2">📏 Longest Project Name: "{longestProjectName}" ({longestProjectName.length} characters)</motion.p>
+                            <motion.p className="stats-item mb-2">🎨 Project Palette: {projects.map(project => `${project.name.charAt(0)}`).join('')} (first letter of each project)</motion.p>
                         </div>
-                    </div>
+                    </motion.div>
 
-                    {/* Espace pour d'autres contenus */}
-                    <div className="p-6 mx-auto h-full w-2/4 bg-neutral-900 rounded-xl">
-                        <div className="text-white">
-                            <h3 className="text-xl font-semibold mb-2">Statistiques de performance</h3>
-                            {/* Placeholder pour des graphiques ou KPIs */}
-                        </div>
-                    </div>
+                    <motion.div className="vortex-container dashboard-item overflow-hidden mx-auto h-full w-1/4 bg-background/50 border border-2 border-background rounded-xl">
+                        <Vortex
+                            backgroundColor="transparent"
+                            rangeY={100}
+                            particleCount={particleCount}
+                            baseHue={150}
+                            className='flex justify-center items-center h-full'
+                        >
+                            <motion.div
+                                className='relative z-10 flex flex-col justify-center items-center h-full'
+                                initial={{ scale: 0 }}
+                                animate={{ scale: 1 }}
+                                transition={{ type: 'spring', stiffness: 260, damping: 20, delay: 1 }}
+                            >
+                                <p className='text-7xl drop-shadow-[0_0_10px_rgba(200,255,255,0.3)]'>{projects.length}</p>
+                                <p>joined projects</p>
+                            </motion.div>
+                        </Vortex>
+                    </motion.div>
                 </div>
-            </div>
+
+                <div className='flex items-center gap-3 justify-between h-60'>
+                    <motion.div className='dashboard-item w-1/4 flex flex-col justify-around h-full space-y-3'>
+                        <motion.div
+                            className="p-6 w-full h-full bg-neutral-900 rounded-xl"
+                            
+                        >
+                            <div className="text-white">
+                                <h3 className="text-sm font-semibold mb-2">Task Countdown</h3>
+                                {upcomingTasks && upcomingTasks.length > 0 ? (
+                                    <div>
+                                        <p className="text-lg font-bold">{upcomingTasks[0].name}</p>
+                                        <p className="text-sm">Due in: {Math.ceil((new Date(upcomingTasks[0].end_date) - new Date()) / (1000 * 60 * 60 * 24))} days</p>
+                                        <p className="text-xs mt-2">That's about {Math.ceil((new Date(upcomingTasks[0].end_date) - new Date()) / (1000 * 60)) * 2} coffee breaks ☕</p>
+                                    </div>
+                                ) : (
+                                    <p>No upcoming tasks. Time to invent a new project!</p>
+                                )}
+                            </div>
+                        </motion.div>
+                        <motion.div
+                            className="p-7 w-full h-full bg-neutral-800 rounded-xl"
+                            
+                        >
+                            <div className="text-white flex items-center justify-start">
+                                <p className='p-0'>{tasks.filter(task => task.status === 'pending' || task.status === 'in progress').length} remaining tasks</p>
+                            </div>
+                        </motion.div>
+                    </motion.div>
+                    <motion.div className="dashboard-item h-full w-1/4 rounded-xl">
+                        <Carousel className="h-full" plugins={[
+                            Autoplay({
+                                delay: 3000,
+                            }),
+                        ]}>
+                            <CarouselContent className="h-full">
+                                {recentProjects.map(project => (
+                                    <CarouselItem key={project.id}>
+                                        <motion.div
+                                            className="flex flex-col justify-center rounded-xl items-center border-0 h-60 bg-background min-h-36"
+                                            
+                                        >
+                                            <div className="flex flex-col justify-start items-start p-10 h-full">
+                                                <h3 className="text-sm font-semibold mb-4">Recent projects</h3>
+                                                <h4 className="text-lg font-semibold">{project.name}</h4>
+                                                <p>Created: {new Date(project.created_at).toLocaleDateString()}</p>
+                                                <p>Team: {project.team?.name}</p>
+                                                <p className="mt-2 text-sm italic">Tasks: {tasks.filter(task => task.project_id === project.id).length}</p>
+                                                <p className="text-xs">Project Mood: {generateProjectMood(project, tasks)}</p>
+                                            </div>
+                                        </motion.div>
+                                    </CarouselItem>
+                                ))}
+                            </CarouselContent>
+                        </Carousel>
+                    </motion.div>
+                    <motion.div className="dashboard-item p-6 mx-auto h-full w-2/4 bg-background rounded-xl">
+                        <div className="text-white">
+                            <DashboardChart projects={projects} />
+                        </div>
+                    </motion.div>
+                </div>
+            </motion.div>
         </AuthenticatedLayout>
-    );
+    )
+}
+
+function generateProjectMood(project, tasks) {
+    const projectTasks = tasks.filter(task => task.project_id === project.id)
+    const completedRatio = projectTasks.filter(task => task.status === 'completed').length / projectTasks.length
+    if (completedRatio > 0.7) return '😎 Cruising'
+    if (completedRatio > 0.4) return '🤓 Focused'
+    return '🤔 Contemplative'
 }
