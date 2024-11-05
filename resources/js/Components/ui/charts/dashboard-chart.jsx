@@ -3,7 +3,7 @@ import {
   ChartContainer,
   ChartTooltip,
   ChartTooltipContent,
-} from "@/components/ui/chart"
+} from "@/Components/ui/charts/chart"
 import { TrendingUp } from "lucide-react"
 import { TrendingDown } from 'lucide-react';
 import { Area, AreaChart, CartesianGrid, XAxis, Tooltip } from "recharts"
@@ -91,13 +91,13 @@ export function DashboardChart({ projects }) {
         <div className='flex items-center'>
           {actualPercentage > 0 ? (
             <>
-            <TrendingUp className='text-green-500' />
-            <p className='text-xs text-green-500'>{actualPercentage.toFixed(2)}%</p>
+            <TrendingUp className='h-5 text-emerald-600' />
+            <p className='text-xs text-emerald-600'>{actualPercentage.toFixed(2)}%</p>
             </>
           ) : (
             <>
-            <TrendingDown className='h-5 text-red-500' />
-            <p className='text-xs text-red-500'>{actualPercentage.toFixed(2)}%</p>
+            <TrendingDown className='h-5 text-red-600' />
+            <p className='text-xs text-red-600'>{actualPercentage.toFixed(2)}%</p>
             </>
           )}
           

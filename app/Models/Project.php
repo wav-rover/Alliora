@@ -20,9 +20,9 @@ class Project extends Model
 
     // Relation avec l'équipe
     public function team()
-    {
-        return $this->belongsTo(Team::class)->withDefault();
-    }
+{
+    return $this->belongsTo(Team::class);
+}
 
 
     // Relation avec les utilisateurs via la table pivot project_user

@@ -6,7 +6,7 @@ import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout'
 import { Head } from '@inertiajs/react'
 import { usePage } from "@inertiajs/react"
 import { Vortex } from '@/Components/ui/vortex'
-import DashboardChart from '@/Components/ui/dashboard-chart'
+import DashboardChart from '@/Components/ui/charts/dashboard-chart'
 import { Card, CardContent } from "@/components/ui/card"
 import {
     Carousel,
@@ -29,13 +29,25 @@ export default function Dashboard() {
     useEffect(() => {
         animate([
             ['.dashboard-item', { opacity: [0, 1], y: [20, 0] }, { duration: 0.5, delay: stagger(0.1) }],
+            ['.welcome-text', { opacity: [0, 1], x: [-20, 0] }, { duration: 0.2 }],
+            ['.stats-item', { opacity: [0, 1], x: [20, 0] }, { duration: 0.3, delay: stagger(0.1, { startDelay: 0.4 }) }],
             ['.vortex-container', { scale: [0.9, 1] }, { duration: 0.5, delay: 0.5 }],
-            ['.welcome-text', { opacity: [0, 1], x: [-20, 0] }, { duration: 0.5, delay: 0.7 }],
-            ['.stats-item', { opacity: [0, 1], x: [20, 0] }, { duration: 0.3, delay: stagger(0.1, { startDelay: 0.8 }) }],
         ])
     }, [])
 
+    const statusColors = {
+        pending: 'bg-red-600 drop-shadow-[0_0_10px_rgba(250,0,0,0.2)]',
+        'in progress': 'bg-cyan-500 drop-shadow-[0_0_10px_rgba(0,200,200,0.4)]',
+        finished: 'bg-emerald-600 drop-shadow-[0_0_10px_rgba(0,200,100,0.6)]'
+      };
+
     // Calculate project and task stats
+        const closestTask = tasks.length > 0 ? tasks.reduce((closest, task) => {
+        const currentDifference = Math.abs(new Date(task.end_date) - new Date());
+        const closestDifference = Math.abs(new Date(closest.end_date) - new Date());
+        return currentDifference < closestDifference ? task : closest;
+    }, tasks[0]) : null;
+      
     const completedTasks = tasks.filter(task => task.status === 'finished').length
     const productivityScore = Math.round((completedTasks / tasks.length) * 100) || 0
     const mostActiveProject = projects.reduce((max, project) =>
@@ -107,11 +119,15 @@ export default function Dashboard() {
                         >
                             <div className="text-white">
                                 <h3 className="text-sm font-semibold mb-2">Task Countdown</h3>
-                                {upcomingTasks && upcomingTasks.length > 0 ? (
+                                {tasks && tasks.length > 0 ? (
                                     <div>
-                                        <p className="text-lg font-bold">{upcomingTasks[0].name}</p>
-                                        <p className="text-sm">Due in: {Math.ceil((new Date(upcomingTasks[0].end_date) - new Date()) / (1000 * 60 * 60 * 24))} days</p>
-                                        <p className="text-xs mt-2">That's about {Math.ceil((new Date(upcomingTasks[0].end_date) - new Date()) / (1000 * 60)) * 2} coffee breaks ☕</p>
+                                        <p className="text-lg font-bold">{closestTask.name} in <a href={`/projects/${closestTask.project_id}`}>{projects.find(project => project.id === closestTask.project_id)?.name}</a></p>
+                                        <div className='flex items-center'>
+                                            <p className={`mr-2 px-3 py-1 rounded-full text-xs w-fit font-semibold capitalize transition-all duration-200 ${statusColors[closestTask.status]}`}
+                                            >{closestTask.status}</p>
+                                            <p className="text-sm">Due in: {Math.ceil((new Date(closestTask.end_date) - new Date()) / (1000 * 60 * 60 * 24))} days</p>
+                                            </div>
+                                        <p className="text-xs mt-2">That's about {Math.ceil((new Date(closestTask.end_date) - new Date()) / (100000 * 60)) * 2} coffee breaks ☕</p>
                                     </div>
                                 ) : (
                                     <p>No upcoming tasks. Time to invent a new project!</p>
@@ -135,21 +151,22 @@ export default function Dashboard() {
                         ]}>
                             <CarouselContent className="h-full">
                                 {recentProjects.map(project => (
-                                    <CarouselItem key={project.id}>
+                                    
+                                    <CarouselItem key={project.id} >
+                                        <a className='w-full'href={`/projects/${project.id}`}> 
                                         <motion.div
-                                            className="flex flex-col justify-center rounded-xl items-center border-0 h-60 bg-background min-h-36"
-                                            
-                                        >
+                                            className="flex flex-col justify-center rounded-xl items-center border-0 h-60 bg-background min-h-36">
                                             <div className="flex flex-col justify-start items-start p-10 h-full">
                                                 <h3 className="text-sm font-semibold mb-4">Recent projects</h3>
                                                 <h4 className="text-lg font-semibold">{project.name}</h4>
                                                 <p>Created: {new Date(project.created_at).toLocaleDateString()}</p>
                                                 <p>Team: {project.team?.name}</p>
                                                 <p className="mt-2 text-sm italic">Tasks: {tasks.filter(task => task.project_id === project.id).length}</p>
-                                                <p className="text-xs">Project Mood: {generateProjectMood(project, tasks)}</p>
                                             </div>
                                         </motion.div>
+                                        </a>
                                     </CarouselItem>
+                                    
                                 ))}
                             </CarouselContent>
                         </Carousel>
@@ -163,12 +180,4 @@ export default function Dashboard() {
             </motion.div>
         </AuthenticatedLayout>
     )
-}
-
-function generateProjectMood(project, tasks) {
-    const projectTasks = tasks.filter(task => task.project_id === project.id)
-    const completedRatio = projectTasks.filter(task => task.status === 'completed').length / projectTasks.length
-    if (completedRatio > 0.7) return '😎 Cruising'
-    if (completedRatio > 0.4) return '🤓 Focused'
-    return '🤔 Contemplative'
 }

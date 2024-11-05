@@ -1,16 +1,17 @@
 'use client'
 
-import React, { useState } from 'react'
-import { Dialog, DialogTrigger, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog"
-import { Input } from '@/Components/ui/input'
-import { Button } from '@/components/ui/button'
-import { Textarea } from '@/components/ui/textarea'
-import { ScrollArea } from "@/components/ui/scroll-area"
-import { Calendar } from "@/components/ui/calendar"
-import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover"
-import { format } from "date-fns"
-import { CalendarIcon, Plus, X } from "lucide-react"
-import { motion, AnimatePresence } from "framer-motion"
+import React, { useState } from 'react';
+import { Dialog, DialogTrigger, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog";
+import { Input } from '@/Components/ui/input';
+import { Button } from '@/components/ui/button';
+import { Textarea } from '@/components/ui/textarea';
+import { ScrollArea } from "@/components/ui/scroll-area";
+import { Calendar } from "@/components/ui/calendar";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import { format } from "date-fns";
+import { CalendarIcon, Plus } from "lucide-react";
+import { motion, AnimatePresence } from "framer-motion";
+import Toast from '../ui/custom-toast';
 
 const statusColors = {
   pending: 'bg-red-600 drop-shadow-[0_0_10px_rgba(250,0,0,0.2)]',
@@ -34,41 +35,52 @@ export default function CreateTask({
   list,
   tasks
 }) {
-  const [isDialogOpen, setIsDialogOpen] = useState(false)
+  const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const [toastMessage, setToastMessage] = useState('');
+  const [toastType, setToastType] = useState('info');
+
   const handleSubmit = (e) => {
-    e.preventDefault()
-    handleCreateTask(e, listId)
-    setIsDialogOpen(false)
+    e.preventDefault();
+
+    // Vérifie si la date de fin est inférieure à la date de début
+    if (endDate < startDate) {
+      setToastMessage("La date de fin ne peut pas être inférieure à la date de début.");
+      setToastType("error");
+      return; // Ne pas soumettre le formulaire
+    }
+
+    handleCreateTask(e, listId);
+    setIsDialogOpen(false);
   }
 
-  
   return (
-    <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
-      <DialogTrigger asChild>
-        <Button
-          onClick={() => setIsDialogOpen(true)}
-          className="bg-neutral-800 hover:bg-neutral-700 text-white rounded-full w-10 h-10 flex items-center justify-center shadow-lg hover:shadow-xl transition-all duration-300"
-        >
-          <Plus className="w-6 h-6" />
-        </Button>
-      </DialogTrigger>
-      <DialogContent className=" max-w-3xl w-full">
-        <motion.div
-          initial={{ opacity: 0, y: -20 }}
-          animate={{ opacity: 1, y: 0 }}
-          exit={{ opacity: 0, y: 20 }}
-          transition={{ duration: 0.3 }}
-        >
-          <DialogHeader>
-            <DialogTitle className="text-2xl font-bold mb-4">
-              Add a task to{' '}
-              <span className='rounded-md bg-neutral-800 bg-opacity-20 pt-2 pb-1 px-1'>
-                <span className="bg-gradient-to-r from-slate-400 via-white to-black-300 text-transparent bg-clip-text font-bold drop-shadow-[0_0_10px_rgba(200,255,255,0.6)]">
-                  {list.title}
+    <>
+      <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
+        <DialogTrigger asChild>
+          <Button
+            onClick={() => setIsDialogOpen(true)}
+            className="bg-neutral-800 hover:bg-neutral-700 text-white rounded-full w-10 h-10 flex items-center justify-center shadow-lg hover:shadow-xl transition-all duration-300"
+          >
+            <Plus className="w-6 h-6" />
+          </Button>
+        </DialogTrigger>
+        <DialogContent className=" max-w-3xl w-full">
+          <motion.div
+            initial={{ opacity: 0, y: -20 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: 20 }}
+            transition={{ duration: 0.3 }}
+          >
+            <DialogHeader>
+              <DialogTitle className="text-2xl font-bold mb-4">
+                Add a task to{' '}
+                <span className='rounded-md bg-neutral-800 bg-opacity-20 pt-2 pb-1 px-1'>
+                  <span className="bg-gradient-to-r from-slate-400 via-white to-black-300 text-transparent bg-clip-text font-bold drop-shadow-[0_0_10px_rgba(200,255,255,0.6)]">
+                    {list.title}
+                  </span>
                 </span>
-              </span>
-            </DialogTitle>
-          </DialogHeader>
+              </DialogTitle>
+            </DialogHeader>
             <form onSubmit={handleSubmit} className="space-y-4">
               <Input
                 type="text"
@@ -133,8 +145,8 @@ export default function CreateTask({
                       onClick={() => setStatus(key)}
                       className={`
                         px-3 py-1 rounded-full text-xs font-semibold capitalize transition-all duration-200
-                        ${status === key 
-                          ? `${color} text-white` 
+                        ${status === key
+                          ? `${color} text-white`
                           : 'bg-neutral-800 text-neutral-300 hover:bg-neutral-700'}
                       `}
                       whileHover={{ scale: 1.05 }}
@@ -145,19 +157,24 @@ export default function CreateTask({
                   ))}
                 </div>
               </div>
-              
-            
-          <DialogFooter className="mt-4">
-            <Button
-              type="submit"
-              className="bg-neutral-800 hover:bg-neutral-700 text-white px-6 py-2 rounded-md shadow-lg hover:shadow-xl transition-all duration-300"
-            >
-              Add Task
-            </Button>
-          </DialogFooter>
-          </form>
-        </motion.div>
-      </DialogContent>
-    </Dialog>
-  )
+              <Toast
+                message={toastMessage}
+                onClose={() => setToastMessage('')}
+                type={toastType}
+              />
+
+              <DialogFooter className="mt-4">
+                <Button
+                  type="submit"
+                  className="bg-neutral-800 hover:bg-neutral-700 text-white px-6 py-2 rounded-md shadow-lg hover:shadow-xl transition-all duration-300"
+                >
+                  Add Task
+                </Button>
+              </DialogFooter>
+            </form>
+          </motion.div>
+        </DialogContent>
+      </Dialog>
+    </>
+  );
 }
