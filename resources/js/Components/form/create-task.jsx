@@ -44,7 +44,7 @@ export default function CreateTask({
 
     // Vérifie si la date de fin est inférieure à la date de début
     if (endDate < startDate) {
-      setToastMessage("La date de fin ne peut pas être inférieure à la date de début.");
+      setToastMessage("End date cannot be earlier than start date.");
       setToastType("error");
       return; // Ne pas soumettre le formulaire
     }

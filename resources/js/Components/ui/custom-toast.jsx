@@ -39,7 +39,7 @@ function Toast({ message, onClose, type = 'info', duration = 3000 }) {
           animate={{ opacity: 1, y: 0 }}
           exit={{ opacity: 0, y: -20 }}
           transition={{ duration: 0.3 }}
-          className="fixed mx-auto p-4 py-2 rounded-xl shadow-md bg-neutral-800/50 text-white flex items-center space-x-4"
+          className="fixed mx-auto p-2 py-2 rounded-xl shadow-md bg-neutral-800/50 text-white flex items-center space-x-4"
         >
           {/* Icône avec couleur dynamique */}
           <div className={`p-1 px-2 rounded-xl ${iconStyles[type]}`}>

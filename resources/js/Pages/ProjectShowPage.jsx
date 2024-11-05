@@ -174,8 +174,9 @@ const ProjectShowPage = () => {
                 projectId={project.id}
                 currentUserId={auth.user?.id}
             />
-        </AuthenticatedLayout>
+            
         <UserTooltip projectId={project.id} />
+        </AuthenticatedLayout>
         <FloatingDockWithLinks />
         </>
     );

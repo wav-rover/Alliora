@@ -54,7 +54,7 @@ export const AnimatedTooltip = ({ users }) => {
 
 
   return (
-      <div className='scale-75 ml-10 mb-5 flex absolute bottom-0 left-20'>
+      <div className='scale-75 ml-10  mb-5 flex absolute bottom-0 left-0'>
           {users.map((user, idx) => (
               <div
                   className="-mr-2 relative group z-10"
