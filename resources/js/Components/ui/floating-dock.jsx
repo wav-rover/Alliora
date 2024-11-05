@@ -76,8 +76,13 @@ const FloatingDockDesktop = ({
         "mx-auto hidden md:flex h-14 gap-4 items-end  rounded-3xl bg-gray-50 dark:bg-neutral-900 px-3 pb-2",
         className
       )}>
-      {items.map((item) => (
-        <IconContainer mouseX={mouseX} key={item.title} {...item} />
+      {items.map((item, index) => (
+        <IconContainer
+          mouseX={mouseX}
+          key={item.title}
+          isLast={index === items.length - 1}
+          {...item}
+        />
       ))}
     </motion.div>)
   );
@@ -87,7 +92,8 @@ function IconContainer({
   mouseX,
   title,
   icon,
-  href
+  href,
+  isLast
 }) {
   let ref = useRef(null);
 
@@ -134,7 +140,12 @@ function IconContainer({
         style={{ width, height }}
         onMouseEnter={() => setHovered(true)}
         onMouseLeave={() => setHovered(false)}
-        className="aspect-square rounded-full bg-gray-200 dark:bg-neutral-800 flex items-center justify-center relative">
+        className={cn(
+          "aspect-square rounded-full flex items-center justify-center relative",
+          "bg-gray-200 dark:bg-neutral-800",
+          isLast && "animate-shimmer bg-[linear-gradient(110deg,#000103,45%,#1e2631,55%,#000103)] bg-[length:200%_100%] text-slate-400 transition-colors"
+        )}
+        >
         <AnimatePresence>
           {hovered && (
             <motion.div

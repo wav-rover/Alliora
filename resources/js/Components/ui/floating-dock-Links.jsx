@@ -74,10 +74,26 @@ export function FloatingDockWithLinks({ onListModified }) {
       href: "#",
     },
   ];
-  
+
   return (
     <div className="absolute bottom-0 left-1/2 transform -translate-x-1/2 w-fit flex items-center z-0 justify-center mb-5">
-      <FloatingDock items={links} />
+          <div className="relative z-50">
+            <div className="relative z-50">
+          <FloatingDock items={links} />
+          </div>
+          <div className="absolute inset-x-0 top-full flex justify-center">
+              <div className="bg-gradient-to-r from-transparent via-indigo-500 to-transparent h-[2px] w-3/4 blur-sm" />
+          </div>
+          <div className="absolute inset-x-0 top-full flex justify-center">
+              <div className="bg-gradient-to-r from-transparent via-indigo-500 to-transparent h-px w-3/4" />
+          </div>
+          <div className="absolute inset-x-0 top-full flex justify-center">
+              <div className="bg-gradient-to-r from-transparent via-sky-500 to-transparent h-[2px] w-1/4 blur-sm" />
+          </div>
+          <div className="absolute inset-x-0 top-full flex justify-center">
+              <div className="bg-gradient-to-r from-transparent via-sky-500 to-transparent h-px w-1/4" />
+          </div>
+      </div>
     </div>
   );
 }
