@@ -3,6 +3,7 @@ import React from 'react';
 import { Head } from '@inertiajs/react';
 import Sidebar from '../Components/ui/sidebar';
 import { AuroraBackground } from '@/Components/ui/aurora-background';
+import DropDownCustom from '@/Components/ui/drop-down-custom';
 
 const AuthenticatedLayout = ({ children }) => {
     return (
@@ -21,6 +22,7 @@ const AuthenticatedLayout = ({ children }) => {
                     </div>
                 </div>
             </div>
+            <DropDownCustom />
         </AuroraBackground>
     );
 };
