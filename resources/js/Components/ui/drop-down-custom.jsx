@@ -36,7 +36,7 @@ export default function DropDownCustom() {
     ]
 
     return (
-        <div className="fixed top-5 right-10" ref={dropdownRef}>
+        <div className="fixed top-5 right-10 z-50" ref={dropdownRef}>
             <AnimatePresence>
                 {isOpen && (
                     <motion.div
@@ -45,7 +45,7 @@ export default function DropDownCustom() {
                         exit={{ opacity: 0, scale: 0 }}
                         transition={{ duration: 0.2, ease: [0.23, 1, 0.32, 1] }}
                         style={{ originX: 1, originY: 0 }}
-                        className="absolute text-gray-300 top-0 right-0 w-80 h-96 bg-neutral-900/95 rounded-2xl shadow-xl overflow-hidden z-10"
+                        className="absolute text-gray-300 top-0 right-0 w-80 h-82 bg-neutral-900/95 rounded-2xl shadow-xl overflow-hidden z-10"
                     >
                         <div className="p-4 pb-2">
                             <h2 className="text-lg font-semibold">Notifications</h2>

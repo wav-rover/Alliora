@@ -5,9 +5,11 @@ import TaskBoard from '../Components/data/TasksBoard';
 import { UserTooltip, MousePositions } from '../Components/data/UsersOnProject';
 import axios from 'axios';
 import { FloatingDockWithLinks } from '../Components/ui/floating-dock-Links'
+import { motion, AnimatePresence } from 'framer-motion'
+import TeamChat from '@/Components/data/Team-chat';
 
 const ProjectShowPage = () => {
-    
+
     const { auth } = usePage().props;
 
     const { project: initialProject, users: initialUsers } = usePage().props;
@@ -16,7 +18,7 @@ const ProjectShowPage = () => {
 
     useEffect(() => {
         console.log('Écoute du canal privé pour les tâches du projet :', project.id);
-        
+
         const taskListener = window.Echo.private('task.' + project.id)
             .listen('.task.new', function (e) {
                 console.log('Nouvelle tâche reçue :', e.task);
@@ -44,7 +46,7 @@ const ProjectShowPage = () => {
             .listen('.tasks.updated', function (e) {
                 setProject((prevProject) => ({
                     ...prevProject,
-                    tasks: e.tasks, 
+                    tasks: e.tasks,
                 }));
             })
             .listen('.list.created', function (e) {
@@ -72,13 +74,13 @@ const ProjectShowPage = () => {
             .listen('.lists.updated', function (e) {
                 setProject((prevProject) => ({
                     ...prevProject,
-                    lists: e.lists, 
+                    lists: e.lists,
                 }));
             })
             .error(function (error) {
                 console.error('Erreur lors de l\'écoute du canal privé :', error);
             });
-    
+
         return () => {
             taskListener.stopListening();
         };
@@ -119,7 +121,7 @@ const ProjectShowPage = () => {
             console.error('Erreur lors de la modification de la tâche:', error);
         }
     };
-    
+
     const onListModified = async (action, listData) => {
         try {
             if (action === 'create') {
@@ -129,7 +131,7 @@ const ProjectShowPage = () => {
                     position: listData.position
                 });
                 console.log('Liste créée:', response.data);
-               }
+            }
             if (action === 'edit') {
                 const response = await axios.put(`/lists/${listData.id}`, {
                     title: listData.title,
@@ -158,26 +160,34 @@ const ProjectShowPage = () => {
 
     return (
         <>
-        <AuthenticatedLayout>
-            <Head title="Project Show" />
-            <TaskBoard 
-                tasks={project.tasks} 
-                projectId={project.id} 
-                onTaskModified={onTaskModified} 
-                initialLists={project.lists} 
-                onListModified={onListModified}
-                users={users}
-            />
-            {/* Mouse positions of all users, it's working but don't use it if you don't want to 
+            <AuthenticatedLayout>
+                <Head title="Project Show" />
+                <TaskBoard
+                    tasks={project.tasks}
+                    projectId={project.id}
+                    onTaskModified={onTaskModified}
+                    initialLists={project.lists}
+                    onListModified={onListModified}
+                    users={users}
+                />
+                {/* Mouse positions of all users, it's working but don't use it if you don't want to 
             make Pusher go insane also absolutely not recomended performance wise */}
-            <MousePositions 
-                projectId={project.id}
-                currentUserId={auth.user?.id}
-            />
-            
-        <UserTooltip projectId={project.id} />
-        </AuthenticatedLayout>
-        <FloatingDockWithLinks onListModified={onListModified} />
+                <MousePositions
+                    projectId={project.id}
+                    currentUserId={auth.user?.id}
+                />
+
+                <UserTooltip projectId={project.id} />
+            </AuthenticatedLayout>
+            <motion.div
+                initial={{ opacity: 0, scale: 0 }}
+                animate={{ opacity: 1, scale: 1 }}
+                exit={{ opacity: 0, scale: 0 }}
+                transition={{ duration: 0.5, ease: [0.23, 1, 0.32, 1] }}
+            >
+                <FloatingDockWithLinks onListModified={onListModified} />
+            </motion.div>
+            <TeamChat />
         </>
     );
 };
