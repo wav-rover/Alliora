@@ -57,12 +57,12 @@ export default function CreateTask({
     <>
       <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
         <DialogTrigger asChild>
-          <Button
+          <button
             onClick={() => setIsDialogOpen(true)}
-            className="bg-neutral-800 hover:bg-neutral-700 text-white rounded-full w-10 h-10 flex items-center justify-center shadow-lg hover:shadow-xl transition-all duration-300"
+            className="mx-auto text-white rounded-full w-full h-10 flex items-center justify-center shadow-lg hover:shadow-xl transition-all duration-300"
           >
-            <Plus className="w-6 h-6" />
-          </Button>
+            <Plus className="w-5" />
+          </button>
         </DialogTrigger>
         <DialogContent className=" max-w-3xl w-full">
           <motion.div

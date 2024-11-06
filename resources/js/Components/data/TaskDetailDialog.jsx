@@ -32,6 +32,7 @@ export default function TaskDetailDialog({
   isOpen = false,
   onClose = () => { },
   handleCreateTask = () => { },
+  handleDeleteTask = () => { }
 }) {
   const [isEditingName, setIsEditingName] = useState(false);
   const [isEditingDescription, setIsEditingDescription] = useState(false);
@@ -47,7 +48,6 @@ export default function TaskDetailDialog({
   const [open, setOpen] = useState(false);
 
   const handleCreateDependency = (dependencies) => {
-    console.log('Creating dependency:', dependencies);
     handleCreateTask(dependencies);
   };
 
@@ -273,6 +273,9 @@ export default function TaskDetailDialog({
                     </Command>
                   </PopoverContent>
                 </Popover>
+                <button onClick={() => handleDeleteTask(task.id)}>
+                  Delete Task
+                </button>
                 <div className="flex items-center gap-2 mt-5">
                   {tempStartDate && tempEndDate && (
                     <>

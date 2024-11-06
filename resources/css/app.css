@@ -90,6 +90,7 @@
 
 ::-webkit-scrollbar {
     width: 8px; /* Largeur de la barre de défilement verticale */
+    z-index: 9999;
   }
   
   ::-webkit-scrollbar-thumb {

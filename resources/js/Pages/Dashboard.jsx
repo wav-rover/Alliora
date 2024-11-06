@@ -39,15 +39,15 @@ export default function Dashboard() {
         pending: 'bg-red-600 drop-shadow-[0_0_10px_rgba(250,0,0,0.2)]',
         'in progress': 'bg-cyan-500 drop-shadow-[0_0_10px_rgba(0,200,200,0.4)]',
         finished: 'bg-emerald-600 drop-shadow-[0_0_10px_rgba(0,200,100,0.6)]'
-      };
+    };
 
     // Calculate project and task stats
-        const closestTask = tasks.length > 0 ? tasks.reduce((closest, task) => {
+    const closestTask = tasks.length > 0 ? tasks.reduce((closest, task) => {
         const currentDifference = Math.abs(new Date(task.end_date) - new Date());
         const closestDifference = Math.abs(new Date(closest.end_date) - new Date());
         return currentDifference < closestDifference ? task : closest;
     }, tasks[0]) : null;
-      
+
     const completedTasks = tasks.filter(task => task.status === 'finished').length
     const productivityScore = Math.round((completedTasks / tasks.length) * 100) || 0
     const mostActiveProject = projects.reduce((max, project) =>
@@ -115,7 +115,7 @@ export default function Dashboard() {
                     <motion.div className='dashboard-item w-1/4 flex flex-col justify-around h-full space-y-3'>
                         <motion.div
                             className="p-6 w-full h-full bg-neutral-900 rounded-xl"
-                            
+
                         >
                             <div className="text-white">
                                 <h3 className="text-sm font-semibold mb-2">Task Countdown</h3>
@@ -125,9 +125,13 @@ export default function Dashboard() {
                                         <div className='flex items-center'>
                                             <p className={`mr-2 px-3 py-1 rounded-full text-xs w-fit font-semibold capitalize transition-all duration-200 ${statusColors[closestTask.status]}`}
                                             >{closestTask.status}</p>
-                                            <p className="text-sm">Due in: {Math.ceil((new Date(closestTask.end_date) - new Date()) / (1000 * 60 * 60 * 24))} days</p>
-                                            </div>
-                                        <p className="text-xs mt-2">That's about {Math.ceil((new Date(closestTask.end_date) - new Date()) / (100000 * 60)) * 2} coffee breaks ☕</p>
+                                            { closestTask.start_date ? (<p className="text-sm">Due in: {Math.ceil((new Date(closestTask.end_date) - new Date()) / (1000 * 60 * 60 * 24))} days</p>
+                                        ) : (<p className="text-sm">No due date defined</p>)}
+                                        </div>
+                                        <p className="text-xs mt-2">That's about {closestTask.start_date ? (
+                                            Math.ceil((new Date(closestTask.end_date) - new Date()) / (100000 * 60)) * 2
+                                        ) : 
+                                        ( 'an infinite amount of')} coffee breaks ☕</p>
                                     </div>
                                 ) : (
                                     <p>No upcoming tasks. Time to invent a new project!</p>
@@ -136,7 +140,7 @@ export default function Dashboard() {
                         </motion.div>
                         <motion.div
                             className="p-7 w-full h-full bg-neutral-800 rounded-xl"
-                            
+
                         >
                             <div className="text-white flex items-center justify-start">
                                 <p className='p-0'>{tasks.filter(task => task.status === 'pending' || task.status === 'in progress').length} remaining tasks</p>
@@ -151,22 +155,22 @@ export default function Dashboard() {
                         ]}>
                             <CarouselContent className="h-full">
                                 {recentProjects.map(project => (
-                                    
+
                                     <CarouselItem key={project.id} >
-                                        <a className='w-full'href={`/projects/${project.id}`}> 
-                                        <motion.div
-                                            className="flex flex-col justify-center rounded-xl items-center border-0 h-60 bg-background min-h-36">
-                                            <div className="flex flex-col justify-start items-start p-10 h-full">
-                                                <h3 className="text-sm font-semibold mb-4">Recent projects</h3>
-                                                <h4 className="text-lg font-semibold">{project.name}</h4>
-                                                <p>Created: {new Date(project.created_at).toLocaleDateString()}</p>
-                                                <p>Team: {project.team?.name}</p>
-                                                <p className="mt-2 text-sm italic">Tasks: {tasks.filter(task => task.project_id === project.id).length}</p>
-                                            </div>
-                                        </motion.div>
+                                        <a className='w-full' href={`/projects/${project.id}`}>
+                                            <motion.div
+                                                className="flex flex-col justify-center rounded-xl items-center border-0 h-60 bg-background min-h-36">
+                                                <div className="flex flex-col justify-start items-start p-10 h-full">
+                                                    <h3 className="text-sm font-semibold mb-4">Recent projects</h3>
+                                                    <h4 className="text-lg font-semibold">{project.name}</h4>
+                                                    <p>Created: {new Date(project.created_at).toLocaleDateString()}</p>
+                                                    <p>Team: {project.team?.name}</p>
+                                                    <p className="mt-2 text-sm italic">Tasks: {tasks.filter(task => task.project_id === project.id).length}</p>
+                                                </div>
+                                            </motion.div>
                                         </a>
                                     </CarouselItem>
-                                    
+
                                 ))}
                             </CarouselContent>
                         </Carousel>

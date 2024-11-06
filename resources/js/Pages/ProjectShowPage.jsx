@@ -183,7 +183,7 @@ const ProjectShowPage = () => {
                 initial={{ opacity: 0, scale: 0 }}
                 animate={{ opacity: 1, scale: 1 }}
                 exit={{ opacity: 0, scale: 0 }}
-                transition={{ duration: 0.5, ease: [0.23, 1, 0.32, 1] }}
+                transition={{ duration: 0.5, ease: [0.23, 1, 0.32, 1], delay:0.5 }}
             >
                 <FloatingDockWithLinks onListModified={onListModified} />
             </motion.div>

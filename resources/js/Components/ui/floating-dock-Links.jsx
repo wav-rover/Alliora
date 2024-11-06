@@ -1,6 +1,6 @@
 import React from "react";
 import { FloatingDock } from "@/components/ui/floating-dock";
-import { ChartLine, Terminal, LayoutTemplate, ListPlus, MessageSquareDashed } from "lucide-react";
+import { ChartLine, TableProperties, SquareStack, ListPlus, MessageSquareDashed } from "lucide-react";
 
 export function FloatingDockWithLinks({ onListModified }) {
   const randomNames = [
@@ -10,10 +10,8 @@ export function FloatingDockWithLinks({ onListModified }) {
     "The impossible tasks",
     "Incredible Ideas",
     "Stuff to Do",
-    "No one wants to do those tasks",
     "The Adventure List",
     "Ideas for Inspiration",
-
   ];
   const addRandomList = () => {
     const randomName = randomNames[Math.floor(Math.random() * randomNames.length)];
@@ -24,24 +22,30 @@ export function FloatingDockWithLinks({ onListModified }) {
 
   const links = [
     {
+      title: "Lists and tasks",
+      icon: (
+        <SquareStack className="h-full w-full text-neutral-500 dark:text-neutral-300" />
+      ),
+      href: "#",
+    },
+    {
       title: "Statistics",
       icon: (
         <ChartLine className="h-full w-full text-neutral-500 dark:text-neutral-300" />
       ),
       href: "#",
     },
-
     {
-      title: "Products",
+      title: "Table",
       icon: (
-        <Terminal className="h-full w-full text-neutral-500 dark:text-neutral-300" />
+        <TableProperties className="h-full w-full text-neutral-500 dark:text-neutral-300" />
       ),
       href: "#",
     },
     {
-      title: "Components",
+      title: "Powered by Alliora",
       icon: (
-        <LayoutTemplate className="h-full w-full text-neutral-500 dark:text-neutral-300" />
+        " "
       ),
       href: "#",
     },
@@ -50,7 +54,7 @@ export function FloatingDockWithLinks({ onListModified }) {
       icon: (
         <MessageSquareDashed className="h-full w-full text-neutral-500 dark:text-neutral-300" />
       ),
-      href: "google.fr",
+      href: "#",
     },
     {
       title: "Aceternity UI",

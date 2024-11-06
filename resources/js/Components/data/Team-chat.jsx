@@ -19,7 +19,7 @@ export default function TeamChat() {
 
   return (
     <div className="z-40 fixed bottom-0 right-10 w-80 bg-background border border-border rounded-lg rounded-b-none border-b-0 shadow-lg overflow-hidden transition-all duration-300 ease-in-out"
-         style={{ height: isOpen ? '400px' : '48px' }}>
+      style={{ height: isOpen ? '400px' : '48px' }}>
       <Button
         onClick={() => setIsOpen(!isOpen)}
         className="w-full flex justify-between items-center px-4 py-2 bg-neutral-900 rounded-b-none text-white rounded-t-lg transition-colors duration-200 hover:bg-neutral-800/90"
@@ -30,7 +30,7 @@ export default function TeamChat() {
         {isOpen ? <ChevronDown className="h-4 w-4" /> : <ChevronUp className="h-4 w-4" />}
       </Button>
       <div className="bg-background p-4 transition-opacity duration-300"
-           style={{ opacity: isOpen ? 1 : 0, visibility: isOpen ? 'visible' : 'hidden' }}>
+        style={{ opacity: isOpen ? 1 : 0, visibility: isOpen ? 'visible' : 'hidden' }}>
         <ScrollArea className="h-72 mb-4 pr-4" id="chat-messages">
           {messages.map((message) => (
             <div key={message.id} className="flex items-start mb-4 animate-fadeIn">
