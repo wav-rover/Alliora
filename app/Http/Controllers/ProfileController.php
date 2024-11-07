@@ -67,11 +67,10 @@ class ProfileController extends Controller
         return Redirect::to('/');
     }
 
-    // Méthode pour afficher le profil d'un utilisateur
     public function show(Request $request, User $user): \Inertia\Response
     {
         return Inertia::render('Profile/Show', [
-            'user' => $user->only('id', 'name', 'email', 'img_profile', 'created_at'),
+            'user' => $user->only('id', 'name', 'img_profile', 'created_at'),
         ]);
     }
 }

@@ -1,6 +1,6 @@
 import React from "react";
 import { FloatingDock } from "@/components/ui/floating-dock";
-import { ChartLine, TableProperties, SquareStack, ListPlus, MessageSquareDashed } from "lucide-react";
+import { ChartLine, CalendarRange, SquareStack, ListPlus, MessageSquareDashed } from "lucide-react";
 
 export function FloatingDockWithLinks({ onListModified }) {
   const randomNames = [
@@ -38,7 +38,7 @@ export function FloatingDockWithLinks({ onListModified }) {
     {
       title: "Table",
       icon: (
-        <TableProperties className="h-full w-full text-neutral-500 dark:text-neutral-300" />
+        <CalendarRange className="h-full w-full text-neutral-500 dark:text-neutral-300" />
       ),
       href: "#",
     },

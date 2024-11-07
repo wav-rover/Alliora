@@ -301,7 +301,6 @@ const TaskBoard = ({ tasks: initialTasks, projectId, onTaskModified, initialList
 
     return (
         <ScrollArea className='h-[82vh]'>
-            <h2>Tâches associées au projet</h2>
             <DragDropContext onDragEnd={onDragEnd}>
                 <Droppable droppableId="all-lists" direction="horizontal" type="list">
                     {(provided) => (
@@ -350,7 +349,7 @@ const TaskBoard = ({ tasks: initialTasks, projectId, onTaskModified, initialList
                                                                                     {...provided.draggableProps}
                                                                                     {...provided.dragHandleProps}
                                                                                     onClick={() => handleTaskClick(task)}
-                                                                                    className="cursor-grab my-2 task-item p-3 py-2 rounded-xl bg-background hover:bg-gray-400 hover:text-background transition-color ease-linear"
+                                                                                    className="cursor-grab my-2 task-item p-3 py-2 rounded-xl bg-background hover:bg-gray-400 hover:text-background transition-all ease-in"
                                                                                 >
                                                                                     <div className='flex items-center justify-between gap-2'>
                                                                                         <div className='flex items-center justify-start gap-2'>

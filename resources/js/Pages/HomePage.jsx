@@ -6,6 +6,7 @@ import { Bot, Globe, LineChart, MessageSquare, Settings, Sparkles, Workflow } fr
 import { Button } from '../Components/ui/button';
 import { FlipWords } from "../Components/ui/flip-words";
 import { SparklesCore } from "../Components/ui/sparkles"
+import { FloatingDockWithLinks } from '@/Components/ui/floating-dock-Links';
 
 const words = [
     "10x better",
@@ -41,7 +42,7 @@ export default function Welcome({ auth, laravelVersion, phpVersion }) {
                     </Link>
                     <div className="hidden md:flex items-center gap-8">
                         <Link href="#" className="pointer-events-auto text-sm hover:text-blue-500 transition-colors">
-                            Products
+                            Product
                         </Link>
                         <Link href="#" className="pointer-events-auto text-sm hover:text-blue-500 transition-colors">
                             Services
