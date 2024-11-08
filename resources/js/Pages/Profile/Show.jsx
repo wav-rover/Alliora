@@ -30,7 +30,7 @@ export default function Show() {
                                 {user.name}
                             </h3>
                             <p className="text-gray-400">
-                                Joined on 
+                                Joined on {new Date(user.created_at).toLocaleDateString()}
                             </p>
                         </div>
                     </div>
