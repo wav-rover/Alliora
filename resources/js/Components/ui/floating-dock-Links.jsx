@@ -1,8 +1,9 @@
 import React from "react";
 import { FloatingDock } from "@/components/ui/floating-dock";
+import { motion } from "framer-motion";
 import { ChartLine, CalendarRange, SquareStack, ListPlus, MessageSquareDashed } from "lucide-react";
 
-export function FloatingDockWithLinks({ onListModified, onLinkClick }) {
+export function FloatingDockWithLinks({ onListModified, onLinkClick, selectedComponent }) {
   const randomNames = [
     "Bright Beginnings",
     "Barely Started tasks",
@@ -24,15 +25,31 @@ export function FloatingDockWithLinks({ onListModified, onLinkClick }) {
     {
       title: "Lists and tasks",
       icon: (
-        <SquareStack className="h-full w-full text-neutral-500 dark:text-neutral-300" />
+        <motion.div
+          animate={{
+            color: selectedComponent === "taskboard" ? "rgb(255, 255, 255)" : "rgb(107, 114, 128)", // Couleurs dynamiques
+            filter: selectedComponent === "taskboard" ? "drop-shadow(0px 0px 10px rgba(200, 255, 255, 0.9))" : "drop-shadow(0px 0px 10px rgba(200, 255, 255, 0.0))"
+          }}
+        >
+          <SquareStack
+            className="h-full w-full"
+          />
+        </motion.div>
       ),
-      href:"#",
+      href: "#",
       onClick: () => onLinkClick("taskboard"),
     },
     {
       title: "Statistics",
       icon: (
-        <ChartLine className="h-full w-full text-neutral-500 dark:text-neutral-300" />
+        <motion.div
+          animate={{
+            color: selectedComponent === "projectcharts" ? "rgb(255, 255, 255)" : "rgb(107, 114, 128)",
+            filter: selectedComponent === "projectcharts" ? "drop-shadow(0px 0px 10px rgba(200, 255, 255, 0.9))" : "drop-shadow(0px 0px 10px rgba(200, 255, 255, 0.0))"
+          }}
+        >
+          <ChartLine className="h-full w-full" />
+        </motion.div>
       ),
       href: "#",
       onClick: () => onLinkClick("projectcharts"),
@@ -40,7 +57,14 @@ export function FloatingDockWithLinks({ onListModified, onLinkClick }) {
     {
       title: "Table",
       icon: (
-        <CalendarRange className="h-full w-full text-neutral-500 dark:text-neutral-300" />
+        <motion.div
+          animate={{
+            color: selectedComponent === "projectcalendar" ? "rgb(255, 255, 255)" : "rgb(107, 114, 128)",
+            filter: selectedComponent === "projectcalendar" ? "drop-shadow(0px 0px 10px rgba(200, 255, 255, 0.9))" : "drop-shadow(0px 0px 10px rgba(200, 255, 255, 0.0))"
+          }}
+        >
+          <CalendarRange className="h-full w-full" />
+        </motion.div>
       ),
       href: "#",
       onClick: () => onLinkClick("projectcalendar"),

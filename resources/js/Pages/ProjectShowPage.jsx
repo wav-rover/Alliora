@@ -210,7 +210,8 @@ const ProjectShowPage = () => {
             >
                 <FloatingDockWithLinks
                     onListModified={onListModified}
-                    onLinkClick={setSelectedComponent} // Pass setSelectedComponent as onLinkClick
+                    onLinkClick={setSelectedComponent}
+                    selectedComponent={selectedComponent}
                 />
             </motion.div>
 
