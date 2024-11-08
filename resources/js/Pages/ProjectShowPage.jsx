@@ -7,6 +7,8 @@ import axios from 'axios';
 import { FloatingDockWithLinks } from '../Components/ui/floating-dock-Links'
 import { motion, AnimatePresence } from 'framer-motion'
 import TeamChat from '@/Components/data/Team-chat';
+import ProjectCharts from '@/Components/ui/charts/project-charts';
+import ProjectCalendar from '@/Components/data/ProjectCalendar';
 
 const ProjectShowPage = () => {
 
@@ -15,6 +17,8 @@ const ProjectShowPage = () => {
     const { project: initialProject, users: initialUsers } = usePage().props;
     const [project, setProject] = useState(initialProject);
     const [users, setUsers] = useState(initialUsers || []);
+    const [selectedComponent, setSelectedComponent] = useState('taskboard');
+
 
     useEffect(() => {
         console.log('Écoute du canal privé pour les tâches du projet :', project.id);
@@ -158,10 +162,10 @@ const ProjectShowPage = () => {
         }
     };
 
-    return (
-        <>
-            <AuthenticatedLayout>
-                <Head title="Project Show" />
+    const renderComponent = () => {
+        if (selectedComponent === 'taskboard') {
+            console.log('COmposant changé', selectedComponent);
+            return (
                 <TaskBoard
                     tasks={project.tasks}
                     projectId={project.id}
@@ -170,24 +174,48 @@ const ProjectShowPage = () => {
                     onListModified={onListModified}
                     users={users}
                 />
+            );
+        }
+
+        if (selectedComponent === 'projectcharts') {
+            return <ProjectCharts projectId={project.id} />;
+        }
+
+        if (selectedComponent === 'projectcalendar') {
+            return <ProjectCalendar projectId={project.id} />;
+        }
+    };
+
+    return (
+        <>
+            <AuthenticatedLayout>
+                <Head title="Project Show" />
+                {renderComponent()}
+
                 {/* Mouse positions of all users, it's working but don't use it if you don't want to 
-            make Pusher go insane also absolutely not recomended performance wise */}
+                make Pusher go insane also absolutely not recomended performance wise 
                 <MousePositions
                     projectId={project.id}
                     currentUserId={auth.user?.id}
-                />
+                />*/}
 
                 <UserTooltip projectId={project.id} />
             </AuthenticatedLayout>
+
             <motion.div
                 initial={{ opacity: 0, scale: 0 }}
                 animate={{ opacity: 1, scale: 1 }}
                 exit={{ opacity: 0, scale: 0 }}
-                transition={{ duration: 0.5, ease: [0.23, 1, 0.32, 1], delay:0.5 }}
+                transition={{ duration: 0.5, ease: [0.23, 1, 0.32, 1], delay: 0.5 }}
             >
-                <FloatingDockWithLinks onListModified={onListModified} />
+                <FloatingDockWithLinks
+                    onListModified={onListModified}
+                    onLinkClick={setSelectedComponent} // Pass setSelectedComponent as onLinkClick
+                />
             </motion.div>
+
             <TeamChat />
+
         </>
     );
 };

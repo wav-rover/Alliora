@@ -80,6 +80,7 @@ const FloatingDockDesktop = ({
         <IconContainer
           mouseX={mouseX}
           key={item.title}
+          onClick={item.onClick}
           isLast={index === items.length - 1}
           {...item}
         />
@@ -92,7 +93,7 @@ function IconContainer({
   mouseX,
   title,
   icon,
-  href,
+  onClick,
   isLast
 }) {
   let ref = useRef(null);
@@ -103,8 +104,8 @@ function IconContainer({
     return val - bounds.x - bounds.width / 2;
   });
 
-  let widthTransform = useTransform(distance, [-150, 0, 150], [40, 60, 40]);
-  let heightTransform = useTransform(distance, [-150, 0, 150], [40, 60, 40]);
+  let widthTransform = useTransform(distance, [-150, 0, 150], [40, 70, 40]);
+  let heightTransform = useTransform(distance, [-150, 0, 150], [40, 70, 40]);
 
   let widthTransformIcon = useTransform(distance, [-150, 0, 150], [20, 30, 20]);
   let heightTransformIcon = useTransform(distance, [-150, 0, 150], [20, 30, 20]);
@@ -134,35 +135,37 @@ function IconContainer({
   const [hovered, setHovered] = useState(false);
 
   return (
-    (<a href={href}>
-      <motion.div
-        ref={ref}
-        style={{ width, height }}
-        onMouseEnter={() => setHovered(true)}
-        onMouseLeave={() => setHovered(false)}
-        className={cn(
-          "aspect-square rounded-full flex items-center justify-center relative",
-          "bg-gray-200 dark:bg-neutral-800",
-          isLast && "animate-shimmer bg-[linear-gradient(110deg,#000103,45%,#1e2631,55%,#000103)] bg-[length:200%_100%] text-slate-400 transition-colors"
+    (<button
+      onClick={onClick}
+      onMouseEnter={() => setHovered(true)}
+      onMouseLeave={() => setHovered(false)}
+      ref={ref}
+      style={{ width, height }}
+      className={cn(
+        "aspect-square rounded-full flex items-center justify-center relative",
+        "bg-gray-200 p-[12px] dark:bg-neutral-800",
+        isLast &&
+          "animate-shimmer bg-[linear-gradient(110deg,#000103,45%,#1e2631,55%,#000103)] bg-[length:200%_100%] text-slate-400 transition-colors"
+      )}
+    >
+      <AnimatePresence>
+        {hovered && (
+          <motion.div
+            initial={{ opacity: 0, y: 10, x: "-50%" }}
+            animate={{ opacity: 1, y: 0, x: "-50%" }}
+            exit={{ opacity: 0, y: 2, x: "-50%" }}
+            className="px-2 py-0.5 whitespace-pre rounded-md bg-gray-100 border dark:bg-neutral-800 dark:border-neutral-900 dark:text-white border-gray-200 text-neutral-700 absolute left-1/2 -translate-x-1/2 -top-8 w-fit text-xs"
+          >
+            {title}
+          </motion.div>
         )}
-        >
-        <AnimatePresence>
-          {hovered && (
-            <motion.div
-              initial={{ opacity: 0, y: 10, x: "-50%" }}
-              animate={{ opacity: 1, y: 0, x: "-50%" }}
-              exit={{ opacity: 0, y: 2, x: "-50%" }}
-              className="px-2 py-0.5 whitespace-pre rounded-md bg-gray-100 border dark:bg-neutral-800 dark:border-neutral-900 dark:text-white border-gray-200 text-neutral-700 absolute left-1/2 -translate-x-1/2 -top-8 w-fit text-xs">
-              {title}
-            </motion.div>
-          )}
-        </AnimatePresence>
-        <motion.div
-          style={{ width: widthIcon, height: heightIcon }}
-          className="flex items-center justify-center">
-          {icon}
-        </motion.div>
+      </AnimatePresence>
+      <motion.div
+        style={{ width: widthIcon, height: heightIcon }}
+        className="flex items-center justify-center"
+      >
+        {icon}
       </motion.div>
-    </a>)
+    </button>)
   );
 }

@@ -2,7 +2,7 @@ import React from "react";
 import { FloatingDock } from "@/components/ui/floating-dock";
 import { ChartLine, CalendarRange, SquareStack, ListPlus, MessageSquareDashed } from "lucide-react";
 
-export function FloatingDockWithLinks({ onListModified }) {
+export function FloatingDockWithLinks({ onListModified, onLinkClick }) {
   const randomNames = [
     "Bright Beginnings",
     "Barely Started tasks",
@@ -26,7 +26,8 @@ export function FloatingDockWithLinks({ onListModified }) {
       icon: (
         <SquareStack className="h-full w-full text-neutral-500 dark:text-neutral-300" />
       ),
-      href: "#",
+      href:"#",
+      onClick: () => onLinkClick("taskboard"),
     },
     {
       title: "Statistics",
@@ -34,6 +35,7 @@ export function FloatingDockWithLinks({ onListModified }) {
         <ChartLine className="h-full w-full text-neutral-500 dark:text-neutral-300" />
       ),
       href: "#",
+      onClick: () => onLinkClick("projectcharts"),
     },
     {
       title: "Table",
@@ -41,6 +43,7 @@ export function FloatingDockWithLinks({ onListModified }) {
         <CalendarRange className="h-full w-full text-neutral-500 dark:text-neutral-300" />
       ),
       href: "#",
+      onClick: () => onLinkClick("projectcalendar"),
     },
     {
       title: "Powered by Alliora",
