@@ -206,7 +206,8 @@ class ProjectController extends Controller
         'team.users' => function ($query) {
             $query->select('users.id', 'users.name')
                 ->addSelect('team_user.role'); // Sélectionner le rôle des utilisateurs
-        }
+        },
+        'messages.user' // Charger les messages avec les informations de l'utilisateur associé
     ])->findOrFail($id);
 
     $user = Auth::user();
@@ -225,11 +226,13 @@ class ProjectController extends Controller
     return inertia('ProjectShowPage', [
         'project' => $project,
         'tasks' => $project->tasks,
-        'lists' => $project->lists, // Les listes sont maintenant triées par position
-        'users' => $project->team->users, // Transmet les utilisateurs avec le rôle
-        'currentUserId' => $user->id, // Ajout de l'ID de l'utilisateur connecté
+        'lists' => $project->lists,
+        'users' => $project->team->users,
+        'currentUserId' => $user->id,
+        'messages' => $project->messages, // Transmettre les messages à la vue
     ]);
 }
+
 
 
 }

@@ -23,8 +23,6 @@ Broadcast::channel('task.{projectId}', function ($user, $projectId) {
     return null;
 });
 
-use App\Models\User;
-
 Broadcast::channel('presence.project.{projectId}', function ($user, $projectId) {
     $teamId = \App\Models\Project::findOrFail($projectId)->team_id;
     $role = DB::table('team_user')->where('team_id', $teamId)->where('user_id', $user->id)->value('role');

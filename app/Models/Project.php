@@ -20,25 +20,28 @@ class Project extends Model
 
     // Relation avec l'équipe
     public function team()
-{
-    return $this->belongsTo(Team::class);
-}
+    {
+        return $this->belongsTo(Team::class);
+    }
 
+    public function messages()
+    {
+        return $this->hasMany(Message::class);
+    }
 
     // Relation avec les utilisateurs via la table pivot project_user
     public function users()
-{
-    return $this->belongsToMany(User::class, 'project_user')->withPivot('role')->withTimestamps();
-}
+    {
+        return $this->belongsToMany(User::class, 'project_user')->withPivot('role')->withTimestamps();
+    }
 
     public function lists()
-{
-    return $this->hasMany(ListModel::class);
-}
+    {
+        return $this->hasMany(ListModel::class);
+    }
 
-public function tasks()
-{
-    return $this->hasMany(Task::class);
-}
-
+    public function tasks()
+    {
+        return $this->hasMany(Task::class);
+    }
 }

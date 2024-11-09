@@ -15,6 +15,7 @@ const ProjectShowPage = () => {
     const { auth } = usePage().props;
 
     const { project: initialProject, users: initialUsers } = usePage().props;
+    const { messages } = usePage().props;
     const [project, setProject] = useState(initialProject);
     const [users, setUsers] = useState(initialUsers || []);
     const [selectedComponent, setSelectedComponent] = useState('taskboard');
@@ -215,7 +216,10 @@ const ProjectShowPage = () => {
                 />
             </motion.div>
 
-            <TeamChat />
+            <TeamChat
+                projectId={project.id}           // ID du projet
+                messages={messages}              // ID de l'utilisateur connecté
+            />
 
         </>
     );

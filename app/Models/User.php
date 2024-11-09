@@ -53,8 +53,8 @@ class User extends Authenticatable
     public function teams()
     {
         return $this->belongsToMany(Team::class, 'team_user')
-                    ->withPivot('role')
-                    ->withTimestamps();
+            ->withPivot('role')
+            ->withTimestamps();
     }
 
     /**
@@ -62,15 +62,18 @@ class User extends Authenticatable
      * Un utilisateur peut être assigné à plusieurs projets.
      */
     public function projects()
-{
-    return $this->belongsToMany(Project::class, 'project_user')->withPivot('role')->withTimestamps();
-}
+    {
+        return $this->belongsToMany(Project::class, 'project_user')->withPivot('role')->withTimestamps();
+    }
 
+    public function messages()
+    {
+        return $this->hasMany(Message::class);
+    }
 
     public function index()
-{
-    $users = User::all(); // Assurez-vous que ce modèle existe et fonctionne
-    return response()->json($users);
-}
-
+    {
+        $users = User::all(); // Assurez-vous que ce modèle existe et fonctionne
+        return response()->json($users);
+    }
 }

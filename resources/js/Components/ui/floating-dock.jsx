@@ -107,8 +107,8 @@ function IconContainer({
   let widthTransform = useTransform(distance, [-150, 0, 150], [40, 70, 40]);
   let heightTransform = useTransform(distance, [-150, 0, 150], [40, 70, 40]);
 
-  let widthTransformIcon = useTransform(distance, [-150, 0, 150], [20, 30, 20]);
-  let heightTransformIcon = useTransform(distance, [-150, 0, 150], [20, 30, 20]);
+  let widthTransformIcon = useTransform(distance, [-150, 0, 150], [20, 40, 20]);
+  let heightTransformIcon = useTransform(distance, [-150, 0, 150], [20, 40, 20]);
 
   let width = useSpring(widthTransform, {
     mass: 0.1,
@@ -123,12 +123,12 @@ function IconContainer({
 
   let widthIcon = useSpring(widthTransformIcon, {
     mass: 0.1,
-    stiffness: 150,
-    damping: 12,
+    stiffness: 200,
+    damping: 20,
   });
   let heightIcon = useSpring(heightTransformIcon, {
     mass: 0.1,
-    stiffness: 150,
+    stiffness: 200,
     damping: 12,
   });
 
@@ -142,7 +142,7 @@ function IconContainer({
       ref={ref}
       style={{ width, height }}
       className={cn(
-        "aspect-square rounded-full flex items-center justify-center relative",
+        "aspect-square p-5 rounded-full flex items-center justify-center relative",
         "bg-gray-200 p-[12px] dark:bg-neutral-800",
         isLast &&
           "animate-shimmer bg-[linear-gradient(110deg,#000103,45%,#1e2631,55%,#000103)] bg-[length:200%_100%] text-slate-400 transition-colors"
@@ -154,7 +154,7 @@ function IconContainer({
             initial={{ opacity: 0, y: 10, x: "-50%" }}
             animate={{ opacity: 1, y: 0, x: "-50%" }}
             exit={{ opacity: 0, y: 2, x: "-50%" }}
-            className="px-2 py-0.5 whitespace-pre rounded-md bg-gray-100 border dark:bg-neutral-800 dark:border-neutral-900 dark:text-white border-gray-200 text-neutral-700 absolute left-1/2 -translate-x-1/2 -top-8 w-fit text-xs"
+            className="px-2 whitespace-pre rounded-md bg-gray-100 border dark:bg-neutral-800 dark:border-neutral-900 dark:text-white border-gray-200 text-neutral-700 absolute left-1/2 -translate-x-1/2 -top-7 w-fit text-xs"
           >
             {title}
           </motion.div>
