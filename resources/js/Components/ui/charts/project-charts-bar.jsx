@@ -26,7 +26,7 @@ const chartConfig = {
 
 const colors = {
   pending: "rgba(220, 38, 38 , 0.4)",
-  "in progress": "rgba(6, 200, 212, 0.4)",
+  "in progress": "rgba(6, 182, 212, 0.4)",
   finished: "rgba(5, 150, 105, 0.4)",
 };
 
