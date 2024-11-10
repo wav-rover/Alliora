@@ -45,6 +45,14 @@ class TaskController extends Controller
                 $task->list_id = $taskData['list_id'];
                 $task->position = $taskData['position'];
                 $task->save();
+        
+                // Mettre à jour le list_id des tâches dépendantes
+                $dependentTasks = Task::where('dependencies', $task->id)->get();
+                foreach ($dependentTasks as $dependentTask) {
+                    $dependentTask->list_id = $task->list_id;
+                    $dependentTask->save();
+                }
+        
                 $updatedTasks[] = $task;
             }
         }

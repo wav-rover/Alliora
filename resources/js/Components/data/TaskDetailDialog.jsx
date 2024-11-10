@@ -109,7 +109,6 @@ export default function TaskDetailDialog({
           <DialogHeader>
             <DialogTitle className="flex justify-between items-center text-2xl font-bold mb-4">
               <div className='flex gap-3 items-center justify-start'>
-                {task.id}
                 {list.title} -
                 {isEditingName ? (
                   <Input
@@ -273,9 +272,11 @@ export default function TaskDetailDialog({
                     </Command>
                   </PopoverContent>
                 </Popover>
-                <button onClick={() => handleDeleteTask(task.id)}>
+                <div className='mt-20 flex justify-end'>
+                <Button variant='secondary' className="text-xs bg-red-600 text-white :hover-bg-red-500" onClick={() => handleDeleteTask(task.id)}>
                   Delete Task
-                </button>
+                </Button>
+                </div>
                 <div className="flex items-center gap-2 mt-5">
                   {tempStartDate && tempEndDate && (
                     <>
