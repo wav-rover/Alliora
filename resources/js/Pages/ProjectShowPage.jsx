@@ -7,7 +7,7 @@ import axios from 'axios';
 import { FloatingDockWithLinks } from '../Components/ui/floating-dock-Links'
 import { motion, AnimatePresence } from 'framer-motion'
 import TeamChat from '@/Components/data/Team-chat';
-import ProjectCharts from '@/Components/ui/charts/project-charts';
+import ProjectStats from '@/Components/data/ProjectStats';
 import ProjectCalendar from '@/Components/data/ProjectCalendar';
 
 const ProjectShowPage = () => {
@@ -18,7 +18,7 @@ const ProjectShowPage = () => {
     const { messages } = usePage().props;
     const [project, setProject] = useState(initialProject);
     const [users, setUsers] = useState(initialUsers || []);
-    const [selectedComponent, setSelectedComponent] = useState('taskboard');
+    const [selectedComponent, setSelectedComponent] = useState('projectcharts');
 
 
     useEffect(() => {
@@ -179,7 +179,14 @@ const ProjectShowPage = () => {
         }
 
         if (selectedComponent === 'projectcharts') {
-            return <ProjectCharts projectId={project.id} />;
+            return <ProjectStats 
+                tasks={project.tasks}
+                projectId={project.id}
+                onTaskModified={onTaskModified}
+                initialLists={project.lists}
+                onListModified={onListModified}
+                users={users}
+            />;
         }
 
         if (selectedComponent === 'projectcalendar') {
@@ -200,9 +207,9 @@ const ProjectShowPage = () => {
                     currentUserId={auth.user?.id}
                 />*/}
 
-                <UserTooltip projectId={project.id} />
             </AuthenticatedLayout>
 
+            <UserTooltip projectId={project.id} />
             <motion.div
                 initial={{ opacity: 0, scale: 0 }}
                 animate={{ opacity: 1, scale: 1 }}

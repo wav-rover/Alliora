@@ -229,7 +229,7 @@ class ProjectController extends Controller
         'lists' => $project->lists,
         'users' => $project->team->users,
         'currentUserId' => $user->id,
-        'messages' => $project->messages, // Transmettre les messages à la vue
+        'messages' => $project->messages, 
     ]);
 }
 
