@@ -272,8 +272,8 @@ export default function TaskDetailDialog({
                     </Command>
                   </PopoverContent>
                 </Popover>
-                <div className='mt-20 flex justify-end'>
-                <Button variant='secondary' className="text-xs bg-red-600 text-white :hover-bg-red-500" onClick={() => handleDeleteTask(task.id)}>
+                <div className='mt-5 flex justify-end'>
+                <Button variant='secondary' className="text-xs text-white :hover-bg-red-500" onClick={() => handleDeleteTask(task.id)}>
                   Delete Task
                 </Button>
                 </div>

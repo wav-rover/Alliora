@@ -25,11 +25,11 @@ import {
 const chartConfig = {
   finished: {
     label: "Finished",
-    color: "hsl(var(--chart-1))",
+    color: "hsl(var(--chart-2))",
   },
   inProgress: {
     label: "In Progress",
-    color: "hsl(var(--chart-2))",
+    color: "hsl(var(--chart-1))",
   },
 }
 
@@ -86,7 +86,7 @@ export function ProjectAreaChart({ tasks }) {
     <Card>
       <CardHeader className="flex items-center gap-2 space-y-0 border-b py-5 sm:flex-row">
         <div className="grid flex-1 gap-1 text-center sm:text-left">
-          <CardTitle>Area Chart - Interactive</CardTitle>
+          <CardTitle>Tasks stats</CardTitle>
           <CardDescription>
             Showing finished and in-progress tasks each day
           </CardDescription>
@@ -170,17 +170,17 @@ export function ProjectAreaChart({ tasks }) {
               }
             />
             <Area
-              dataKey="inProgress"
-              type="natural"
-              fill="url(#fillInProgress)"
-              stroke="var(--color-inProgress)"
-              stackId="a"
-            />
-            <Area
               dataKey="finished"
               type="natural"
               fill="url(#fillFinished)"
               stroke="var(--color-finished)"
+              stackId="a"
+            />
+            <Area
+              dataKey="inProgress"
+              type="natural"
+              fill="url(#fillInProgress)"
+              stroke="var(--color-inProgress)"
               stackId="a"
             />
             <ChartLegend content={<ChartLegendContent />} />

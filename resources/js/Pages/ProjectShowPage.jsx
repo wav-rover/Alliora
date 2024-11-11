@@ -206,10 +206,10 @@ const ProjectShowPage = () => {
                     projectId={project.id}
                     currentUserId={auth.user?.id}
                 />*/}
+            <UserTooltip projectId={project.id} />
 
             </AuthenticatedLayout>
 
-            <UserTooltip projectId={project.id} />
             <motion.div
                 initial={{ opacity: 0, scale: 0 }}
                 animate={{ opacity: 1, scale: 1 }}
@@ -217,6 +217,7 @@ const ProjectShowPage = () => {
                 transition={{ duration: 0.5, ease: [0.23, 1, 0.32, 1], delay: 0.5 }}
             >
                 <FloatingDockWithLinks
+                    project={project}
                     onListModified={onListModified}
                     onLinkClick={setSelectedComponent}
                     selectedComponent={selectedComponent}

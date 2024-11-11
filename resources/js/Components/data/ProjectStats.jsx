@@ -44,18 +44,18 @@ const ProjectStats = ({ tasks: initialTasks, projectId, onTaskModified, initialL
             <Carousel className="w-full h-full mt-10" infinite autoplay>
                 <CarouselContent>
                     <CarouselItem>
-                        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 h-full">
-                            <ProjectRadialChart taskCounts={taskCounts} />
-                            <ProjectRadarChart taskCountByUser={taskCountByUser} />
-                            <ProjectBarChart taskStatusData={chartData} />
-                        </div>
-                    </CarouselItem>
-                    <CarouselItem>
                         <Card className="w-full h-full">
                             <CardContent className="p-4 h-full">
                                 <ProjectAreaChart tasks={initialTasks} />
                             </CardContent>
                         </Card>
+                    </CarouselItem>
+                    <CarouselItem>
+                        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 h-full">
+                            <ProjectRadialChart taskCounts={taskCounts} />
+                            <ProjectRadarChart taskCountByUser={taskCountByUser} />
+                            <ProjectBarChart taskStatusData={chartData} />
+                        </div>
                     </CarouselItem>
                 </CarouselContent>
                 <CarouselPrevious />

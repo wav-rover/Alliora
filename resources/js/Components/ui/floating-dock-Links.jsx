@@ -1,9 +1,18 @@
 import React from "react";
 import { FloatingDock } from "@/components/ui/floating-dock";
 import { motion } from "framer-motion";
-import { ChartLine, CalendarRange, SquareStack, ListPlus, MessageSquareDashed } from "lucide-react";
+import { ChartLine, CalendarRange, SquareStack, ListPlus, Info } from "lucide-react";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
 
-export function FloatingDockWithLinks({ onListModified, onLinkClick, selectedComponent }) {
+export function FloatingDockWithLinks({ project, onListModified, onLinkClick, selectedComponent }) {
   const randomNames = [
     "Bright Beginnings",
     "Barely Started tasks",
@@ -14,12 +23,13 @@ export function FloatingDockWithLinks({ onListModified, onLinkClick, selectedCom
     "The Adventure List",
     "Ideas for Inspiration",
   ];
+
   const addRandomList = () => {
     const randomName = randomNames[Math.floor(Math.random() * randomNames.length)];
-
-    // Appelle `onListModified` pour créer la liste avec le nom sélectionné
     onListModified('create', { title: randomName, position: Date.now() });
   };
+
+  const [isDialogOpen, setIsDialogOpen] = React.useState(false);
 
   const links = [
     {
@@ -28,13 +38,17 @@ export function FloatingDockWithLinks({ onListModified, onLinkClick, selectedCom
         <motion.div
           className="h-full w-full"
           animate={{
-            color: selectedComponent === "taskboard" ? "rgb(255, 255, 255)" : "rgb(212, 212, 212)", // Couleurs dynamiques
-            filter: selectedComponent === "taskboard" ? "drop-shadow(0px 0px 10px rgba(200, 255, 255, 0.9))" : "drop-shadow(0px 0px 10px rgba(200, 255, 255, 0.0))"
+            color:
+              selectedComponent === "taskboard"
+                ? "rgb(255, 255, 255)"
+                : "rgb(212, 212, 212)",
+            filter:
+              selectedComponent === "taskboard"
+                ? "drop-shadow(0px 0px 10px rgba(200, 255, 255, 0.9))"
+                : "drop-shadow(0px 0px 10px rgba(200, 255, 255, 0.0))",
           }}
         >
-          <SquareStack
-            className="h-full w-full"
-          />
+          <SquareStack className="h-full w-full" />
         </motion.div>
       ),
       href: "#",
@@ -46,8 +60,14 @@ export function FloatingDockWithLinks({ onListModified, onLinkClick, selectedCom
         <motion.div
           className="h-full w-full"
           animate={{
-            color: selectedComponent === "projectcharts" ? "rgb(255, 255, 255)" : "rgb(212, 212, 212)",
-            filter: selectedComponent === "projectcharts" ? "drop-shadow(0px 0px 10px rgba(200, 255, 255, 0.9))" : "drop-shadow(0px 0px 10px rgba(200, 255, 255, 0.0))"
+            color:
+              selectedComponent === "projectcharts"
+                ? "rgb(255, 255, 255)"
+                : "rgb(212, 212, 212)",
+            filter:
+              selectedComponent === "projectcharts"
+                ? "drop-shadow(0px 0px 10px rgba(200, 255, 255, 0.9))"
+                : "drop-shadow(0px 0px 10px rgba(200, 255, 255, 0.0))",
           }}
         >
           <ChartLine className="h-full w-full" />
@@ -62,11 +82,17 @@ export function FloatingDockWithLinks({ onListModified, onLinkClick, selectedCom
         <motion.div
           className="h-full w-full"
           animate={{
-            color: selectedComponent === "projectcalendar" ? "rgb(255, 255, 255)" : "rgb(212, 212, 212)",
-            filter: selectedComponent === "projectcalendar" ? "drop-shadow(0px 0px 10px rgba(200, 255, 255, 0.9))" : "drop-shadow(0px 0px 10px rgba(200, 255, 255, 0.0))"
+            color:
+              selectedComponent === "projectcalendar"
+                ? "rgb(255, 255, 255)"
+                : "rgb(212, 212, 212)",
+            filter:
+              selectedComponent === "projectcalendar"
+                ? "drop-shadow(0px 0px 10px rgba(200, 255, 255, 0.9))"
+                : "drop-shadow(0px 0px 10px rgba(200, 255, 255, 0.0))",
           }}
         >
-          <CalendarRange className="h-full w-full text-neutral-500 dark:text-neutral-300" />
+          <CalendarRange className="h-full w-full" />
         </motion.div>
       ),
       href: "#",
@@ -74,15 +100,16 @@ export function FloatingDockWithLinks({ onListModified, onLinkClick, selectedCom
     },
     {
       title: "Powered by Alliora",
-      icon: (
-        " "
-      ),
+      icon: " ",
       href: "#",
     },
     {
-      title: "Open Team Chat",
+      title: "Project info",
       icon: (
-        <MessageSquareDashed className="h-full w-full text-neutral-500 dark:text-neutral-300" />
+        <Info
+          className="h-full w-full text-neutral-500 dark:text-neutral-300 cursor-pointer"
+          onClick={() => setIsDialogOpen(true)}
+        />
       ),
       href: "#",
     },
@@ -93,8 +120,9 @@ export function FloatingDockWithLinks({ onListModified, onLinkClick, selectedCom
           src="https://assets.aceternity.com/logo-dark.png"
           width={20}
           height={20}
-        className="h-full w-full"
-          alt="Aceternity Logo" />
+          className="h-full w-full"
+          alt="Aceternity Logo"
+        />
       ),
       href: "#",
     },
@@ -128,6 +156,22 @@ export function FloatingDockWithLinks({ onListModified, onLinkClick, selectedCom
         <div className="absolute inset-x-0 top-full flex justify-center">
           <div className="bg-gradient-to-r from-transparent via-sky-500 to-transparent h-px w-1/4" />
         </div>
+        <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
+          <DialogContent>
+            <DialogHeader>
+              <DialogTitle>Project Information</DialogTitle>
+              <DialogDescription>
+                <p className="text-sm text-neutral-500 dark:text-neutral-400">
+                  This project was created on {new Date(project.created_at).toDateString()}
+                </p>
+                <p className="mt-2 text-lg font-semibold">Name : {project.name}</p>
+                <p>
+                  Description : {project.description}
+                </p>
+              </DialogDescription>
+            </DialogHeader>
+          </DialogContent>
+        </Dialog>
       </div>
     </div>
   );
