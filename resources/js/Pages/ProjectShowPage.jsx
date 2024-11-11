@@ -190,7 +190,7 @@ const ProjectShowPage = () => {
         }
 
         if (selectedComponent === 'projectcalendar') {
-            return <ProjectCalendar projectId={project.id} />;
+            return <ProjectCalendar tasks={project.tasks} />;
         }
     };
 
