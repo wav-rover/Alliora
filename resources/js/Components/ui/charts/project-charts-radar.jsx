@@ -44,7 +44,7 @@ export function ProjectRadarChart({ taskCountByUser }) {
 
   return (
     <Card className="w-full max-w-lg">
-      <CardHeader className="items-center pb-4">
+      <CardHeader className="pb-4">
         <CardTitle>Tasks assigned to each team member</CardTitle>
         <CardDescription>
           Showing the number of tasks assigned to each user

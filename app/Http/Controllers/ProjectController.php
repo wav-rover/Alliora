@@ -30,15 +30,15 @@ class ProjectController extends Controller
         })->get();
 
         // Fetch projects associated with the user's teams, with the team relationship loaded
-        $teamProjects = Project::with('team') // Ensure 'team' relationship is loaded
+        $teamProjects = Project::with(['team', 'tasks'])
             ->whereHas('team', function ($query) use ($user) {
                 $query->whereHas('users', function ($query) use ($user) {
                     $query->where('users.id', $user->id);
                 });
             })->get();
 
-        // Fetch projects directly associated with the user via project_user, with the team relationship loaded
-        $userProjects = Project::with('team') // Ensure 'team' relationship is loaded here as well
+        // Fetch projects directly associated with the user via project_user, including team and tasks relationships
+        $userProjects = Project::with(['team', 'tasks'])
             ->whereHas('users', function ($query) use ($user) {
                 $query->where('users.id', $user->id);
             })->get();
@@ -49,7 +49,15 @@ class ProjectController extends Controller
         return inertia('ProjectsPage', [
             'adminTeams' => $adminTeams,
             'teams' => $teams,
-            'projects' => $projects,
+            'projects' => $projects->map(function ($project) {
+                return [
+                    'id' => $project->id,
+                    'name' => $project->name,
+                    'team_id' => $project->team_id,
+                    'team' => $project->team,
+                    'tasks' => $project->tasks,
+                ];
+            }),
         ]);
     }
 
@@ -125,7 +133,7 @@ class ProjectController extends Controller
         return response()->json([
             'message' => 'Projet mis à jour avec succès',
             'project' => $project
-        ], 200);  
+        ], 200);
     }
 
     public function destroy($id)
@@ -148,39 +156,39 @@ class ProjectController extends Controller
     }
 
     public function newTask(Request $request)
-{
-    $request->validate([
-        'name' => 'required|string|max:255',
-        'description' => 'nullable|string',
-        'status' => 'required|string|in:pending,in progress,finished', // Only accept these values
-        'start_date' => 'nullable|date',
-        'end_date' => 'nullable|date',
-        'position' => 'integer',
-        'project_id' => 'required|exists:projects,id',
-        'user_id' => 'nullable|exists:users,id',
-        'dependencies' => 'nullable|exists:tasks,id',
-        'list_id' => 'required|exists:list_models,id',
-    ]);
+    {
+        $request->validate([
+            'name' => 'required|string|max:255',
+            'description' => 'nullable|string',
+            'status' => 'required|string|in:pending,in progress,finished', // Only accept these values
+            'start_date' => 'nullable|date',
+            'end_date' => 'nullable|date',
+            'position' => 'integer',
+            'project_id' => 'required|exists:projects,id',
+            'user_id' => 'nullable|exists:users,id',
+            'dependencies' => 'nullable|exists:tasks,id',
+            'list_id' => 'required|exists:list_models,id',
+        ]);
 
-    $position = Task::where('list_id', $request->list_id)->count();
+        $position = Task::where('list_id', $request->list_id)->count();
 
-    $task = Task::create([
-        'name' => $request->name,
-        'description' => $request->description,
-        'status' => $request->status, 
-        'start_date' => $request->start_date,
-        'end_date' => $request->end_date,
-        'position' => $position,
-        'project_id' => $request->project_id,
-        'user_id' => $request->user_id,
-        'dependencies' => $request->dependencies,
-        'list_id' => $request->list_id,
-    ]);
+        $task = Task::create([
+            'name' => $request->name,
+            'description' => $request->description,
+            'status' => $request->status,
+            'start_date' => $request->start_date,
+            'end_date' => $request->end_date,
+            'position' => $position,
+            'project_id' => $request->project_id,
+            'user_id' => $request->user_id,
+            'dependencies' => $request->dependencies,
+            'list_id' => $request->list_id,
+        ]);
 
-    broadcast(new NewTaskCreated($task))->toOthers();
+        broadcast(new NewTaskCreated($task))->toOthers();
 
-    return response()->json($task, 201);
-}
+        return response()->json($task, 201);
+    }
 
 
     public function attachTask(Request $request, $projectId)
@@ -197,42 +205,39 @@ class ProjectController extends Controller
 
 
     public function show($id)
-{
-    $project = Project::with([
-        'team',
-        'lists' => function ($query) {
-            $query->orderBy('position'); // Trier les listes par position
-        },
-        'team.users' => function ($query) {
-            $query->select('users.id', 'users.name')
-                ->addSelect('team_user.role'); // Sélectionner le rôle des utilisateurs
-        },
-        'messages.user' // Charger les messages avec les informations de l'utilisateur associé
-    ])->findOrFail($id);
+    {
+        $project = Project::with([
+            'team',
+            'lists' => function ($query) {
+                $query->orderBy('position'); // Trier les listes par position
+            },
+            'team.users' => function ($query) {
+                $query->select('users.id', 'users.name')
+                    ->addSelect('team_user.role'); // Sélectionner le rôle des utilisateurs
+            },
+            'messages.user' // Charger les messages avec les informations de l'utilisateur associé
+        ])->findOrFail($id);
 
-    $user = Auth::user();
-    event(new UserConnected($user));
+        $user = Auth::user();
+        event(new UserConnected($user));
 
-    // Vérifier si l'utilisateur est membre de l'équipe
-    $isMember = $project->team->users()
-        ->where('team_user.team_id', $project->team_id)
-        ->where('users.id', $user->id)
-        ->exists();
+        // Vérifier si l'utilisateur est membre de l'équipe
+        $isMember = $project->team->users()
+            ->where('team_user.team_id', $project->team_id)
+            ->where('users.id', $user->id)
+            ->exists();
 
-    if (!$isMember) {
-        abort(403, 'Accès non autorisé à ce projet.');
+        if (!$isMember) {
+            abort(403, 'Accès non autorisé à ce projet.');
+        }
+
+        return inertia('ProjectShowPage', [
+            'project' => $project,
+            'tasks' => $project->tasks,
+            'lists' => $project->lists,
+            'users' => $project->team->users,
+            'currentUserId' => $user->id,
+            'messages' => $project->messages,
+        ]);
     }
-
-    return inertia('ProjectShowPage', [
-        'project' => $project,
-        'tasks' => $project->tasks,
-        'lists' => $project->lists,
-        'users' => $project->team->users,
-        'currentUserId' => $user->id,
-        'messages' => $project->messages, 
-    ]);
-}
-
-
-
 }

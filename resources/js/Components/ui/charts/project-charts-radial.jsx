@@ -52,7 +52,7 @@ export function ProjectRadialChart({ taskCounts }) {
 
   return (
     <Card className="flex flex-col">
-      <CardHeader className="items-center pb-0">
+      <CardHeader className="pb-0">
         <CardTitle>Tasks in each list</CardTitle>
         <CardDescription>Project Tasks Distribution</CardDescription>
       </CardHeader>

@@ -34,9 +34,9 @@ const chartConfig = {
 }
 
 export function ProjectAreaChart({ tasks }) {
-  const [timeRange, setTimeRange] = React.useState("90d")
+  const [timeRange, setTimeRange] = React.useState("30d") // Valeur par défaut modifiée
 
-  // Regrouper les tâches par date et statut (finished ou in progress)
+  // Regrouper les tâches par date et statut
   const groupedData = tasks.reduce((acc, task) => {
     const date = new Date(task.updated_at).toISOString().split("T")[0]
     if (!acc[date]) {
@@ -63,10 +63,8 @@ export function ProjectAreaChart({ tasks }) {
   }
 
   const filteredData = React.useMemo(() => {
-    let daysToSubtract = 90
-    if (timeRange === "30d") {
-      daysToSubtract = 30
-    } else if (timeRange === "7d") {
+    let daysToSubtract = 30
+    if (timeRange === "7d") {
       daysToSubtract = 7
     }
     const startDate = new Date()
@@ -98,12 +96,9 @@ export function ProjectAreaChart({ tasks }) {
             className="w-[160px] rounded-lg sm:ml-auto"
             aria-label="Select a value"
           >
-            <SelectValue placeholder="Last 3 months" />
+            <SelectValue placeholder="Select time range" />
           </SelectTrigger>
           <SelectContent className="rounded-xl">
-            <SelectItem value="90d" className="rounded-lg">
-              Last 3 months
-            </SelectItem>
             <SelectItem value="30d" className="rounded-lg">
               Last 30 days
             </SelectItem>

@@ -18,7 +18,7 @@ const ProjectShowPage = () => {
     const { messages } = usePage().props;
     const [project, setProject] = useState(initialProject);
     const [users, setUsers] = useState(initialUsers || []);
-    const [selectedComponent, setSelectedComponent] = useState('projectcharts');
+    const [selectedComponent, setSelectedComponent] = useState('taskboard');
 
 
     useEffect(() => {

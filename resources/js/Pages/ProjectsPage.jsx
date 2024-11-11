@@ -5,14 +5,15 @@ import Projects from '../Components/data/Projects';
 import CreateProjects from '../Components/form/create-project';
 import ProjectSearch from '@/Components/ui/project-search-modal';
 import axios from 'axios';
+import { SortAsc, SortDesc } from 'lucide-react';
 
 const ProjectsPage = () => {
-    const { teams } = usePage().props;
-    const initialProjects = usePage().props.projects;
-    const { adminTeams } = usePage().props;
+    const { teams, projects: initialProjects, adminTeams, tasks } = usePage().props;
 
     const [projects, setProjects] = useState(initialProjects);
-    const [searchTerm, setSearchTerm] = useState(''); // État pour le terme de recherche
+    const [searchTerm, setSearchTerm] = useState('');
+    const [sortOption, setSortOption] = useState('created_at'); // Tri par défaut
+    const [sortOrder, setSortOrder] = useState('desc'); // Afficher les derniers créés en premier
 
     const onProjectModified = async (action, projectData) => {
         try {
@@ -37,10 +38,30 @@ const ProjectsPage = () => {
         }
     };
 
-    // Filtrer les projets en fonction du terme de recherche
+    const sortedProjects = projects
+    .filter((project) => {
+        const projectNameMatch = project.name.toLowerCase().includes(searchTerm.toLowerCase());
+        const teamNameMatch = project.team?.name?.toLowerCase().includes(searchTerm.toLowerCase()) || false;
+        return projectNameMatch || teamNameMatch;
+    })
+    .sort((a, b) => {
+        if (sortOption === 'name') {
+            return sortOrder === 'asc'
+                ? a.name.localeCompare(b.name)
+                : b.name.localeCompare(a.name);
+        } 
+        return 0;
+    });
+    
+    const handleSortByName = () => {
+        setSortOption('name');
+        setSortOrder(sortOrder === 'asc' ? 'desc' : 'asc');
+    };
+    
+
     const filteredProjects = projects.filter((project) => {
         const projectNameMatch = project.name.toLowerCase().includes(searchTerm.toLowerCase());
-        
+
         // On vérifie si le nom de l'équipe est défini et s'il correspond au terme de recherche
         const teamNameMatch = project.team?.name?.toLowerCase().includes(searchTerm.toLowerCase()) || false;
 
@@ -49,17 +70,41 @@ const ProjectsPage = () => {
 
     return (
         <AuthenticatedLayout>
-            <Head title="Manage Projects" />
+            <Head title="Gérer les projets" />
             <ProjectSearch searchTerm={searchTerm} setSearchTerm={setSearchTerm} />
-            
-            <div className='flex justify-end'>
-                <CreateProjects adminTeams={adminTeams} onProjectCreated={(projectData) => onProjectModified('create', projectData)} />
+
+            {/* Options de tri */}
+            <div className="flex justify-between items-center mb-4">
+                <div className="flex items-center">
+                    <button
+                        onClick={handleSortByName}
+                        className="flex items-center text-sm text-gray-700"
+                    >
+                        Order by name
+                        {sortOption === 'name' && sortOrder === 'asc' ? (
+                            <SortAsc className="w-4 h-4 ml-1" />
+                        ) : (
+                            <SortDesc className="w-4 h-4 ml-1" />
+                        )}
+                    </button>
+                </div>
+                <CreateProjects
+                    adminTeams={adminTeams}
+                    onProjectCreated={(projectData) => onProjectModified('create', projectData)}
+                />
             </div>
+
             <div>
-                {filteredProjects.length === 0 ? (
-                    <p>No projects available.</p>
+                {sortedProjects.length === 0 ? (
+                    <p>Aucun projet disponible.</p>
                 ) : (
-                    <Projects projects={filteredProjects} onProjectModified={onProjectModified} adminTeams={adminTeams} teams={teams} />
+                    <Projects
+                        tasks={tasks}
+                        projects={sortedProjects}
+                        onProjectModified={onProjectModified}
+                        adminTeams={adminTeams}
+                        teams={teams}
+                    />
                 )}
             </div>
         </AuthenticatedLayout>
