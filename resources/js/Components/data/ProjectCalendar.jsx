@@ -68,13 +68,28 @@ const SimpleCalendar = ({ tasks }) => {
 
   const days = getDaysInMonth(currentDate)
   const weekDays = ['Dim', 'Lun', 'Mar', 'Mer', 'Jeu', 'Ven', 'Sam']
+  
   const taskColors = [
-    'bg-rose-200 text-rose-900',
+    'bg-cyan-200 text-black',
     'bg-blue-200 text-blue-900',
     'bg-green-200 text-green-900',
     'bg-yellow-200 text-yellow-900',
-    'bg-purple-200 text-purple-900'
+    'bg-purple-200 text-purple-900',
+    'bg-red-200 text-red-900',
+    'bg-pink-200 text-pink-900',
+    'bg-indigo-200 text-indigo-900',
+    // Add more colors if needed
   ]
+
+  const taskColorMap = new Map()
+
+  const getColorForTask = (task) => {
+    if (!taskColorMap.has(task.id)) {
+      const index = taskColorMap.size % taskColors.length
+      taskColorMap.set(task.id, taskColors[index])
+    }
+    return taskColorMap.get(task.id)
+  }
 
   return (
     <Card className="w-full max-w-6xl mx-auto shadow-lg">
@@ -124,7 +139,7 @@ const SimpleCalendar = ({ tasks }) => {
             <div
               key={index}
               className={cn(
-                "min-h-[100px] p-2 border-b border-r relative",
+                "min-h-16 p-2 border-b border-r relative",
                 !day.isCurrentMonth && "bg-muted/5"
               )}
             >
@@ -136,12 +151,12 @@ const SimpleCalendar = ({ tasks }) => {
                 {day.date}
               </span>
               <div className="space-y-1">
-                {day.tasks.map((task, taskIndex) => (
+                {day.tasks.map((task) => (
                   <div
-                    key={taskIndex}
+                    key={task.id}
                     className={cn(
                       "text-xs rounded px-1 py-0.5 truncate",
-                      taskColors[taskIndex % taskColors.length]
+                      getColorForTask(task)
                     )}
                     title={task.name}
                   >
