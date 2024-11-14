@@ -12,22 +12,24 @@ class ProjectCreated implements ShouldBroadcast
 {
     use InteractsWithSockets, SerializesModels;
 
-    public $userId;
+    public $userIds;
     public $teamName;
     public $projectName;
     public $message;
 
-    public function __construct($userId, $teamName, $projectName)
+    public function __construct($userIds, $teamName, $projectName)
     {
-        $this->userId = $userId;
+        $this->userIds = $userIds;
         $this->teamName = $teamName;
         $this->projectName = $projectName;
-        $this->message = "Project $projectName has been created";
+        $this->message = "Project $projectName has been created.";
     }
 
     public function broadcastOn()
     {
-        return new PrivateChannel('notifications.' . $this->userId);
+        return array_map(function($userId) {
+            return new PrivateChannel('notifications.' . $userId);
+        }, $this->userIds);
     }
 
     public function broadcastAs()

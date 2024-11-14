@@ -102,7 +102,10 @@ class ProjectController extends Controller
         // Load the team relationship before returning the project
         $project->load('team');
 
-        broadcast(new ProjectCreated($user->id, $team->name, $project->name));
+        $userIds = $team->users->pluck('id')->toArray();
+
+        // Broadcast the ProjectCreated event to all team members
+        broadcast(new ProjectCreated($userIds, $team->name, $project->name));
 
         return response()->json($project, 201);  // Return the project with the team relationship loaded
     }

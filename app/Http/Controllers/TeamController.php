@@ -74,7 +74,11 @@ public function joinTeam(Request $request, $team_code)
 
         $team->users()->attach(Auth::user()->id, ['role' => 'admin']);
 
-        broadcast(new UserAddedToTeam(Auth::user()->id, $team->name));
+        $userIds = $request->input('members', []);
+        $userIds[] = Auth::user()->id; // Ajouter l'utilisateur courant
+
+        // Diffuser l'événement UserAddedToTeam pour chaque membre ajouté
+        broadcast(new UserAddedToTeam($userIds, $team->name));
 
         if (!empty($request->input('members'))) {
             foreach ($request->input('members') as $memberId) {

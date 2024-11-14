@@ -12,25 +12,26 @@ class UserAddedToTeam implements ShouldBroadcast
 {
     use InteractsWithSockets, SerializesModels;
 
-    public $userId;
+    public $userIds;
     public $teamName;
     public $message;
 
-    public function __construct($userId, $teamName)
+    public function __construct($userIds, $teamName)
     {
-        $this->userId = $userId;
+        $this->userIds = $userIds;
         $this->teamName = $teamName;
-        $this->message = "You have been added to a new team";
+        $this->message = "You have been added to a new team.";
     }
 
     public function broadcastOn()
     {
-        return new PrivateChannel('notifications.' . $this->userId);
+        return array_map(function($userId) {
+            return new PrivateChannel('notifications.' . $userId);
+        }, $this->userIds);
     }
 
     public function broadcastAs()
     {
         return 'notification.sent';
-    
     }
 }
