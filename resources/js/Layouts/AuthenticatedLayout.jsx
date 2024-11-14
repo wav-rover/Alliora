@@ -1,11 +1,35 @@
-// src/Layouts/AuthenticatedLayout.jsx
-import React from 'react';
 import { Head } from '@inertiajs/react';
 import Sidebar from '../Components/ui/sidebar';
 import { AuroraBackground } from '@/Components/ui/aurora-background';
 import DropDownCustom from '@/Components/ui/drop-down-custom';
+import React, { useEffect, useState } from 'react';
+import { usePage } from '@inertiajs/react';
 
 const AuthenticatedLayout = ({ children }) => {
+    const { auth } = usePage().props;
+    const userId = auth.user.id;
+    const [notifications, setNotifications] = useState(() => {
+        // Restaurer les notifications depuis le stockage local
+        const savedNotifications = localStorage.getItem('notifications');
+        return savedNotifications ? JSON.parse(savedNotifications) : [];
+    });
+
+    useEffect(() => {
+        localStorage.setItem('notifications', JSON.stringify(notifications));
+    }, [notifications]);
+
+    useEffect(() => {
+        window.Echo.private(`notifications.${userId}`)
+            .listen('.notification.sent', (data) => {
+                console.log('Nouvelle notification reçue :', data);
+                setNotifications((prevNotifications) => [...prevNotifications, data]);
+            });
+
+            return () => {
+                window.Echo.leave(`notifications.${userId}`);
+            };
+    }, [userId]);
+
     return (
         <AuroraBackground>
 
@@ -17,12 +41,10 @@ const AuthenticatedLayout = ({ children }) => {
                 <div className="flex-1 h-screen overflow-y-auto w-full relative md:flex-1 p-6">
                     <div className='text-white rounded-3xl p-6 rounded-3xl min-h-full'>
                         {children}
-                        
-            
                     </div>
                 </div>
             </div>
-            <DropDownCustom />
+            <DropDownCustom notifications={notifications} />
         </AuroraBackground>
     );
 };

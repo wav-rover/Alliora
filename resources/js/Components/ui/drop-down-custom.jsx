@@ -5,11 +5,18 @@ import { Bell, X } from 'lucide-react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { Badge } from './badge'
 
-export default function DropDownCustom() {
+export default function DropDownCustom({ notifications }) {
     const [isOpen, setIsOpen] = useState(false)
+    const [hasNewNotifications, setHasNewNotifications] = useState(false)
+    const [localNotifications, setLocalNotifications] = useState(notifications)
     const dropdownRef = useRef(null)
 
-    const toggleMenu = () => setIsOpen(!isOpen)
+    const toggleMenu = () => {
+        setIsOpen(!isOpen)
+        if (isOpen) {
+            setHasNewNotifications(false)
+        }
+    }
 
     const handleClickOutside = (event) => {
         if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
@@ -29,11 +36,18 @@ export default function DropDownCustom() {
         }
     }, [isOpen])
 
-    const notifications = [
-        { id: 1, message: "Nouveau message reçu", type: "Projects" },
-        { id: 2, message: "Votre publication a été aimée", type: "Projects" },
-        { id: 3, message: "Vous avez un nouveau follower", type: "Teams" },
-    ]
+    useEffect(() => {
+        if (notifications.length > 0) {
+            setHasNewNotifications(true)
+        }
+        setLocalNotifications(notifications)
+    }, [notifications])
+
+    const handleDeleteNotification = (index) => {
+        const updatedNotifications = localNotifications.filter((_, i) => i !== index)
+        setLocalNotifications(updatedNotifications)
+        localStorage.setItem('notifications', JSON.stringify(updatedNotifications))
+    }
 
     return (
         <div className="fixed top-5 right-10 z-50" ref={dropdownRef}>
@@ -52,28 +66,32 @@ export default function DropDownCustom() {
                         </div>
 
                         <ul className="max-h-80 overflow-y-auto">
-                            {notifications.map((notification) => (
-                                <motion.li
-                                    initial={{ opacity: 0 }}
-                                    animate={{ opacity: 1 }}
-                                    exit={{ opacity: 0 }}
-
-                                    key={notification.id}
-                                    className="p-2 transition-colors"
-                                >
-                                    <div className='p-3 flex flex-col items-start gap-1 bg-neutral-800/50 rounded-xl'>
-                                        {notification.message}
-                                        <div className={'text-xs p-2 py-1 rounded-full bg-blue-800/40'}>
-                                            {notification.type}
+                            {localNotifications.length > 0 ? (
+                                localNotifications.map((notification, index) => (
+                                    <motion.li
+                                        initial={{ opacity: 0 }}
+                                        animate={{ opacity: 1 }}
+                                        exit={{ opacity: 0 }}
+                                        key={index}
+                                        className="p-2 transition-colors"
+                                    >
+                                        <div className='p-3 flex flex-col items-start gap-1 bg-neutral-800/50 rounded-xl'>
+                                            <div className="flex justify-between w-full">
+                                                <div>{notification.message}</div>
+                                                <button onClick={() => handleDeleteNotification(index)} className="text-neutral-500 hover:text-neutral-700">
+                                                    <X className="h-4 w-4" />
+                                                </button>
+                                            </div>
+                                            <div className={'text-xs p-2 py-1 rounded-full bg-blue-800/40'}>
+                                                {notification.teamName}
+                                            </div>
                                         </div>
-                                    </div>
-                                </motion.li>
-                            ))}
+                                    </motion.li>
+                                ))
+                            ) : (
+                                <p className="p-4 text-center text-white">No new notifications</p>
+                            )}
                         </ul>
-
-                        {notifications.length === 0 && (
-                            <p className="p-4 text-center text-white">Pas de nouvelles notifications</p>
-                        )}
                     </motion.div>
                 )}
             </AnimatePresence>
@@ -89,6 +107,14 @@ export default function DropDownCustom() {
                     <X className="h-4 w-4" />
                 ) : (
                     <Bell className="h-4 w-4" />
+                )}
+                {hasNewNotifications && !isOpen && (
+                    <motion.span
+                        initial={{ scale: 0 }}
+                        animate={{ scale: 1 }}
+                        transition={{ duration: 0.3 }}
+                        className="absolute top-0 right-0 block h-2 w-2 rounded-full ring-2 ring-white bg-red-400"
+                    />
                 )}
             </motion.button>
         </div>

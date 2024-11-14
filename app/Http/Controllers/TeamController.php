@@ -7,6 +7,8 @@ use App\Models\User;
 use Illuminate\Support\Facades\Auth;
 use Inertia\Inertia;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
+use App\Events\NotificationSent;
+use App\Events\UserAddedToTeam;
 
 class TeamController extends Controller
 {
@@ -71,6 +73,8 @@ public function joinTeam(Request $request, $team_code)
         ]);
 
         $team->users()->attach(Auth::user()->id, ['role' => 'admin']);
+
+        broadcast(new UserAddedToTeam(Auth::user()->id, $team->name));
 
         if (!empty($request->input('members'))) {
             foreach ($request->input('members') as $memberId) {
