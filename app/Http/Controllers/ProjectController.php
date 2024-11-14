@@ -11,6 +11,7 @@ use App\Events\NewTaskCreated;
 use Pusher\Pusher;
 use Illuminate\Support\Facades\Log;
 use App\Events\UserConnected;
+use App\Events\ProjectCreated;
 
 
 class ProjectController extends Controller
@@ -100,6 +101,8 @@ class ProjectController extends Controller
 
         // Load the team relationship before returning the project
         $project->load('team');
+
+        broadcast(new ProjectCreated($user->id, $team->name, $project->name));
 
         return response()->json($project, 201);  // Return the project with the team relationship loaded
     }

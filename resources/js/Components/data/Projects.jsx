@@ -42,7 +42,6 @@ export default function Component({tasks, projects = [], onProjectModified = () 
       {projects.map((project) => {
         // Calcul de la progression du projet
         const tasks = project.tasks || [];
-        console.log('tasks', tasks);
         const totalTasks = tasks.length;
         const completedTasks = tasks.reduce((acc, task) => {
           if (task.status === 'pending') return acc;
