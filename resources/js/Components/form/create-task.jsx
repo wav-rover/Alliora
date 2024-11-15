@@ -85,6 +85,7 @@ export default function CreateTask({
               <Input
                 type="text"
                 placeholder="Task name"
+                maxLength={25}
                 value={taskName}
                 onChange={(e) => setTaskName(e.target.value)}
                 required

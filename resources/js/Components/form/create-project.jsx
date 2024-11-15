@@ -112,7 +112,7 @@ const CreateProjectForm = ({ adminTeams, onProjectCreated }) => {
                             </PopoverContent>
                         </Popover>
                         <DialogFooter>
-                            <Button type="submit" className="bg-blue-500 text-white px-4 py-2 rounded">
+                            <Button type="submit" variant="secondary" className="text-white px-4 py-2 rounded">
                                 Create Project
                             </Button>
                         </DialogFooter>

@@ -120,6 +120,8 @@ export default function Component({tasks, projects = [], onProjectModified = () 
 
                 {/* Dropdown menu */}
                 <div className="absolute top-4 right-4">
+                  
+                {isAdminOfProjectTeam(project) && (
                   <DropdownMenu>
                     <DropdownMenuTrigger asChild>
                       <Button
@@ -130,11 +132,6 @@ export default function Component({tasks, projects = [], onProjectModified = () 
                       </Button>
                     </DropdownMenuTrigger>
                     <DropdownMenuContent>
-                      <DropdownMenuItem onSelect={() => {}}>
-                        <Star className="w-4 h-4 mr-2" />
-                        Favorite
-                      </DropdownMenuItem>
-                      {isAdminOfProjectTeam(project) && (
                         <>
                           <DropdownMenuItem onSelect={() => handleEditClick(project)}>
                             <Pencil className="w-4 h-4 mr-2" />
@@ -145,9 +142,9 @@ export default function Component({tasks, projects = [], onProjectModified = () 
                             Delete
                           </DropdownMenuItem>
                         </>
-                      )}
                     </DropdownMenuContent>
                   </DropdownMenu>
+                      )}
                 </div>
               </div>
             </a>
