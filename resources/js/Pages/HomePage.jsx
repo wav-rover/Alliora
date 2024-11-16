@@ -74,7 +74,7 @@ export default function Welcome({ auth, laravelVersion, phpVersion }) {
                 </nav>
             </div>
             <header className="w-full h-screen relative overflow-hidden">
-                {/*<div className="absolute inset-0 w-full h-full">
+                <div className="absolute inset-0 w-full h-full">
                     <motion.div
                         initial={{ opacity: 0 }}
                         animate={{ opacity: 1 }}
@@ -85,7 +85,7 @@ export default function Welcome({ auth, laravelVersion, phpVersion }) {
                             <Spline scene="https://prod.spline.design/7w41iMdSSU8lwsPN/scene.splinecode" />
                         </div>
                     </motion.div>
-                </div>*/}
+                </div>
 
                 {/* Text overlay */}
                 <div className="pointer-events-none relative z-10 flex flex-col items-center justify-center w-full h-full">

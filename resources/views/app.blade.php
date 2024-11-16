@@ -17,8 +17,14 @@
         @viteReactRefresh
         @vite(['resources/js/app.jsx', "resources/js/Pages/{$page['component']}.jsx"])
         @inertiaHead
+        
     </head>
     <body class="dark bg-black font-sans antialiased scroll-container">
-        @inertia
+        <script src="https://accounts.google.com/gsi/client" async defer></script>
+
+<!-- Google APIs Client Library -->
+<script src="https://apis.google.com/js/api.js" async defer></script>
+@inertia
+
     </body>
 </html>
