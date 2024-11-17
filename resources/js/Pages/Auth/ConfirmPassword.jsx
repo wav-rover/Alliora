@@ -9,7 +9,7 @@ export default function ConfirmPassword() {
     const { data, setData, post, processing, errors, reset } = useForm({
         password: '',
     });
-
+    
     const submit = (e) => {
         e.preventDefault();
 
