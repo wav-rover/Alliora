@@ -23,8 +23,8 @@ export default function Welcome({ auth }) {
     const firstSectionRef = useRef(null);
     const secondSectionRef = useRef(null);
     const thirdSectionRef = useRef(null);
-
-    // 2. Les configurations de scroll
+    const fourSectionRef = useRef(null);
+    
     const { scrollYProgress: firstSectionProgress } = useScroll({
         target: containerRef,
         offset: ["start start", "end end"]
@@ -36,6 +36,11 @@ export default function Welcome({ auth }) {
     });
 
     const { scrollYProgress: thirdSectionProgress } = useScroll({
+        target: containerRef,
+        offset: ["start start", "end end"]
+    });
+
+    const { scrollYProgress: fourSectionProgress } = useScroll({
         target: containerRef,
         offset: ["start start", "end end"]
     });
@@ -58,8 +63,14 @@ export default function Welcome({ auth }) {
         ["100vh", "40vh"]
     );
 
+    const translateYFour = useTransform(
+        fourSectionProgress,
+        [0.6, 0.8],
+        ["-100vh", "0vh"]
+    );
+
     return (
-        <div ref={containerRef} className="relative min-h-[400vh] bg-black text-white">
+        <div ref={containerRef} className="relative min-h-[500vh] bg-black text-white">
             {/* Main Content Container */}
             <div className="fixed top-0 left-0 w-full h-screen overflow-hidden">
                 {/* Navigation */}
@@ -165,27 +176,34 @@ export default function Welcome({ auth }) {
                     }}
 
                     transition={{ ease: "easeInOut", duration: 1.5 }}
-                    className="absolute top-0 z-30 left-0 w-full h-screen bg-[#0c6dc8]"
+                    className="absolute top-0 z-30 left-0 w-full h-[110vh] bg-[#0c6dc8]"
                 >
-                    <motion.section className="h-full py-32 px-10">
-                        <motion.div className="flex items-center flex-col gap-24 mb-20">
-                            <p className="pt-20 w-4/5 text-pretty text-left text-4xl font-bold mb-8">
+                    <motion.section className="h-full py-32 px-20">
+                        <motion.div className="px-20 flex items-center gap-24 mb-20">
+                            <div>
+                            <p className="pt-20 text-pretty text-left text-4xl font-bold mb-8">
                                 Transform your workflow with our intuitive tools
                                 <span className='px-5 rounded-full pb-1 mx-2 border border-slate-100/20 drop-shadow-[0_0_10px_rgba(200,200,200,0.5)]'>
                                     🚀
                                 </span>
-                                Visualize progress in real-time
+                            </p>
+                            <p className="text-pretty text-left text-4xl font-bold mb-8">
+                            Visualize progress in real-time
                                 <span className='px-5 rounded-full pb-1 mx-2 border border-slate-100/20 drop-shadow-[0_0_10px_rgba(200,200,200,0.5)]'>
                                     📊
                                 </span>
                             </p>
-                            <div className="grid grid-cols-3 gap-8 w-4/5">
-                                {/* Add your feature cards or content here */}
-                                <div className="p-6 border border-slate-100/20 rounded-lg">
-                                    <h3 className="text-xl font-bold mb-4">Real-time Updates</h3>
-                                    <p className="text-neutral-400">Stay synchronized with your team's progress instantly</p>
+                            <p className="text-pretty text-left text-4xl font-bold mb-8">
+                            Export your organized project to your Agenda
+                                <span className='px-5 rounded-full pb-1 mx-2 border border-slate-100/20 drop-shadow-[0_0_10px_rgba(200,200,200,0.5)]'>
+                                    📊
+                                </span>
+                            </p>
+                            </div>
+                            <div>
+                                <div className='bg-grid-white/[0.2] h-full w-full'>
+                                
                                 </div>
-                                {/* Add more cards as needed */}
                             </div>
                         </motion.div>
                     </motion.section>
@@ -201,28 +219,44 @@ export default function Welcome({ auth }) {
                     className="absolute top-0 z-40 left-0 w-full h-screen bg-background"
                 >
                     <motion.section className="h-full py-32 px-10">
-                        <motion.div className="flex items-center flex-col gap-24 mb-20">
-                            <p className="pt-20 w-4/5 text-pretty text-left text-4xl font-bold mb-8">
-                                Transform your workflow with our intuitive tools
-                                <span className='px-5 rounded-full pb-1 mx-2 border border-slate-100/20 drop-shadow-[0_0_10px_rgba(200,200,200,0.5)]'>
-                                    🚀
-                                </span>
-                                Visualize progress in real-time
-                                <span className='px-5 rounded-full pb-1 mx-2 border border-slate-100/20 drop-shadow-[0_0_10px_rgba(200,200,200,0.5)]'>
-                                    📊
-                                </span>
-                            </p>
-                            <div className="grid grid-cols-3 gap-8 w-4/5">
-                                {/* Add your feature cards or content here */}
-                                <div className="p-6 border border-slate-100/20 rounded-lg">
-                                    <h3 className="text-xl font-bold mb-4">Real-time Updates</h3>
-                                    <p className="text-neutral-400">Stay synchronized with your team's progress instantly</p>
-                                </div>
-                                {/* Add more cards as needed */}
-                            </div>
+                        <motion.div className="flex items-center mb-20">
+                            
                         </motion.div>
                     </motion.section>
                 </motion.div>
+
+                <motion.div
+    ref={fourSectionRef}
+    style={{
+        translateY: translateYFour,
+    }}
+    transition={{ ease: "easeInOut", duration: 1.5 }}
+    className="absolute top-0 z-[41] left-0 w-full h-screen bg-black"
+>
+    <motion.section className="h-full py-32 px-20">
+        <motion.div className="px-20 flex items-center gap-24 mb-20">
+            <div>
+                <p className="pt-20 text-pretty text-left text-4xl font-bold mb-8">
+                    Ready to revolutionize your workflow?
+                    <span className='px-5 rounded-full pb-1 mx-2 border border-slate-100/20 drop-shadow-[0_0_10px_rgba(200,200,200,0.5)]'>
+                        🌟
+                    </span>
+                </p>
+                <p className="text-pretty text-left text-4xl font-bold mb-8">
+                    Join thousands of teams already using Alliora
+                    <span className='px-5 rounded-full pb-1 mx-2 border border-slate-100/20 drop-shadow-[0_0_10px_rgba(200,200,200,0.5)]'>
+                        🚀
+                    </span>
+                </p>
+                <div className="mt-12">
+                    <Button variant="outline" className="pointer-events-auto animate-shimmer bg-[linear-gradient(110deg,#000103,34%,#5090F850,45%,#000103)] bg-[length:200%_100%]">
+                        Get Started Now
+                    </Button>
+                </div>
+            </div>
+        </motion.div>
+    </motion.section>
+</motion.div>
             </div>
         </div>
     );
