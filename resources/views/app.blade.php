@@ -10,7 +10,12 @@
         <!-- Fonts -->
         <link rel="preconnect" href="https://fonts.bunny.net">
         <link href="https://fonts.bunny.net/css?family=figtree:400,500,600&display=swap" rel="stylesheet" />
+        
+        <script src="https://accounts.google.com/gsi/client" async defer></script>
 
+        <!-- Google APIs Client Library -->
+        <script src="https://apis.google.com/js/api.js" async defer></script>
+        
         <!-- Scripts -->
         <script src="https://js.pusher.com/8.0.1/pusher.min.js"></script>
         @routes
@@ -20,10 +25,6 @@
         
     </head>
     <body class="dark bg-black font-sans antialiased scroll-container">
-        <script src="https://accounts.google.com/gsi/client" async defer></script>
-
-<!-- Google APIs Client Library -->
-<script src="https://apis.google.com/js/api.js" async defer></script>
 @inertia
 
     </body>
