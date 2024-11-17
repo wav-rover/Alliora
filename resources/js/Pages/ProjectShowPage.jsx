@@ -10,9 +10,6 @@ import TeamChat from '@/Components/data/Team-chat';
 import ProjectStats from '@/Components/data/ProjectStats';
 import ProjectCalendar from '@/Components/data/ProjectCalendar';
 
-const CLIENT_ID = import.meta.env.VITE_GOOGLE_CLIENT_ID;
-const API_KEY = import.meta.env.VITE_GOOGLE_API_KEY;
-const SCOPES = 'https://www.googleapis.com/auth/calendar.events';
 
 const ProjectShowPage = () => {
     const { auth } = usePage().props;
@@ -22,80 +19,7 @@ const ProjectShowPage = () => {
     const [project, setProject] = useState(initialProject);
     const [users, setUsers] = useState(initialUsers || []);
     const [selectedComponent, setSelectedComponent] = useState('taskboard');
-    let tokenClient;
-    useEffect(() => {
-        /* global google */
-        // Load the gapi client library
-        const initializeGapiClient = () => {
-            window.gapi.client.init({
-                apiKey: API_KEY,
-                discoveryDocs: ["https://www.googleapis.com/discovery/v1/apis/calendar/v3/rest"],
-            }).then(() => {
-                console.log('GAPI client initialized');
-            }, (error) => {
-                console.error('Error initializing GAPI client', error);
-            });
-        };
-
-        window.gapi.load('client', initializeGapiClient);
-
-        // Initialize the Google Identity Services token client
-        tokenClient = google.accounts.oauth2.initTokenClient({
-            client_id: CLIENT_ID,
-            scope: SCOPES,
-            callback: (tokenResponse) => {
-                console.log('Access token received', tokenResponse);
-                // Proceed with API calls
-            },
-        });
-    }, []);
-
-    const requestAccessToken = () => {
-        tokenClient.requestAccessToken();
-    };
-
-    const exportToCalendar = () => {
-        if (!window.gapi.client) {
-            console.error('GAPI client not loaded.');
-            return;
-        }
-
-        if (!window.gapi.client.getToken()) {
-            // Request access token
-            requestAccessToken();
-            return;
-        }
-
-        // Insert events into Google Calendar
-        project.tasks.forEach((task) => {
-            // Check if the task has at least a start date
-            if (task.start_date) {
-                const event = {
-                    summary: task.name,
-                    description: task.description,
-                    start: {
-                        dateTime: new Date(task.start_date).toISOString(),
-                        timeZone: 'America/Los_Angeles',
-                    },
-                    end: task.end_date ? {
-                        dateTime: new Date(task.end_date).toISOString(),
-                        timeZone: 'America/Los_Angeles',
-                    } : undefined,
-                };
-
-                window.gapi.client.calendar.events.insert({
-                    calendarId: 'primary',
-                    resource: event,
-                }).then((response) => {
-                    console.log('Event created:', response);
-                }, (err) => {
-                    console.error('Error creating event', err);
-                });
-            } else {
-                console.warn('Task skipped due to missing start date:', task);
-            }
-        });
-    };
+    
 
     useEffect(() => {
         console.log('Écoute du canal privé pour les tâches du projet :', project.id);
@@ -300,9 +224,6 @@ const ProjectShowPage = () => {
                     selectedComponent={selectedComponent}
                 />
             </motion.div>
-            <div>
-                <button onClick={exportToCalendar}>Exporter vers Google Agenda</button>
-            </div>
             <TeamChat
                 projectId={project.id}           // ID du projet
                 messages={messages}              // ID de l'utilisateur connecté
