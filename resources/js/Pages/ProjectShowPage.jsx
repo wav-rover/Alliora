@@ -10,12 +10,11 @@ import TeamChat from '@/Components/data/Team-chat';
 import ProjectStats from '@/Components/data/ProjectStats';
 import ProjectCalendar from '@/Components/data/ProjectCalendar';
 
-const CLIENT_ID = process.env.REACT_APP_GOOGLE_CLIENT_ID;
-const API_KEY = process.env.REACT_APP_GOOGLE_API_KEY;
+const CLIENT_ID = import.meta.env.VITE_GOOGLE_CLIENT_ID;
+const API_KEY = import.meta.env.VITE_GOOGLE_API_KEY;
 const SCOPES = 'https://www.googleapis.com/auth/calendar.events';
 
 const ProjectShowPage = () => {
-
     const { auth } = usePage().props;
 
     const { project: initialProject, users: initialUsers } = usePage().props;
