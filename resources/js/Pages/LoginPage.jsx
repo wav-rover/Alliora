@@ -29,10 +29,6 @@ export default function AuthTabs() {
                 [mask-image:radial-gradient(ellipse_at_center,transparent_100%,black)] 
                 sm:[mask-image:radial-gradient(ellipse_at_center,transparent_40%,black)]">
             </div>
-            <Spotlight
-                className="-top-40 left-0 md:left-40 md:-top-200"
-                fill="#33517a"
-            />
             {/* Tabs Container */}
             <div className="w-full sm:w-[400px] px-4 sm:px-0 pt-16 mx-auto">
                 {/* Animated Tab Triggers */}

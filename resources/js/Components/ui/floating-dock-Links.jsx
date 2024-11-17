@@ -169,18 +169,19 @@ export function FloatingDockWithLinks({ project, onListModified, onLinkClick, se
     },
     {
       title: "Powered by Alliora",
-      icon: " ",
-      href: "#",
+      icon: (
+        <img src="/img/AllioraLogo.png" alt="Alliora Logo" className="pointer-none" />
+      ),
     },
     {
       title: "Project info",
       icon: (
         <Info
           className="h-full w-full text-neutral-500 dark:text-neutral-300 cursor-pointer"
-          onClick={() => setIsProjectInfoDialogOpen(true)}
         />
       ),
       href: "#",
+      onClick: () => setIsProjectInfoDialogOpen(true)
     },
     {
       title: "Export to Google Agenda",
@@ -191,10 +192,10 @@ export function FloatingDockWithLinks({ project, onListModified, onLinkClick, se
           height={20}
           className="h-full w-full cursor-pointer"
           alt="Google Logo"
-          onClick={() => setIsGoogleCalendarDialogOpen(true)}
         />
       ),
       href: "#",
+      onClick: () => setIsGoogleCalendarDialogOpen(true)
     },
     {
       title: "Add a list",
@@ -249,11 +250,17 @@ export function FloatingDockWithLinks({ project, onListModified, onLinkClick, se
                   You can export your tasks to Google Calendar. Only tasks with at least a start date will be exported.
                 </p>
                 <p>Exported tasks will be imported in a new agenda with the name of your Alliora project</p>
-                <p className="mb-4">
+                <div className="my-4 flex items-center gap-2 p-3 bg-neutral-900 w-fit rounded-xl">
+                  <img
+                    src="https://img.icons8.com/?size=100&id=60984&format=png&color=FFFFFF"
+                    className="h-10 w-10"
+                    alt="Google Logo"
+                  />
                   {isGoogleConnected
                     ? "You are connected to Google Calendar."
                     : "You are not connected to Google Calendar. Click the button below to connect."}
-                </p>
+                </div>
+                <p className="text-xs">*To preserve your data, you'll be logged off of Google when you'll leave this page.</p>
               </DialogDescription>
             </DialogHeader>
             <DialogFooter>
