@@ -68,7 +68,7 @@ export default function TeamChat({ projectId, messages: initialMessages }) {
         aria-controls="chat-messages"
       >
         <div className='space-x-2'>
-          <span className="font-semibold">Chat d'équipe</span>
+          <span className="font-semibold">Team Chat</span>
           {!isOpen && unreadCount > 0 && (
             <span className=" bg-red-500 text-white rounded-full px-2 py-1 text-xs">
               {unreadCount}

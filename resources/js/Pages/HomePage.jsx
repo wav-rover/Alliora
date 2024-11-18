@@ -1,10 +1,11 @@
-import React, { useRef } from 'react';
+import React, { useRef, useState } from 'react';
 import { Head, Link } from '@inertiajs/react';
 import Spline from '@splinetool/react-spline';
 import { motion, useScroll, useTransform } from 'framer-motion';
 import { Button } from '../Components/ui/button';
 import { FlipWords } from "../Components/ui/flip-words";
 import { LinkPreview } from "@/components/ui/link-preview";
+import AllioraHead from '@/Components/ui/alliora-head';
 
 const words = [
     "10x better",
@@ -19,12 +20,13 @@ const words = [
 ];
 
 export default function Welcome({ auth }) {
+    const [isHovered, setIsHovered] = useState(false);
     const containerRef = useRef(null);
     const firstSectionRef = useRef(null);
     const secondSectionRef = useRef(null);
     const thirdSectionRef = useRef(null);
     const fourSectionRef = useRef(null);
-    
+
     const { scrollYProgress: firstSectionProgress } = useScroll({
         target: containerRef,
         offset: ["start start", "end end"]
@@ -60,7 +62,7 @@ export default function Welcome({ auth }) {
     const translateYThird = useTransform(
         thirdSectionProgress,
         [0.4, 0.6],
-        ["100vh", "40vh"]
+        ["100vh", "15vh"]
     );
 
     const translateYFour = useTransform(
@@ -159,7 +161,7 @@ export default function Welcome({ auth }) {
                                 </span>
                                 in seamless collaboration and progress.
                             </p>
-                            <p className='text-right w-4/5'>Made by
+                            <p className='text-right w-4/5'>Developed by
                                 <LinkPreview url="https://github.com/wav-rover" className="ml-1 font-bold">
                                     Deveney Jeremy
                                 </LinkPreview>
@@ -174,40 +176,32 @@ export default function Welcome({ auth }) {
                     style={{
                         translateY: translateYSecond,
                     }}
-
                     transition={{ ease: "easeInOut", duration: 1.5 }}
-                    className="absolute top-0 z-30 left-0 w-full h-[110vh] bg-[#0c6dc8]"
+                    className="absolute top-0 z-30 left-0 w-full h-[110vh] bg-gradient-to-br from-[#0c0f1c] via-[#1e3a8a] to-[#0b1327] 
+               shadow-[0_0_50px_rgba(0,0,0,0.8)] drop-shadow-[0_0_10px_rgba(59,130,246,0.4)]"
                 >
-                    <motion.section className="h-full py-32 px-20">
-                        <motion.div className="px-20 flex items-center gap-24 mb-20">
-                            <div>
-                            <p className="pt-20 text-pretty text-left text-4xl font-bold mb-8">
-                                Transform your workflow with our intuitive tools
-                                <span className='px-5 rounded-full pb-1 mx-2 border border-slate-100/20 drop-shadow-[0_0_10px_rgba(200,200,200,0.5)]'>
-                                    🚀
-                                </span>
-                            </p>
-                            <p className="text-pretty text-left text-4xl font-bold mb-8">
-                            Visualize progress in real-time
-                                <span className='px-5 rounded-full pb-1 mx-2 border border-slate-100/20 drop-shadow-[0_0_10px_rgba(200,200,200,0.5)]'>
-                                    📊
-                                </span>
-                            </p>
-                            <p className="text-pretty text-left text-4xl font-bold mb-8">
-                            Export your organized project to your Agenda
-                                <span className='px-5 rounded-full pb-1 mx-2 border border-slate-100/20 drop-shadow-[0_0_10px_rgba(200,200,200,0.5)]'>
-                                    📊
-                                </span>
-                            </p>
+                    <motion.section className="h-full pt-20 flex items-start justify-center">
+                        <motion.div className="flex flex-col lg:flex-row items-center gap-16 lg:gap-24 mb-16">
+
+                            <div className="max-w-2xl">
+                                <p className="text-pretty text-left text-3xl font-extrabold mb-6">
+                                    Supercharge your workflow with powerful tools
+                                </p>
+                                <p className="text-pretty text-left text-3xl font-semibold mb-6">
+                                    Track your progress visually in real-time
+                                </p>
+                                <p className="text-pretty text-left text-3xl font-semibold">
+                                    Sync and export your tasks to Google Agenda effortlessly
+                                </p>
                             </div>
-                            <div>
-                                <div className='bg-grid-white/[0.2] h-full w-full'>
-                                
-                                </div>
+                            <div className="flex flex-col items-end ">
+                                <p className='text-9xl text-white/20'>ALLIORA</p>
+                                <div className="h-52 w-96 bg-white bg-white/20 rounded-br-full rounded-tr-full rounded-tl-full rounded-bl-2xl flex-shrink-0" />
                             </div>
                         </motion.div>
                     </motion.section>
                 </motion.div>
+
 
                 <motion.div
                     ref={thirdSectionProgress}
@@ -218,45 +212,116 @@ export default function Welcome({ auth }) {
                     transition={{ ease: "easeInOut", duration: 5 }}
                     className="absolute top-0 z-40 left-0 w-full h-screen bg-background"
                 >
-                    <motion.section className="h-full py-32 px-10">
-                        <motion.div className="flex items-center mb-20">
-                            
+                    <motion.section className="h-full pt-10 px-10">
+                        <div className='pl-20'>
+                            <h1 className="text-2xl font-bold  text-white/70 mb-2">Alliora <span  className="italic text-gray-600 mb-4">(proper noun)</span></h1>
+                            <h2 className="text-xl font-semibold text-white/70 mb-2">Etymology</h2>
+                            <ul class="list-disc text-white/70 pl-6">
+                                <li>
+                                    From the root <span class="font-semibold">alli-</span>, derived from Latin
+                                    <span className="italic"> alligare</span> (“to bind, to connect”), symbolizing
+                                    <span className="text-gray-600"> alliance</span> and <span className="text-gray-600">collaboration</span>.
+                                </li>
+                                <li>
+                                    Combined with the suffix <span className="font-semibold">-ora</span>, from Latin
+                                    <span className="italic"> hora</span> (“hour”), representing
+                                    <span className="text-gray-600"> time management</span> and <span className="text-gray-600"> organization</span>.
+                                </li>
+                            </ul>
+                        </div>
+
+                        <motion.div className="flex items-center gap-5 mt-10 mb-5">
+                            <div className='w-2/6 rounded-3xl'>
+                                <img src="img/Card1.png" alt="" className='drop-shadow-[0_0_40px_rgba(200,200,200,0.1)] rounded-3xl w-full h-full' />
+                            </div>
+
+                            <div className='w-2/6 rounded-3xl'>
+                                <img src="img/Card2.png" alt="" className='drop-shadow-[0_0_40px_rgba(200,200,200,0.1)] rounded-3xl w-full h-full' />
+                            </div>
+
+                            <div className='w-2/6 rounded-3xl'>
+                                <img src="img/Card3.png" alt="" className='drop-shadow-[0_0_40px_rgba(200,200,200,0.1)] rounded-3xl w-full h-full' />
+                            </div>
                         </motion.div>
+                        <div className='w-full flex justify-end'>
+                            <p className="mt-4 w-2/4 text-gray-700">
+                                The name <span className="font-semibold">Alliora</span> thus signifies
+                                <span className="italic">“the harmonious union of teamwork and efficient time management”</span>,
+                                reflecting the purpose of an accessible online application designed for project coordination and organization.
+                            </p>
+                            </div>
                     </motion.section>
                 </motion.div>
 
                 <motion.div
-    ref={fourSectionRef}
-    style={{
-        translateY: translateYFour,
-    }}
-    transition={{ ease: "easeInOut", duration: 1.5 }}
-    className="absolute top-0 z-[41] left-0 w-full h-screen bg-black"
->
-    <motion.section className="h-full py-32 px-20">
-        <motion.div className="px-20 flex items-center gap-24 mb-20">
-            <div>
-                <p className="pt-20 text-pretty text-left text-4xl font-bold mb-8">
-                    Ready to revolutionize your workflow?
-                    <span className='px-5 rounded-full pb-1 mx-2 border border-slate-100/20 drop-shadow-[0_0_10px_rgba(200,200,200,0.5)]'>
-                        🌟
-                    </span>
-                </p>
-                <p className="text-pretty text-left text-4xl font-bold mb-8">
-                    Join thousands of teams already using Alliora
-                    <span className='px-5 rounded-full pb-1 mx-2 border border-slate-100/20 drop-shadow-[0_0_10px_rgba(200,200,200,0.5)]'>
-                        🚀
-                    </span>
-                </p>
-                <div className="mt-12">
-                    <Button variant="outline" className="pointer-events-auto animate-shimmer bg-[linear-gradient(110deg,#000103,34%,#5090F850,45%,#000103)] bg-[length:200%_100%]">
-                        Get Started Now
-                    </Button>
-                </div>
-            </div>
-        </motion.div>
-    </motion.section>
-</motion.div>
+                    ref={fourSectionRef}
+                    style={{
+                        translateY: translateYFour,
+                    }}
+                    className="absolute top-0 z-[41] left-0 w-full h-screen bg-black"
+                >
+                    <motion.section
+                        initial={{ y: -50, opacity: 0 }}
+                        whileInView={{ y: 0, opacity: 1 }}
+                        transition={{ duration: 0.8 }}
+                        className="h-full py-32 px-20">
+                        <motion.div className="px-20 flex flex-col items-center gap-12 mb-20">
+                            <motion.h2
+                                className="text-5xl  font-bold text-center"
+                            >
+                                Join the Alliora crew
+                                <div className='mt-2'>
+                                    <div className="absolute inset-x-0  flex justify-center">
+                                        <div className="bg-gradient-to-r from-transparent via-indigo-500 to-transparent h-[2px] w-2/5 blur-sm" />
+                                    </div>
+                                    <div className="absolute inset-x-0 flex justify-center">
+                                        <div className="bg-gradient-to-r from-transparent via-indigo-500 to-transparent h-px w-2/5" />
+                                    </div>
+                                    <div className="absolute inset-x-0 flex justify-center">
+                                        <div className="bg-gradient-to-r from-transparent via-sky-500 to-transparent h-[2px] w-1/4 blur-sm" />
+                                    </div>
+                                    <div className="absolute inset-x-0  flex justify-center">
+                                        <div className="bg-gradient-to-r from-transparent via-sky-500 to-transparent h-px w-1/4" />
+                                    </div>
+                                </div>
+                            </motion.h2>
+                            <p className="text-xl text-center max-w-2xl"
+                            >
+                                Thousands of teams have already transformed their workflow with Alliora. It's time for you to experience the future of project management.
+                            </p>
+                            <div
+                            >
+                                <Button
+                                    variant="secondary"
+                                    className="pointer-events-auto"
+                                    onMouseEnter={() => setIsHovered(true)}
+                                    onMouseLeave={() => setIsHovered(false)}
+                                >
+                                    Start Your Journey
+                                </Button>
+                            </div>
+                            <motion.div
+                                className=''
+                                initial={{ y: -50, opacity: 0 }}
+                                whileInView={{ y: 0, opacity: 1 }}
+                                transition={{ duration: 0.8, delay: 0.8 }}
+                                animate={isHovered ? {
+                                    marginTop: ["40px", "50px"],
+                                    transition: {
+                                        duration: 0.2,
+                                        repeat: Infinity,
+                                        repeatType: "mirror",
+                                        ease: 'easeInOut'
+                                    }
+                                } : {
+                                    marginTop: "50px"
+                                }}
+                            >
+                                <AllioraHead />
+                            </motion.div>
+                        </motion.div>
+                    </motion.section>
+                </motion.div>
             </div>
         </div>
     );
