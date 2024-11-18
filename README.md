@@ -17,21 +17,21 @@ Alliora is a modern project management system built on Laravel with a React fron
 
 - Project Creation & Management
 - Task Boards with Drag & Drop
+- Realtime updates
 - Team Chat & Collaboration Tools
 - Real-time Notifications
 - Project Statistics & Charts
 - Team Management
 - User Authentication & Authorization
-- Mobile Responsive Design
 
 ## Technical Stack
 
-- **Backend**: Laravel 10.x
+- **Backend**: Laravel 11
 - **Frontend**: React with Inertia.js
-- **Real-time**: Laravel WebSockets
-- **UI Components**: Custom React components with Tailwind CSS
-- **Charts**: React Charting Libraries
-- **Database**: MySQL/PostgreSQL
+- **Real-time**: Pusher and Laravel Echo
+- **UI Components**: Shadcn components, Aceternity and Custom React components with Tailwind CSS
+- **Charts**: Shadcn Charting Components
+- **Database**: SQLite
 
 ## Getting Started
 
@@ -40,13 +40,13 @@ Alliora is a modern project management system built on Laravel with a React fron
 - PHP >= 8.1
 - Composer
 - Node.js & NPM
-- MySQL/PostgreSQL
+- SQLite
 
 ### Installation
 
 1. Clone the repository:
 ```bash
-git clone https://github.com/yourusername/alliora.git
+git clone https://github.com/wav-rover/Alliora.git
 ```
 
 2. Install PHP dependencies:
