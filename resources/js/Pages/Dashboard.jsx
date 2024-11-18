@@ -84,9 +84,15 @@ export default function Dashboard() {
                     <motion.div className="dashboard-item p-6 w-2/4 h-full bg-background border border-2 border-slate-100/5 rounded-xl">
                         <div className="text-white">
                             <h3 className="text-xl font-semibold mb-4">Your Project Insights</h3>
-                            <motion.p className="stats-item mb-2">🏆 Most Active Project: "{mostActiveProject.name}" with {tasks.filter(task => task.project_id === mostActiveProject.id).length} tasks</motion.p>
-                            <motion.p className="stats-item mb-2">📏 Longest Project Name: "{longestProjectName}" ({longestProjectName.length} characters)</motion.p>
-                            <motion.p className="stats-item mb-2">🎨 Project Palette: {projects.map(project => `${project.name.charAt(0)}`).join('')} (first letter of each project)</motion.p>
+                            <motion.p className="stats-item mb-2">
+                                🏆 Most Active Project: "{mostActiveProject ? mostActiveProject.name : ' '}" with {mostActiveProject ? tasks.filter(task => task.project_id === mostActiveProject.id).length : 0} tasks
+                            </motion.p>
+                            <motion.p className="stats-item mb-2">
+                                📏 Longest Project Name: "{longestProjectName || ' '}" ({longestProjectName ? longestProjectName.length : 0} characters)
+                            </motion.p>
+                            <motion.p className="stats-item mb-2">
+                                🎨 Project Palette: {projects && projects.length > 0 ? projects.map(project => project.name.charAt(0)).join('') : ' '} (first letter of each project)
+                            </motion.p>
                         </div>
                     </motion.div>
 

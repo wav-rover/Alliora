@@ -102,7 +102,7 @@ export const AnimatedTooltip = ({ users }) => {
                       onMouseMove={handleMouseMove}
                       height={100}
                       width={100}
-                      src={user.img_profile}
+                      src={`/img/avatar.jpg`}
                       alt={user.name}
                       className={`object-cover rounded-full h-14 w-14 border-2 ${
                           user.role === 'admin' ? 'border-yellow-400' : 'border-white'

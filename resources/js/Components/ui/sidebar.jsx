@@ -213,7 +213,7 @@ export const SidebarFinal = ({ setActivePage }) => {
               href: `/profile/${auth.user?.id}`,
               icon: (
                 <img
-                  src={auth.user?.img_profil || "https://via.placeholder.com/40"}
+                  src={auth.user?.img_profil ? `/img/${auth.user.img_profil}` : "https://via.placeholder.com/40"}
                   className="h-7 w-7 flex-shrink-0 rounded-full"
                   alt="Avatar"
                 />
