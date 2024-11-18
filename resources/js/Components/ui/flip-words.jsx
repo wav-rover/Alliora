@@ -26,7 +26,7 @@ export const FlipWords = ({
   }, [isAnimating, duration, startAnimation]);
 
   return (
-    (<AnimatePresence
+    <AnimatePresence
       onExitComplete={() => {
         setIsAnimating(false);
       }}>
@@ -40,44 +40,52 @@ export const FlipWords = ({
           y: 0,
         }}
         transition={{
-          type: "spring",
-          stiffness: 100,
-          damping: 10,
+          // Change from 'spring' to 'tween' for better compositing and smoother animations
+          // Tween animations are GPU-friendly and avoid layout recalculations
+          type: 'tween'
         }}
         exit={{
           opacity: 0,
           y: -40,
           x: 40,
-          filter: "blur(8px)",
           scale: 2,
           position: "absolute",
         }}
         className={cn(
-          "z-10 inline-block relative text-left text-neutral-900 dark:text-neutral-100 px-2",
+          "z-10 inline-block relative text-left text-neutral-900 dark:text-neutral-100",
           className
         )}
+        // Added will-change property to hint the browser about upcoming transform and opacity changes
+        style={{ willChange: 'transform, opacity' }} // This allows the browser to optimize the animation
         key={currentWord}>
-        {/* edit suggested by Sajal: https://x.com/DewanganSajal */}
+        
+        {/* Animation of each word */}
         {currentWord.split(" ").map((word, wordIndex) => (
           <motion.span
             key={word + wordIndex}
-            initial={{ opacity: 0, y: 10, filter: "blur(8px)" }}
-            animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
             transition={{
               delay: wordIndex * 0.3,
               duration: 0.3,
             }}
-            className="inline-block whitespace-nowrap">
+            className="inline-block whitespace-nowrap"
+            // Added will-change property for the individual word element
+            style={{ willChange: 'transform, opacity' }} // This prepares the browser for the word animation
+          >
             {word.split("").map((letter, letterIndex) => (
               <motion.span
                 key={word + letterIndex}
-                initial={{ opacity: 0, y: 10, filter: "blur(8px)" }}
-                animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
                 transition={{
                   delay: wordIndex * 0.3 + letterIndex * 0.05,
                   duration: 0.2,
                 }}
-                className="inline-block">
+                className="inline-block"
+                // Added will-change property for each individual letter element
+                style={{ willChange: 'transform, opacity' }} // This tells the browser that each letter will be animated
+              >
                 {letter}
               </motion.span>
             ))}
@@ -85,6 +93,6 @@ export const FlipWords = ({
           </motion.span>
         ))}
       </motion.div>
-    </AnimatePresence>)
+    </AnimatePresence>
   );
 };
