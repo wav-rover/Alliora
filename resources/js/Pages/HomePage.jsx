@@ -302,8 +302,8 @@ export default function Welcome({ auth }) {
                             </div>
                             <motion.div
                                 className=''
-                                initial={{ y: -50, opacity: 0 }}
-                                whileInView={{ y: 0, opacity: 1 }}
+                                initial={{ opacity: 0 }}
+                                whileInView={{ opacity: 1 }}
                                 transition={{ duration: 0.8, delay: 0.8 }}
                                 animate={isHovered ? {
                                     marginTop: ["40px", "50px"],
