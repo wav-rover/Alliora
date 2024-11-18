@@ -96,7 +96,7 @@ const ProjectsPage = () => {
 
             <div>
                 {sortedProjects.length === 0 ? (
-                    <p>Aucun projet disponible.</p>
+                    <p>Nothing here for now.</p>
                 ) : (
                     <Projects
                         tasks={tasks}

@@ -16,7 +16,3 @@ window.Echo = new Echo({
         },
     },
 });
-
-console.log('Echo initialized');
-console.log('Pusher key:', import.meta.env.VITE_PUSHER_APP_KEY);
-console.log('CSRF token:', document.querySelector('meta[name="csrf-token"]').getAttribute('content'));
