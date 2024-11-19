@@ -176,6 +176,9 @@ export default function Welcome({ auth }) {
                                 </p>
                                 <p className='text-right w-full md:w-4/5'>
                                     Developed by
+                                    <LinkPreview url="https://github.com/wav-rover" className="ml-1 font-bold">
+                                            Deveney Jeremy
+                                    </LinkPreview>
                                     , as a study project.
                                 </p>
                             </motion.div>
