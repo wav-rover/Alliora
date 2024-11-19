@@ -220,9 +220,9 @@ const Teams = () => {
                                     whileHover={{ scale: 1.1 }}
                                     href={`/profile/${user.id}`} target="_blank" rel="noopener noreferrer" onClick={(e) => e.stopPropagation()}>
                                     <img
-                                        src={user.profileImage || "/placeholder.svg?height=32&width=32"}
+                                        src={`/img/${user.img_profil}`}
                                         alt={user.name}
-                                        className="w-8 h-8 rounded-full cursor-pointer bg-slate-100"
+                                        className="w-8 h-8 rounded-full cursor-pointer bg-black"
                                     />
                                 </motion.a>
                             </TooltipTrigger>
@@ -271,9 +271,9 @@ const Teams = () => {
                                     whileHover={{ scale: 1.1 }}
                                     href={`/profile/${user.id}`} target="_blank" rel="noopener noreferrer" onClick={(e) => e.stopPropagation()}>
                                     <img
-                                        src={user.profileImage || "/placeholder.svg?height=32&width=32"}
+                                        src={`/img/${user.img_profil}`}
                                         alt={user.name}
-                                        className="w-8 h-8 rounded-full cursor-pointer bg-slate-100"
+                                        className="w-8 h-8 rounded-full cursor-pointer bg-black"
                                     />
                                 </motion.a>
                             </TooltipTrigger>
@@ -450,7 +450,7 @@ const Teams = () => {
                                                                                 className="flex items-center space-x-2"
                                                                             >
                                                                                 <img
-                                                                                    src={user.img_profil}
+                                                                                    src={`/img/${user.img_profil}`}
                                                                                     alt={user.name}
                                                                                     className="w-6 h-6 rounded-full"
                                                                                 />
@@ -530,7 +530,7 @@ const Teams = () => {
                                                                                 className="flex items-center space-x-2"
                                                                             >
                                                                                 <img
-                                                                                    src={user.img_profil}
+                                                                                    src={`/img/${user.img_profil}`}
                                                                                     alt={user.name}
                                                                                     className="w-6 h-6 rounded-full"
                                                                                 />
@@ -595,7 +595,6 @@ const Teams = () => {
                                                 transition={{ duration: 0.5 }}     // Durée de la transition
                                             >
                                                 <p>Created on {team.created_at}</p>
-                                                <p>Working on 0 projects</p>
 
                                                 <motion.div
                                                     initial={{ scale: 1 }}                   // État initial avant le clic

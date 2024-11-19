@@ -25,9 +25,11 @@ export default function Edit({ mustVerifyEmail, status }) {
                             status={status}
                             className="w-4/6"
                         />
-                        <div className='w-[300px] h-[300px] border border-1 border-white rounded-full overflow-hidden'>
-                          <img src={auth.user.img_profile} alt="Profile" className='bg-white w-full h-full' />
-                        </div>
+                            <img
+                                src={auth.user?.img_profil ? `/img/${auth.user.img_profil}` : "https://via.placeholder.com/40"}
+                                className="h-64 w-64 flex-shrink-0 rounded-full"
+                                alt="Avatar"
+                            />
                     </div>
 
                     <div className="bg-neutral-900 p-4 shadow sm:rounded-lg sm:p-8">

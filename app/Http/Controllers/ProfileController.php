@@ -26,7 +26,7 @@ class ProfileController extends Controller
         return response()->json($users);
     }
 
-    // Méthode existante pour éditer le profil
+    
     public function edit(Request $request): \Inertia\Response
     {
         return Inertia::render('Profile/Edit', [
@@ -35,7 +35,6 @@ class ProfileController extends Controller
         ]);
     }
 
-    // Méthode existante pour mettre à jour le profil
     public function update(ProfileUpdateRequest $request)
     {
         $request->user()->fill($request->validated());

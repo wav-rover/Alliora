@@ -210,7 +210,8 @@ export const SidebarFinal = ({ setActivePage }) => {
           <SidebarLink
             link={{
               label: auth.user?.name || "User",
-              href: `/profile/${auth.user?.id}`,
+              href:route('profile.edit') ,
+              
               icon: (
                 <img
                   src={auth.user?.img_profil ? `/img/${auth.user.img_profil}` : "https://via.placeholder.com/40"}

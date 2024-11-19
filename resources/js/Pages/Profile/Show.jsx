@@ -18,9 +18,9 @@ export default function Show() {
             <div className="py-12">
                 <div className="mx-auto max-w-7xl sm:px-6 lg:px-8">
                     <div className="bg-neutral-900 p-8 shadow sm:rounded-lg flex flex-col items-center">
-                        <div className="w-48 h-48 border border-white rounded-full overflow-hidden">
+                        <div className="w-48 h-48 border rounded-full overflow-hidden">
                             <img
-                                src={user.img_profile}
+                                src={`/img/${user.img_profil}`}
                                 alt="Profile"
                                 className="w-full h-full object-cover"
                             />
