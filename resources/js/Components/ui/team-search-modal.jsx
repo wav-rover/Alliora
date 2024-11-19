@@ -5,6 +5,14 @@ import { Input } from "@/Components/ui/input2";
 import { Plus } from "lucide-react";
 import axios from "axios";
 
+/**
+ * Renders a search modal component with a toggle button and input field
+ * @param {Object} props - The component props
+ * @param {string} props.placeholder - The placeholder text for the search input
+ * @param {Function} props.onSubmit - Callback function to be called after successful form submission
+ * @param {string} props.buttonLabel - The label for the toggle button
+ * @returns {JSX.Element} A React component that displays a search modal
+ */
 export default function SearchModal({ placeholder, onSubmit, buttonLabel }) {
   const [isSearchVisible, setIsSearchVisible] = useState(false);
   const [inputValue, setInputValue] = useState("");

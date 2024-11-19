@@ -18,6 +18,12 @@ import {
 import Autoplay from "embla-carousel-autoplay"
 import { Calendar, Clock, Target, Users, CheckCircle, XCircle, AlertCircle } from 'lucide-react'
 
+/**
+ * Renders the Dashboard component, displaying various project and task statistics
+ * along with animated elements and a project carousel.
+ * @returns {JSX.Element} A React component representing the dashboard layout
+ * with project insights, task statistics, and interactive elements.
+ */
 export default function Dashboard() {
     const { auth, recentProjects, upcomingTasks, projects, tasks } = usePage().props
     const maxParticleCount = 1000

@@ -9,6 +9,12 @@ import { TrendingDown } from 'lucide-react';
 import { Area, AreaChart, CartesianGrid, XAxis, Tooltip } from "recharts"
 import { format, parseISO, subMonths, startOfMonth, endOfMonth } from 'date-fns';
 
+/**
+ * Renders a dashboard chart component displaying project creation statistics
+ * @param {Object} props - The component props
+ * @param {Array} props.projects - An array of project objects containing creation dates
+ * @returns {JSX.Element} A React component containing a chart and project creation statistics
+ */
 export function DashboardChart({ projects }) {
   const [chartData, setChartData] = useState([]);
   const [currentMonthProjects, setCurrentMonthProjects] = useState(0);

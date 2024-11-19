@@ -11,6 +11,10 @@ import ProjectStats from '@/Components/data/ProjectStats';
 import ProjectCalendar from '@/Components/data/ProjectCalendar';
 
 
+/**
+ * Renders the Project Show Page component
+ * @returns {JSX.Element} The rendered Project Show Page component
+ */
 const ProjectShowPage = () => {
     const { auth } = usePage().props;
 

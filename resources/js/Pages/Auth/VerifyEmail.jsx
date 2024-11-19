@@ -2,6 +2,12 @@ import PrimaryButton from '@/Components/PrimaryButton';
 import GuestLayout from '@/Layouts/GuestLayout';
 import { Head, Link, useForm } from '@inertiajs/react';
 
+/**
+ * Renders a component for email verification with an option to resend the verification email.
+ * @param {{status: string}} props - The component props
+ * @param {string} props.status - The current status of email verification
+ * @returns {JSX.Element} A React component for email verification
+ */
 export default function VerifyEmail({ status }) {
     const { post, processing } = useForm({});
 

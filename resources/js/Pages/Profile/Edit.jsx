@@ -4,6 +4,13 @@ import DeleteUserForm from './Partials/DeleteUserForm';
 import UpdatePasswordForm from './Partials/UpdatePasswordForm';
 import UpdateProfileInformationForm from './Partials/UpdateProfileInformationForm';
 
+/**
+ * Renders the Edit profile page component
+ * @param {Object} props - The component props
+ * @param {boolean} props.mustVerifyEmail - Indicates if email verification is required
+ * @param {string} props.status - The current status message
+ * @returns {JSX.Element} The rendered Edit profile page component
+ */
 export default function Edit({ mustVerifyEmail, status }) {
     const { auth } = usePage().props;
 

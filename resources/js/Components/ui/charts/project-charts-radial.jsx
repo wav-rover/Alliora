@@ -37,6 +37,13 @@ const CustomTooltip = ({ active, payload }) => {
   return null;
 };
 
+/**
+ * Renders a radial bar chart displaying the distribution of tasks across project lists.
+ * @param {Object} taskCounts - An array of objects containing task count information for each list.
+ * @param {string} taskCounts[].name - The name of the project list.
+ * @param {number} taskCounts[].count - The number of tasks in the list.
+ * @returns {JSX.Element} A Card component containing a RadialBarChart visualizing task distribution.
+ */
 export function ProjectRadialChart({ taskCounts }) {
   const chartData = taskCounts.map((list, index) => ({
     listName: list.name,

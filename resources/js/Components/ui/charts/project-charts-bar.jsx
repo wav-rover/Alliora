@@ -30,6 +30,11 @@ const colors = {
   finished: "rgba(5, 150, 105, 0.4)",
 };
 
+/**
+ * Renders a bar chart displaying task status data for a project
+ * @param {Object} taskStatusData - An array of objects containing task status information
+ * @returns {JSX.Element} A Card component containing a bar chart visualization of task statuses
+ */
 export function ProjectBarChart({ taskStatusData }) {
   const statusOrder = ["pending", "in progress", "finished"];
   const sortedTaskStatusData = taskStatusData.sort((a, b) => {

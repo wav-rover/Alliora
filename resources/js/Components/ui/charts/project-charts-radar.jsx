@@ -33,6 +33,12 @@ const blueShades = [
     return null;
   };
 
+/**
+ * Renders a radar chart displaying the number of tasks assigned to each team member.
+ * @param {Object} props - The component props.
+ * @param {Array<Object>} props.taskCountByUser - An array of objects containing user names and their task counts.
+ * @returns {JSX.Element} A Card component containing the radar chart visualization.
+ */
 export function ProjectRadarChart({ taskCountByUser }) {
   const chartConfig = taskCountByUser.reduce((acc, user, index) => {
     acc[user.name] = {

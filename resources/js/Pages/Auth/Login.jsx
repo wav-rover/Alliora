@@ -10,6 +10,13 @@ import { Label } from '../../Components/ui/label';
 import { motion } from 'framer-motion';
 import { useEffect } from 'react';
 
+/**
+ * Renders a login form component with email and password inputs, remember me checkbox, and related functionality.
+ * @param {Object} props - The component props
+ * @param {string} props.status - The status message to display (if any)
+ * @param {boolean} props.canResetPassword - Indicates if the password reset functionality is available
+ * @returns {JSX.Element} A JSX element representing the login form
+ */
 export default function Login({ status, canResetPassword }) {
     const { data, setData, post, processing, errors, reset } = useForm({
         email: '',

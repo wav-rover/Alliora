@@ -6,6 +6,12 @@ import { Transition } from '@headlessui/react';
 import { useForm } from '@inertiajs/react';
 import { useRef } from 'react';
 
+/**
+ * Renders a form component for updating user password
+ * @param {Object} props - The component props
+ * @param {string} [props.className=''] - Additional CSS class names for the section element
+ * @returns {JSX.Element} A section containing a form for updating the user's password
+ */
 export default function UpdatePasswordForm({ className = '' }) {
     const passwordInput = useRef();
     const currentPasswordInput = useRef();

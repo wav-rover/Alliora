@@ -18,6 +18,13 @@ const TabsList = React.forwardRef(({ className, ...props }, ref) => (
 ))
 TabsList.displayName = TabsPrimitive.List.displayName
 
+/**
+ * A customizable trigger component for tabs, built on top of TabsPrimitive.Trigger.
+ * @param {Object} props - The properties passed to the component.
+ * @param {string} [props.className] - Additional CSS classes to apply to the trigger.
+ * @param {React.Ref} ref - A ref to be forwarded to the underlying TabsPrimitive.Trigger component.
+ * @returns {React.ReactElement} A styled and accessible tab trigger component.
+ */
 const TabsTrigger = React.forwardRef(({ className, ...props }, ref) => (
   <TabsPrimitive.Trigger
     ref={ref}
@@ -29,6 +36,13 @@ const TabsTrigger = React.forwardRef(({ className, ...props }, ref) => (
 ))
 TabsTrigger.displayName = TabsPrimitive.Trigger.displayName
 
+/**
+ * Renders a tab content component with forwarded ref and customizable className.
+ * @param {Object} props - The properties passed to the component.
+ * @param {string} [props.className] - Additional CSS class names to apply to the component.
+ * @param {React.Ref} ref - The ref to be forwarded to the underlying TabsPrimitive.Content component.
+ * @returns {React.ReactElement} A TabsPrimitive.Content component with applied styles and properties.
+ */
 const TabsContent = React.forwardRef(({ className, ...props }, ref) => (
   <TabsPrimitive.Content
     ref={ref}

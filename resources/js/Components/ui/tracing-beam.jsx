@@ -3,6 +3,13 @@ import React, { useEffect, useRef, useState } from "react";
 import { motion, useTransform, useScroll, useSpring } from "framer-motion";
 import { cn } from "@/lib/utils";
 
+/**
+ * Renders a tracing beam component with an animated SVG path and gradient effect.
+ * @param {Object} props - The component props.
+ * @param {React.ReactNode} props.children - The content to be rendered inside the component.
+ * @param {string} [props.className] - Additional CSS classes to apply to the component.
+ * @returns {JSX.Element} A motion.div component containing the tracing beam effect and children content.
+ */
 export const TracingBeam = ({
   children,
   className

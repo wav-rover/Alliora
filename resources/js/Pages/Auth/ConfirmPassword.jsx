@@ -5,6 +5,12 @@ import TextInput from '@/Components/TextInput';
 import GuestLayout from '@/Layouts/GuestLayout';
 import { Head, useForm } from '@inertiajs/react';
 
+/**
+ * Renders a password confirmation form component.
+ * This component allows users to confirm their password in a secure area of the application.
+ * It uses the useForm hook for form state management and submission.
+ * @returns {JSX.Element} A React component containing a password confirmation form.
+ */
 export default function ConfirmPassword() {
     const { data, setData, post, processing, errors, reset } = useForm({
         password: '',
