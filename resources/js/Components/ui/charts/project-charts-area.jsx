@@ -33,6 +33,12 @@ const chartConfig = {
   },
 }
 
+/**
+ * Renders a project area chart displaying task statistics over time
+ * @param {Object} props - The component props
+ * @param {Array} props.tasks - An array of task objects containing status and updated_at information
+ * @returns {JSX.Element} A Card component containing the area chart and time range selector
+ */
 export function ProjectAreaChart({ tasks }) {
   const [timeRange, setTimeRange] = React.useState("30d") // Valeur par défaut modifiée
 
