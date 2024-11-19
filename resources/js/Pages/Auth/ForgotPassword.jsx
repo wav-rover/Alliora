@@ -4,6 +4,12 @@ import TextInput from '@/Components/TextInput';
 import GuestLayout from '@/Layouts/GuestLayout';
 import { Head, useForm } from '@inertiajs/react';
 
+/**
+ * Renders a Forgot Password component for requesting a password reset link.
+ * @param {Object} props - The component props.
+ * @param {string} props.status - The status message to display after a successful request.
+ * @returns {JSX.Element} A form for submitting an email address to receive a password reset link.
+ */
 export default function ForgotPassword({ status }) {
     const { data, setData, post, processing, errors } = useForm({
         email: '',
