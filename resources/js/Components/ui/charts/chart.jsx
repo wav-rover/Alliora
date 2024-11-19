@@ -12,6 +12,11 @@ const THEMES = {
 
 const ChartContext = React.createContext(null)
 
+/**
+ * Hook to access the chart context within a ChartContainer component.
+ * @returns {object} The chart context object.
+ * @throws {Error} If used outside of a ChartContainer component.
+ */
 function useChart() {
   const context = React.useContext(ChartContext)
 
@@ -22,6 +27,16 @@ function useChart() {
   return context
 }
 
+/**
+ * A React component for rendering charts with customizable styles and configurations.
+ * @param {Object} props - The properties passed to the component.
+ * @param {string} [props.id] - Optional unique identifier for the chart.
+ * @param {string} [props.className] - Optional CSS class name(s) for additional styling.
+ * @param {ReactNode} props.children - The child components to be rendered within the chart container.
+ * @param {Object} props.config - Configuration object for the chart.
+ * @param {React.Ref} ref - Ref object for accessing the DOM element.
+ * @returns {JSX.Element} A div element containing the chart with applied styles and configurations.
+ */
 const ChartContainer = React.forwardRef(({ id, className, children, config, ...props }, ref) => {
   const uniqueId = React.useId()
   const chartId = `chart-${id || uniqueId.replace(/:/g, "")}`
@@ -46,6 +61,13 @@ const ChartContainer = React.forwardRef(({ id, className, children, config, ...p
 })
 ChartContainer.displayName = "Chart"
 
+/**
+ * Generates a style element with dynamic CSS for chart coloring based on themes and configurations.
+ * @param {Object} params - The parameters for the ChartStyle component.
+ * @param {string} params.id - The unique identifier for the chart.
+ * @param {Object} params.config - The configuration object containing theme and color settings.
+ * @returns {React.Element|null} A style element with generated CSS, or null if no color configuration is present.
+ */
 const ChartStyle = ({
   id,
   config
@@ -79,6 +101,25 @@ return color ? `  --color-${key}: ${color};` : null
 
 const ChartTooltip = RechartsPrimitive.Tooltip
 
+/**
+ * Renders a customizable chart tooltip content component.
+ * @param {Object} props - The component props.
+ * @param {boolean} props.active - Indicates if the tooltip is active.
+ * @param {Array} props.payload - The payload data for the tooltip.
+ * @param {string} [props.className] - Additional CSS class for the tooltip container.
+ * @param {string} [props.indicator="dot"] - The type of indicator to display ("dot", "line", or "dashed").
+ * @param {boolean} [props.hideLabel=false] - Whether to hide the label.
+ * @param {boolean} [props.hideIndicator=false] - Whether to hide the indicator.
+ * @param {string|Object} [props.label] - The label to display or object key to use for label.
+ * @param {Function} [props.labelFormatter] - Custom function to format the label.
+ * @param {string} [props.labelClassName] - Additional CSS class for the label.
+ * @param {Function} [props.formatter] - Custom function to format the tooltip content.
+ * @param {string} [props.color] - The color to use for the indicator.
+ * @param {string} [props.nameKey] - The key to use for item names.
+ * @param {string} [props.labelKey] - The key to use for label values.
+ * @param {Object} ref - The forwarded ref object.
+ * @returns {React.ReactElement|null} The rendered tooltip content or null if not active.
+ */
 const ChartTooltipContent = React.forwardRef((
   {
     active,
@@ -216,6 +257,17 @@ ChartTooltipContent.displayName = "ChartTooltip"
 
 const ChartLegend = RechartsPrimitive.Legend
 
+/**
+ * Renders a chart legend content component with customizable appearance and behavior.
+ * @param {Object} props - The component props.
+ * @param {string} [props.className] - Additional CSS class names for the container.
+ * @param {boolean} [props.hideIcon=false] - Whether to hide the icon for each legend item.
+ * @param {Array} props.payload - The data for the legend items.
+ * @param {string} [props.verticalAlign="bottom"] - The vertical alignment of the legend ("top" or "bottom").
+ * @param {string} [props.nameKey] - The key to use for extracting item names from the payload.
+ * @param {React.Ref} ref - The ref to be forwarded to the container element.
+ * @returns {React.ReactElement|null} The rendered legend content or null if no payload is provided.
+ */
 const ChartLegendContent = React.forwardRef((
   { className, hideIcon = false, payload, verticalAlign = "bottom", nameKey },
   ref
