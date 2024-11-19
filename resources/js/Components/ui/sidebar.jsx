@@ -79,7 +79,7 @@ export const DesktopSidebar = ({ className, children, ...props }) => {
   
   return (
     <div
-      className={cn("my-5")}
+      className={cn("my-5 z-10")}
       
     >
       <motion.div

@@ -1,12 +1,12 @@
 import React, { useState } from 'react';
 import { format } from 'date-fns';
 import { X, CalendarIcon } from "lucide-react";
-import { Accordion, AccordionItem, AccordionTrigger, AccordionContent } from '@/Components/ui/Accordion';
-import { Input } from '@/Components/ui/Input';
-import { Button } from '@/Components/ui/Button';
+import { Accordion, AccordionItem, AccordionTrigger, AccordionContent } from '@/Components/ui/accordion';
+import { Input } from '@/Components/ui/input';
+import { Button } from '@/Components/ui/button';
 import { Calendar } from '@/Components/ui/calendar';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Popover, PopoverTrigger, PopoverContent } from '@/Components/ui/Popover';
+import { Popover, PopoverTrigger, PopoverContent } from '@/Components/ui/popover';
 import Toast from '../ui/custom-toast';
 
 const statusColors = {
