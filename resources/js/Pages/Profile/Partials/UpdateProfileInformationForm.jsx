@@ -5,6 +5,14 @@ import TextInput from '@/Components/TextInput';
 import { Transition } from '@headlessui/react';
 import { Link, useForm, usePage } from '@inertiajs/react';
 
+/**
+ * Renders a form for updating user profile information
+ * @param {Object} props - The component props
+ * @param {boolean} props.mustVerifyEmail - Flag indicating if email verification is required
+ * @param {string} props.status - Current status of the verification process
+ * @param {string} [props.className=''] - Additional CSS classes for the component
+ * @returns {JSX.Element} A section containing a form for updating profile information
+ */
 export default function UpdateProfileInformation({
     mustVerifyEmail,
     status,
