@@ -5,6 +5,12 @@ import DropDownCustom from '@/Components/ui/drop-down-custom';
 import React, { useEffect, useState } from 'react';
 import { usePage } from '@inertiajs/react';
 
+/**
+ * Renders an authenticated layout with a sidebar, background effects, and notifications.
+ * @param {Object} props - The component props.
+ * @param {React.ReactNode} props.children - The child components to render within the layout.
+ * @returns {JSX.Element} A React component representing the authenticated layout.
+ */
 const AuthenticatedLayout = ({ children }) => {
     const { auth } = usePage().props;
     const userId = auth.user.id;
