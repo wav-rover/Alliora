@@ -3,6 +3,22 @@ import React, { useEffect, useRef } from "react";
 import { createNoise3D } from "simplex-noise";
 import { motion } from "framer-motion";
 
+/**
+ * Renders a vortex animation effect using canvas
+ * @param {Object} props - The component props
+ * @param {number} [props.particleCount=700] - The number of particles in the vortex
+ * @param {number} [props.rangeY=100] - The vertical range for particle initialization
+ * @param {number} [props.baseSpeed=0.0] - The base speed of particles
+ * @param {number} [props.rangeSpeed=1.5] - The range of random speed added to base speed
+ * @param {number} [props.baseRadius=1] - The base radius of particles
+ * @param {number} [props.rangeRadius=2] - The range of random radius added to base radius
+ * @param {number} [props.baseHue=220] - The base hue for particle color
+ * @param {string} [props.backgroundColor="#000000"] - The background color of the canvas
+ * @param {string} [props.containerClassName] - Additional CSS class for the container div
+ * @param {string} [props.className] - Additional CSS class for the content div
+ * @param {React.ReactNode} props.children - Child components to render inside the vortex
+ * @returns {JSX.Element} A div containing the vortex animation and child components
+ */
 export const Vortex = (props) => {
   const canvasRef = useRef(null);
   const containerRef = useRef(null);
