@@ -10,7 +10,7 @@ class CreateListsTable extends Migration
         Schema::create('lists', function (Blueprint $table) {
             $table->id(); // Identifiant unique
             $table->string('title'); // Titre de la liste
-            $table->integer('position')->unique(); // Position unique
+            $table->integer('position')->nullable(); // Position
             $table->foreignId('project_id')->constrained()->onDelete('cascade'); // Clé étrangère vers le projet
             $table->timestamps(); // Champs created_at et updated_at
         });
