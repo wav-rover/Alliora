@@ -5,6 +5,13 @@ import TextInput from '@/Components/TextInput';
 import GuestLayout from '@/Layouts/GuestLayout';
 import { Head, useForm } from '@inertiajs/react';
 
+/**
+ * Renders a password reset form component
+ * @param {Object} props - The component props
+ * @param {string} props.token - The reset password token
+ * @param {string} props.email - The user's email address
+ * @returns {JSX.Element} A form for resetting the user's password
+ */
 export default function ResetPassword({ token, email }) {
     const { data, setData, post, processing, errors, reset } = useForm({
         token: token,
