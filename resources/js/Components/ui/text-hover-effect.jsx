@@ -2,6 +2,13 @@
 import React, { useRef, useEffect, useState } from "react";
 import { motion } from "framer-motion";
 
+/**
+ * Renders a text hover effect component with gradient animation.
+ * @param {Object} props - The component props.
+ * @param {string} props.text - The text to display with the hover effect.
+ * @param {number} [props.duration=0] - The duration of the mask position transition in seconds.
+ * @returns {JSX.Element} An SVG element containing the animated text with hover effects.
+ */
 export const TextHoverEffect = ({
   text,
   duration
