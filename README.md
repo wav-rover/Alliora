@@ -22,17 +22,21 @@
   Gain actionable insights with **charts and project statistics**.  
   ![Project Analytics](gitImg/Card3.png)  
 
+- **📅 [Export your projects to Google Calendar](#-core-features)**  
+  Synchronize your schedule with **Google Calendar for better project management**.  
+  ![Google Calendar](gitImg/Card4.png)  
+
 ---
 
 ## 🔑 **Core Features**  
 
 ### 🌟 **Key Capabilities**  
-- **[Project Creation & Management](#-why-choose-alliora)**  
+- **Project Creation & Management**  
 - **Kanban-Style Task Boards** with drag-and-drop functionality.  
 - **Real-time Notifications & Updates** via WebSocket integration.  
 - **Team Chat** for effective communication.  
 - **Comprehensive Analytics & Charts** for better decision-making.  
-- **Google Agenda Integration** to keep tasks synced across platforms.  
+- **Google Calendar Integration** to keep tasks synced across platforms.  
 
 ---
 
@@ -43,7 +47,7 @@
 | **Backend**           | [Laravel 11](https://laravel.com/)                                         |
 | **Frontend**          | [React](https://react.dev/) with [Inertia.js](https://inertiajs.com/)       |
 | **Real-time Updates** | [Pusher](https://pusher.com/) + [Laravel Echo](https://laravel.com/docs/11.x/broadcasting) |
-| **UI Components**     | [Shadcn](https://shadcn.dev/) Components, Aceternity, [Tailwind CSS](https://tailwindcss.com/) |
+| **UI Components**     | Shadcn Components, Aceternity, [Tailwind CSS](https://tailwindcss.com/) |
 | **Drag-and-Drop**     | [React Beautiful DnD](https://github.com/atlassian/react-beautiful-dnd)    |
 | **Database**          | [SQLite](https://sqlite.org/index.html)                                   |
 | **Charts**            | Shadcn Charting Components                                                |
@@ -82,8 +86,8 @@ Before installation, ensure your environment meets the following requirements:
      cp .env.example .env
      ```  
    - Configure the following keys in `.env`:  
-     - `PUSHER_APP_KEY` (get it from [Pusher Dashboard](https://dashboard.pusher.com/)).  
-     - `GOOGLE_API_KEY` (get it from [Google Cloud Console](https://console.cloud.google.com/)).  
+     - `PUSHER KEYS` needed for realtime updates on boards (get them from [Pusher Dashboard](https://dashboard.pusher.com/)).  
+     - `GOOGLE KEYS` optionnal, used for exporting tasks to Google Calendar (get them from [Google Cloud Console](https://console.cloud.google.com/)).  
 
 4. **Generate Application Key**  
    ```bash
