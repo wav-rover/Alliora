@@ -1,11 +1,17 @@
 import React, { useRef, useState, useEffect } from 'react';
 import { Link } from '@inertiajs/react';
 import Spline from '@splinetool/react-spline';
-import { motion, useScroll, useTransform } from 'framer-motion';
+import { motion, useScroll, useTransform, AnimatePresence } from 'framer-motion';
 import { Button } from '../Components/ui/button';
 import { FlipWords } from "../Components/ui/flip-words";
 import { LinkPreview } from "@/Components/ui/link-preview";
-import AllioraHead from '@/Components/ui/alliora-head';
+import { AllioraHead, BigAllioraHead } from '@/Components/ui/alliora-head';
+import {
+    Tooltip,
+    TooltipContent,
+    TooltipProvider,
+    TooltipTrigger,
+  } from "@/Components/ui/tooltip"
 
 const words = [
     "10x better",
@@ -19,12 +25,38 @@ const words = [
     "creative",
 ];
 
+const fadeInVariants = {
+    initial: { opacity: 0, scale: 0.95 },
+    animate: {
+        opacity: 1,
+        scale: 1,
+        transition: {
+            duration: 0.50,
+            delay: 0.7,
+            ease: "easeOut"
+        }
+    },
+    exit: {
+        opacity: 0,
+        scale: 0.95,
+        transition: {
+            duration: 0.3,
+            ease: "easeIn"
+        }
+    }
+};
+
 export default function Welcome({ auth }) {
     const containerRef = useRef(null);
     const firstSectionRef = useRef(null);
     const secondSectionRef = useRef(null);
     const thirdSectionRef = useRef(null);
     const fourSectionRef = useRef(null);
+    const [isRTXOn, setIsRTXOn] = useState(true);
+
+    const toggleRTX = () => {
+        setIsRTXOn(!isRTXOn);
+    };
 
     const { scrollYProgress: firstSectionProgress } = useScroll({
         target: containerRef,
@@ -94,7 +126,8 @@ export default function Welcome({ auth }) {
             }
         };
 
-        firstSectionProgress.on("change", handleScrollProgress2);}, [firstSectionProgress]);
+        firstSectionProgress.on("change", handleScrollProgress2);
+    }, [firstSectionProgress]);
 
     return (
         <div ref={containerRef} className="relative min-h-[500vh] bg-black text-white">
@@ -106,20 +139,36 @@ export default function Welcome({ auth }) {
                             <div className="h-4 w-5 md:h-5 md:w-6 bg-white dark:bg-white rounded-br-lg rounded-tr-sm rounded-tl-lg rounded-bl-sm flex-shrink-0" />
                             ALLIORA
                         </Link>
-                        <div className="hidden md:flex items-center gap-8"></div>
-                        {auth.user ? (
-                            <Link href={route('login')}>
-                                <Button variant="outline" className="pointer-events-auto text-xs h-fit border-neutral-500 bg-background">
-                                    Dashboard
-                                </Button>
-                            </Link>
-                        ) : (
-                            <Link href={route('login')}>
-                                <Button variant="outline" className="pointer-events-auto text-xs h-fit border-neutral-500 bg-background">
-                                    Get Started
-                                </Button>
-                            </Link>
-                        )}
+                        <div className="hidden md:flex items-center gap-8">
+                            <TooltipProvider>
+                                <Tooltip>
+                                    <TooltipTrigger asChild>
+                                        <Button
+                                            onClick={toggleRTX}
+                                            variant="outline"
+                                            className="pointer-events-auto text-xs h-fit text-white/50 border-neutral-500/50 border-dashed bg-background"
+                                        >
+                                            {isRTXOn ? 'RTX ON' : 'RTX OFF'}
+                                        </Button>
+                                    </TooltipTrigger>
+                                    <TooltipContent>
+                                        <p className=''>{isRTXOn ? 'Disable to get performance' : 'Toggle to get aura'}</p>
+                                    </TooltipContent>
+                                </Tooltip>
+                            </TooltipProvider>
+                            {auth.user ? (
+                                <Link href={route('login')}>
+                                    <Button variant="outline" className="pointer-events-auto text-xs h-fit border-neutral-500 bg-background">
+                                        Dashboard
+                                    </Button>
+                                </Link>
+                            ) : (
+                                <Link href={route('login')}>
+                                    <Button variant="outline" className="pointer-events-auto text-xs h-fit border-neutral-500 bg-background">
+                                        Get Started
+                                    </Button>
+                                </Link>
+                            )}</div>
                     </nav>
                 </div>
 
@@ -127,7 +176,25 @@ export default function Welcome({ auth }) {
                 <div className="absolute inset-0 w-full">
                     <div className="w-full h-full">
                         <div className="relative w-full h-[108vh] [clip-path:inset(0_0_57px_0)]">
-                            <Spline scene="https://prod.spline.design/7w41iMdSSU8lwsPN/scene.splinecode" />
+                            <AnimatePresence mode="wait">
+                                <motion.div
+                                    key={isRTXOn ? 'spline' : 'alliora'}
+                                    variants={fadeInVariants}
+                                    initial="initial"
+                                    animate="animate"
+                                    exit="exit"
+                                    className="w-full h-full"
+                                >
+                                    {isRTXOn ? (
+                                        <Spline scene="https://prod.spline.design/7w41iMdSSU8lwsPN/scene.splinecode" />
+                                    ) : (
+                                        <div className='h-full w-full flex items-center justify-end px-20'>
+
+                                            <BigAllioraHead />
+                                        </div>
+                                    )}
+                                </motion.div>
+                            </AnimatePresence>
                         </div>
                     </div>
                 </div>
@@ -171,13 +238,13 @@ export default function Welcome({ auth }) {
                                     Your all-in-one real-time project management solution.
                                     🤝
                                     Empowering teams to become leaders
-                                        ✨
+                                    ✨
                                     in seamless collaboration and progress.
                                 </p>
                                 <p className='text-right w-full md:w-4/5'>
                                     Developed by
                                     <LinkPreview url="https://github.com/wav-rover" className="ml-1 font-bold">
-                                            Deveney Jeremy
+                                        Deveney Jeremy
                                     </LinkPreview>
                                     , as a study project.
                                 </p>
@@ -268,7 +335,7 @@ export default function Welcome({ auth }) {
                     className="absolute top-0 z-[41] left-0 w-full h-screen bg-black"
                 >
                     <section className="h-full py-16 md:py-32 px-4 md:px-20">
-                    <div className="px-4 md:px-20 flex flex-col items-center gap-8 md:gap-12 mb-20">
+                        <div className="px-4 md:px-20 flex flex-col items-center gap-8 md:gap-12 mb-20">
                             <h2 className="text-3xl md:text-5xl font-bold text-center">
                                 Join the Alliora crew
                                 <div className='mt-2'>
