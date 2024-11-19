@@ -1,10 +1,10 @@
 import React, { useState } from 'react';
 import { Input } from "../ui/input2";
-import { Button } from "@/components/ui/button";
+import { Button } from "@/Components/ui/button";
 import { Check, ChevronsUpDown, Plus } from "lucide-react";
-import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
-import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from "@/components/ui/command";
-import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
+import { Popover, PopoverContent, PopoverTrigger } from "@/Components/ui/popover";
+import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from "@/Components/ui/command";
+import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "@/Components/ui/dialog";
 
 
 const CreateProjectForm = ({ adminTeams, onProjectCreated }) => {

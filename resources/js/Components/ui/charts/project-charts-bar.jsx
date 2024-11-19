@@ -9,12 +9,12 @@ import {
   CardFooter,
   CardHeader,
   CardTitle,
-} from "@/components/ui/card"
+} from "@/Components/ui/card"
 import {
   ChartContainer,
   ChartTooltip,
   ChartTooltipContent,
-} from "@/components/ui/charts/chart"
+} from "@/Components/ui/charts/chart"
 
 // Configuration pour les couleurs et labels des barres
 const chartConfig = {

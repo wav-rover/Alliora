@@ -12,7 +12,7 @@ import {
   CarouselItem,
   CarouselNext,
   CarouselPrevious,
-} from "@/components/ui/carousel"
+} from "@/Components/ui/carousel"
 
 const ProjectStats = ({ tasks: initialTasks, projectId, onTaskModified, initialLists, onListModified, users }) => {
     const taskCountByUser = users.map(user => ({

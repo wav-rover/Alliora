@@ -4,7 +4,7 @@ import Spline from '@splinetool/react-spline';
 import { motion, useScroll, useTransform } from 'framer-motion';
 import { Button } from '../Components/ui/button';
 import { FlipWords } from "../Components/ui/flip-words";
-import { LinkPreview } from "@/components/ui/link-preview";
+import { LinkPreview } from "@/Components/ui/link-preview";
 import AllioraHead from '@/Components/ui/alliora-head';
 
 const words = [

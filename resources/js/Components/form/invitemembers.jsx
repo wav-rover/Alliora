@@ -5,7 +5,7 @@ import { Check, ChevronsUpDown } from "lucide-react"
 import { X } from "lucide-react";
 import { cn } from "@/lib/utils"
 import { motion, AnimatePresence } from "framer-motion"
-import { Button } from "@/components/ui/button"
+import { Button } from "@/Components/ui/button"
 import {
     Command,
     CommandEmpty,
@@ -13,12 +13,12 @@ import {
     CommandInput,
     CommandItem,
     CommandList,
-} from "@/components/ui/command"
+} from "@/Components/ui/command"
 import {
     Popover,
     PopoverContent,
     PopoverTrigger,
-} from "@/components/ui/popover"
+} from "@/Components/ui/popover"
 
 export function InviteMembers({ members = [], selectedMembers, setSelectedMembers }) {
     const [open, setOpen] = React.useState(false);

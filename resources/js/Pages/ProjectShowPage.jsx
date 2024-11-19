@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import AuthenticatedLayout from '../Layouts/AuthenticatedLayout';
 import { Head, usePage } from '@inertiajs/react';
-import TaskBoard from '../Components/data/TasksBoard';
+import TaskBoard from '../Components/data/Tasksboard';
 import { UserTooltip, MousePositions } from '../Components/data/UsersOnProject';
 import axios from 'axios';
 import { FloatingDockWithLinks } from '../Components/ui/floating-dock-Links'

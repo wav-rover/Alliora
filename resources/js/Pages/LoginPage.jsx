@@ -1,9 +1,8 @@
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/Components/ui/tabs";
 import Login from './Auth/Login';
 import Register from './Auth/Register';
 import { motion, AnimatePresence } from "framer-motion";
 import { useState } from "react";
-import { Spotlight } from "../components/ui/spotlight";
 
 export default function AuthTabs() {
     const [activeTab, setActiveTab] = useState("login");

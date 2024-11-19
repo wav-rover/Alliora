@@ -1,10 +1,9 @@
 'use client'
 
 import { useState, useEffect, useRef } from 'react'
-import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import { ScrollArea } from "@/components/ui/scroll-area"
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
+import { Button } from "@/Components/ui/button"
+import { Input } from "@/Components/ui/input"
+import { Avatar, AvatarFallback, AvatarImage } from "@/Components/ui/avatar"
 import { ChevronUp, ChevronDown, Send } from 'lucide-react'
 import axios from 'axios'
 import { motion, AnimatePresence } from 'framer-motion';

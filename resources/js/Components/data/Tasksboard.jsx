@@ -7,7 +7,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import Toast from '../ui/custom-toast';
 import { Input } from '../ui/input';
 import { ChevronRight, Plus, CornerDownRight, CheckCircle, Clock, X, Scroll } from 'lucide-react';
-import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible'
+import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/Components/ui/collapsible'
 
 import useOutsideClick from '../ui/useOutsideClick';
 import { ScrollArea } from '../ui/scroll-area';

@@ -1,7 +1,7 @@
 "use client"
 
 import React, { useEffect, useState, useCallback } from "react";
-import { FloatingDock } from "@/components/ui/floating-dock";
+import { FloatingDock } from "@/Components/ui/floating-dock";
 import { motion } from "framer-motion";
 import { LineChartIcon as ChartLine, CalendarRange, SquareStack, ListPlus, Info } from 'lucide-react';
 import {
@@ -12,8 +12,8 @@ import {
   DialogHeader,
   DialogTitle,
   DialogTrigger,
-} from "@/components/ui/dialog";
-import { Button } from "@/components/ui/button";
+} from "@/Components/ui/dialog";
+import { Button } from "@/Components/ui/button";
 
 const CLIENT_ID = import.meta.env.VITE_GOOGLE_CLIENT_ID;
 const API_KEY = import.meta.env.VITE_GOOGLE_API_KEY;

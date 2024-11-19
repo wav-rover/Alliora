@@ -4,7 +4,7 @@ import { usePage } from '@inertiajs/react';
 import { X, Check, UserCog, ArrowBigUpDash, UserMinus, ArrowBigDownDash, LogOut, CopyCheck, Plus, Trash } from 'lucide-react';
 import { Input } from "../ui/input2";
 import { InviteMembers, Selected } from '../form/invitemembers';
-import { Button } from "@/components/ui/button";
+import { Button } from "@/Components/ui/button";
 import {
     Dialog,
     DialogContent,
@@ -12,7 +12,7 @@ import {
     DialogTitle,
     DialogTrigger,
     DialogFooter,
-} from "@/components/ui/dialog";
+} from "@/Components/ui/dialog";
 import { ScrollArea } from '../ui/scroll-area';
 import { motion } from 'framer-motion';
 import {
@@ -20,13 +20,13 @@ import {
     TooltipContent,
     TooltipProvider,
     TooltipTrigger,
-} from "@/components/ui/tooltip"
-import SearchModal from "@/components/ui/team-search-modal";
+} from "@/Components/ui/tooltip"
+import SearchModal from "@/Components/ui/team-search-modal";
 import {
     Popover,
     PopoverContent,
     PopoverTrigger,
-} from "@/components/ui/popover";
+} from "@/Components/ui/popover";
 
 const Teams = () => {
     const { props } = usePage();

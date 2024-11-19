@@ -7,16 +7,15 @@ import { Head } from '@inertiajs/react'
 import { usePage } from "@inertiajs/react"
 import { Vortex } from '@/Components/ui/vortex'
 import DashboardChart from '@/Components/ui/charts/dashboard-chart'
-import { Card, CardContent } from "@/components/ui/card"
+import { Card, CardContent } from "@/Components/ui/card"
 import {
     Carousel,
     CarouselContent,
     CarouselItem,
     CarouselNext,
     CarouselPrevious,
-} from "@/components/ui/carousel"
+} from "@/Components/ui/carousel"
 import Autoplay from "embla-carousel-autoplay"
-import { ScrollArea } from "@/components/ui/scroll-area"
 import { Calendar, Clock, Target, Users, CheckCircle, XCircle, AlertCircle } from 'lucide-react'
 
 export default function Dashboard() {

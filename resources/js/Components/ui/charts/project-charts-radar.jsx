@@ -10,12 +10,12 @@ import {
   CardFooter,
   CardHeader,
   CardTitle,
-} from "@/components/ui/card"
+} from "@/Components/ui/card"
 import {
   ChartContainer,
   ChartTooltip,
   ChartTooltipContent,
-} from "@/components/ui/charts/chart"
+} from "@/Components/ui/charts/chart"
 
 const blueShades = [
     "rgba(59, 130, 246, 0.1)", // Deep Blue
