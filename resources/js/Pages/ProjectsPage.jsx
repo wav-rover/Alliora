@@ -7,6 +7,10 @@ import ProjectSearch from '@/Components/ui/project-search-modal';
 import axios from 'axios';
 import { SortAsc, SortDesc } from 'lucide-react';
 
+/**
+ * Renders the Projects page component
+ * @returns {JSX.Element} The rendered Projects page
+ */
 const ProjectsPage = () => {
     const { teams, projects: initialProjects, adminTeams, tasks } = usePage().props;
 
