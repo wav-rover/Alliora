@@ -7,6 +7,12 @@ import TextInput from '@/Components/TextInput';
 import { useForm } from '@inertiajs/react';
 import { useRef, useState } from 'react';
 
+/**
+ * Renders a delete user form component with confirmation modal
+ * @param {Object} props - The component props
+ * @param {string} [props.className=''] - Additional CSS classes for the component
+ * @returns {JSX.Element} A section containing the delete account button and confirmation modal
+ */
 export default function DeleteUserForm({ className = '' }) {
     const [confirmingUserDeletion, setConfirmingUserDeletion] = useState(false);
     const passwordInput = useRef();
