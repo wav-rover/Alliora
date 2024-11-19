@@ -4,6 +4,15 @@ import { motion } from "framer-motion";
 import { twMerge } from "tailwind-merge";
 import { cn } from "@/lib/utils";
 
+/**
+ * Renders a TextRevealCard component with interactive text reveal effect.
+ * @param {Object} props - The component props.
+ * @param {string} props.text - The initial text to display.
+ * @param {string} props.revealText - The text to reveal on mouse interaction.
+ * @param {React.ReactNode} props.children - Additional content to render inside the card.
+ * @param {string} [props.className] - Additional CSS classes for the card container.
+ * @returns {JSX.Element} A div element containing the TextRevealCard component.
+ */
 export const TextRevealCard = ({
   text,
   revealText,
@@ -131,6 +140,13 @@ export const TextRevealCardDescription = ({
   return (<p className={twMerge("text-[#a9a9a9] text-sm", className)}>{children}</p>);
 };
 
+/**
+ * Renders a starry background effect using animated spans.
+ * This component creates a div with 80 randomly positioned and animated spans
+ * that resemble twinkling stars.
+ *
+ * @returns {JSX.Element} A div containing animated star-like spans.
+ */
 const Stars = () => {
   const randomMove = () => Math.random() * 4 - 2;
   const randomOpacity = () => Math.random();
