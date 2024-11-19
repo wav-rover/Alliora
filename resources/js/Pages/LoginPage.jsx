@@ -4,6 +4,10 @@ import Register from './Auth/Register';
 import { motion, AnimatePresence } from "framer-motion";
 import { useState } from "react";
 
+/**
+ * Renders an authentication component with tabs for login and registration
+ * @returns {JSX.Element} A React component with animated tabs for login and registration forms
+ */
 export default function AuthTabs() {
     const [activeTab, setActiveTab] = useState("login");
 
