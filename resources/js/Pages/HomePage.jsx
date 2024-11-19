@@ -46,6 +46,11 @@ const fadeInVariants = {
     }
 };
 
+/**
+ * Welcome component for the Alliora project management application
+ * @param {Object} auth - Authentication object containing user information
+ * @returns {JSX.Element} A complex, responsive landing page with animated sections
+ */
 export default function Welcome({ auth }) {
     const containerRef = useRef(null);
     const firstSectionRef = useRef(null);
