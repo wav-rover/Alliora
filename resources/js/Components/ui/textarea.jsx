@@ -2,6 +2,13 @@ import * as React from "react"
 
 import { cn } from "@/lib/utils"
 
+/**
+ * A customizable textarea component with forwarded ref and className support.
+ * @param {Object} props - The props for the textarea.
+ * @param {string} [props.className] - Additional CSS classes to apply to the textarea.
+ * @param {React.Ref} ref - The ref to be forwarded to the textarea element.
+ * @returns {JSX.Element} A styled textarea element with forwarded ref and merged classNames.
+ */
 const Textarea = React.forwardRef(({ className, ...props }, ref) => {
   return (
     (<textarea
