@@ -58,6 +58,16 @@ export default function Welcome({ auth }) {
         setIsRTXOn(!isRTXOn);
     };
 
+    useEffect(() => {
+        if(window.matchMedia("(max-width: 768px)").matches){
+            setIsRTXOn(false);
+        }
+        else {
+            setIsRTXOn(true);
+        }
+    }, []); 
+
+
     const { scrollYProgress: firstSectionProgress } = useScroll({
         target: containerRef,
         offset: ["start start", "end end"]
@@ -188,8 +198,7 @@ export default function Welcome({ auth }) {
                                     {isRTXOn ? (
                                         <Spline scene="https://prod.spline.design/7w41iMdSSU8lwsPN/scene.splinecode" />
                                     ) : (
-                                        <div className='h-full w-full flex items-center justify-end px-20'>
-
+                                        <div className='ml-72 -mt-24 md:ml-0 md:mt-0  h-full w-full flex items-center justify-end px-20'>
                                             <BigAllioraHead />
                                         </div>
                                     )}
