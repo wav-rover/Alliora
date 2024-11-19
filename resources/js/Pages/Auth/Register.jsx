@@ -6,6 +6,10 @@ import { Input } from '../../Components/ui/input2';
 import { Label } from '../../Components/ui/label';
 import { motion } from 'framer-motion';
 
+/**
+ * Renders a registration form component for user account creation.
+ * @returns {JSX.Element} A React component containing a registration form with input fields for name, email, password, and password confirmation.
+ */
 export default function Register() {
     const { data, setData, post, processing, errors, reset } = useForm({
         name: '',
@@ -117,6 +121,12 @@ export default function Register() {
     );
 }
 
+/**
+ * Renders an error message with a fade-in animation
+ * @param {Object} props - The component props
+ * @param {string} props.message - The error message to display
+ * @returns {JSX.Element} A motion.div element containing the error message
+ */
 const ErrorWithAnimation = ({ message }) => {
     return (
         <motion.div 
