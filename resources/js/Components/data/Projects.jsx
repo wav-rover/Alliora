@@ -152,8 +152,63 @@ export default function Component({tasks, projects = [], onProjectModified = () 
         );
       })}
 
-      {/* Edit Modal */}
-      {/* ... */}
+{/* Edit Modal */}
+<AnimatePresence>
+        {editingProject && (
+          <motion.div
+            className="fixed inset-0 bg-black/80 backdrop-blur-sm flex items-center justify-center z-50"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+          >
+            <motion.div
+              initial={{ scale: 0.9, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              exit={{ scale: 0.9, opacity: 0 }}
+              transition={{ type: "spring", damping: 15 }}
+            >
+              <Card className="w-full max-w-md bg-zinc-900 border-zinc-800 text-white p-6">
+                <h3 className="text-xl font-bold mb-4">Edit Project</h3>
+                <form onSubmit={handleEditSubmit} className="space-y-4">
+                  <div className="space-y-2">
+                    <label className="text-sm text-gray-400">Project Name</label>
+                    <input
+                      type="text"
+                      value={editedProject.name || ''}
+                      onChange={(e) => setEditedProject({ ...editedProject, name: e.target.value })}
+                      className="w-full px-3 py-2 bg-zinc-800 border border-zinc-700 rounded-lg focus:outline-none focus:border-indigo-500 text-white"
+                      placeholder="Enter project name"
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <label className="text-sm text-gray-400">Description</label>
+                    <textarea
+                      value={editedProject.description || ''}
+                      onChange={(e) => setEditedProject({ ...editedProject, description: e.target.value })}
+                      className="w-full px-3 py-2 bg-zinc-800 border border-zinc-700 rounded-lg focus:outline-none focus:border-indigo-500 text-white"
+                      placeholder="Enter project description"
+                      rows={3}
+                    />
+                  </div>
+                  <div className="flex justify-end gap-3 mt-6">
+                    <Button
+                      type="button"
+                      variant="outline"
+                      onClick={() => setEditingProject(null)}
+                      className="border-zinc-700 text-gray-400 hover:bg-zinc-800"
+                    >
+                      Cancel
+                    </Button>
+                    <Button type="submit" className="bg-indigo-500 hover:bg-indigo-600 text-white">
+                      Save Changes
+                    </Button>
+                  </div>
+                </form>
+              </Card>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </div>
   );
 }
